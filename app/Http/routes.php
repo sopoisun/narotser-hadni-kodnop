@@ -171,6 +171,22 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/report/pertahun/solditem', 'ReportController@soldItemPertahun');
     Route::get('/report/pertahun/karyawan', 'ReportController@karyawanPertahun');
 
+    // Account
+    Route::get('/account', 'AccountController@index');
+    Route::get('/account/add', 'AccountController@create');
+    Route::post('/account/add', 'AccountController@store');
+    Route::get('/account/edit/{id}', 'AccountController@edit');
+    Route::post('/account/edit/{id}', 'AccountController@update');
+    # Saldo Akun
+    Route::get('/account/saldo', 'AccountController@inputSaldo');
+    # Input Manual
+    Route::get('/account/saldo/add', 'AccountController@inputManual');
+    Route::post('/account/saldo/add', 'AccountController@saveInputManual');
+    Route::get('/account/saldo/edit/{id}', 'AccountController@editInputManual');
+    Route::post('/account/saldo/edit/{id}', 'AccountController@saveEditInputManual');
+    # Jurnal Harian
+    Route::get('/account/saldo/jurnal', 'AccountController@jurnal');
+
     Route::group(['prefix' => 'ajax'], function(){
         // Karyawan
         Route::get('/karyawan', 'KaryawanController@ajaxLoad');
@@ -213,5 +229,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/order/{id}/merge', 'OrderController@mergeOrder'); // by order_id
         Route::post('/order/{id}/merge', 'OrderController@saveMergeOrder'); // by order_id
 
+        // Account
+        Route::get('/account/check', 'AccountController@check');
     });
 });

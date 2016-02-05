@@ -455,6 +455,32 @@ Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-templa
                         </li>
                     </ul>
                 </li>
+                <li class="{{ set_active('account*') }}">
+                    <a href="javascript:;">
+                        <i class="icon-star"></i>
+                        <span class="title">Akun</span>
+                        <span class="arrow "></span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li class="{{ set_active('account/add') }}">
+                            <a href="{{ url('/account/add') }}">Tambah Akun</a>
+                        </li>
+                        <li class="{{ set_active('account') }}">
+                            <a href="{{ url('/account') }}">Daftar Akun</a>
+                        </li>
+                        <li class="{{ set_active('account/saldo*') }}">
+                            <a href="javascript:;">
+                            Saldo Akun
+                            <span class="arrow"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li class="{{ set_active('account/saldo/add') }}"><a href="{{ url('/account/saldo/add') }}">Input Saldo Akun</a></li>
+                                <li class="{{ set_active('account/saldo') }}"><a href="{{ url('/account/saldo') }}">Daftar Input Saldo Akun</a></li>
+                                <li class="{{ set_active('account/saldo/jurnal') }}"><a href="{{ url('/account/saldo/jurnal') }}">Jurnal Akun</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
                 <li class="{{ set_active('produk*') }}">
                     <a href="javascript:;">
                         <i class="icon-certificate"></i>

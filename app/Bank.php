@@ -13,4 +13,9 @@ class Bank extends Model
     {
         return $this->hasMany('App\OrderBayarBank', 'bank_id', 'id');
     }
+
+    public function saldoAccount()
+    {
+        return $this->hasMany('App\AccountSaldo', 'relation_id', 'id');
+    }
 }
