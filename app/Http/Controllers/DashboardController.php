@@ -51,6 +51,7 @@ class DashboardController extends Controller
         $reports = ConvertRawQueryToArray($reports);
 
         $dataLastWeek = [];
+        $dataLabelLastWeek = [];
         foreach($dates as $date){
             $idx = array_search($date->format("Y-m-d"), array_column($reports, "tanggal"));
             $val = 0;
@@ -58,15 +59,15 @@ class DashboardController extends Controller
                 $d  = $reports[$idx];
                 $val = $d['jumlah'];
             }
-
-            array_push($dataLastWeek, [
-                $date->format('d M Y'),
-                $val,
-            ]);
+            $dataLabelLastWeek[] = $date->format('d M Y');
+            $dataLastWeek[] = $val;
         }
 
         $data = [
-            'dataLastWeek'      => $dataLastWeek,
+            'grafik'            => [
+                'label'         => $dataLabelLastWeek,
+                'data'          => $dataLastWeek,
+            ],
             'produkLabaWarning' => $produkLabaWarning,
             'produkStokWarning' => $produkStokWarning,
             'bahanStokWarning'  => $bahanStokWarning,

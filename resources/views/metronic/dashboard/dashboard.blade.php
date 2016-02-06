@@ -18,9 +18,28 @@
         <!-- END PAGE TITLE & BREADCRUMB-->
     </div>
 </div>
+{{ $asu }}
 <!-- END PAGE HEADER-->
 <!-- BEGIN PAGE CONTENT-->
-<div class="row-fluid">
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box blue">
+            <div class="portlet-title">
+                <div class="caption"><i class="icon-comments"></i>Grafik Penjualan 7 Hari Terakhir</div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"></a>
+                    <a href="#portlet-config" data-toggle="modal" class="config"></a>
+                    <a href="javascript:;" class="reload"></a>
+                    <a href="javascript:;" class="remove"></a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <canvas id="canvas" style="width:100%; height:100px;"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
     <div class="col-md-4">
         <!-- BEGIN SAMPLE TABLE PORTLET-->
         <div class="portlet box red">
@@ -179,27 +198,19 @@
 @section('js_section')
 <script>
 var lineChartData = {
-    labels: ["Jul", "Ags", "Sep", "Okt", "Nov", "Des", "Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+    labels: {!! json_encode($grafik['label']) !!},
     datasets: [{
         label: "Mutasi Masuk",
-        fillColor: "rgba(88,255,110,0.2)",
-        strokeColor: "rgba(88,255,110,1)",
-        pointColor: "rgba(88,255,110,1)",
+        fillColor: "rgba(0, 153, 255, 0.2)",
+        strokeColor: "rgba(0, 138, 230, 1)",
+        pointColor: "rgba(0, 138, 230, 1)",
         pointStrokeColor: "#fff",
         pointHighlightFill: "#fff",
-        pointHighlightStroke: "rgba(88,255,110,1)",
-        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    }, {
-        label: "Mutasi Keluar",
-        fillColor: "rgba(255,117,117,0.2)",
-        strokeColor: "rgba(255,117,117,1)",
-        pointColor: "rgba(255,117,117,1)",
-        pointStrokeColor: "#fff",
-        pointHighlightFill: "#fff",
-        pointHighlightStroke: "rgba(255,117,117,1)",
-        data: [0, "1", 0, "3", "1", "1", 0, 0, 0, 0, 0, 0]
+        pointHighlightStroke: "rgba(0, 0, 255, 1)",
+        data: {{ json_encode($grafik['data']) }}
     }]
 }
+
 window.onload = function() {
     var ctx = $("#canvas").get(0).getContext("2d");
     window.myLine = new Chart(ctx).Line(lineChartData, {
