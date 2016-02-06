@@ -18,7 +18,6 @@
         <!-- END PAGE TITLE & BREADCRUMB-->
     </div>
 </div>
-{{ $asu }}
 <!-- END PAGE HEADER-->
 <!-- BEGIN PAGE CONTENT-->
 <div class="row">
@@ -34,7 +33,7 @@
                 </div>
             </div>
             <div class="portlet-body">
-                <canvas id="canvas" style="width:100%; height:100px;"></canvas>
+                <canvas id="canvas" style="width:100%;" height="100"></canvas>
             </div>
         </div>
     </div>
