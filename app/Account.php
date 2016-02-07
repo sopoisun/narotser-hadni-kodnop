@@ -44,6 +44,7 @@ class Account extends Model
                 SELECT orders.`id` AS order_id, SUM(order_places.`harga`)total
                 FROM orders INNER JOIN order_places ON orders.`id` = order_places.`order_id`
                 INNER JOIN order_bayars ON orders.`id` = order_bayars.`order_id`
+                LEFT JOIN  order_bayar_banks ON orders.`id` = order_bayar_banks.`order_id`
                 WHERE $where orders.`state` = 'Closed'
                 GROUP BY orders.`id`
             )temp_order_places ON orders.`id` = temp_order_places.order_id
@@ -52,6 +53,7 @@ class Account extends Model
                 FROM orders INNER JOIN order_details ON orders.`id` = order_details.`order_id`
                 LEFT JOIN order_detail_returns ON order_details.`id` = order_detail_returns.`order_detail_id`
                 INNER JOIN order_bayars ON orders.`id` = order_bayars.`order_id`
+                LEFT JOIN  order_bayar_banks ON orders.`id` = order_bayar_banks.`order_id`
                 WHERE $where orders.`state` = 'Closed'
                 GROUP BY orders.`id`
             )temp_order_details ON orders.`id` = temp_order_details.order_id
@@ -61,14 +63,14 @@ class Account extends Model
 
     public static function TotalPembelian($where="")
     {
-        $query = "SELECT pembelian_bayars.tanggal, SUM(pembelian_bayars.`nominal`)total FROM pembelian_bayars
+        $query = "SELECT pembelian_bayars.tanggal, ifnull(SUM(pembelian_bayars.`nominal`), 0)total FROM pembelian_bayars
             WHERE $where";
         return DB::select($query);
     }
 
     public static function TotalAccountSaldo($columnCondition, $where="")
     {
-        $query = "SELECT SUM($columnCondition)total FROM account_saldos WHERE $where";
+        $query = "SELECT ifnull(SUM($columnCondition), 0)total FROM account_saldos WHERE $where";
         return DB::select($query);
     }
 }

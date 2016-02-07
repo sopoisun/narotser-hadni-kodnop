@@ -476,7 +476,17 @@ Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-templa
                             <ul class="sub-menu">
                                 <li class="{{ set_active('account/saldo/add') }}"><a href="{{ url('/account/saldo/add') }}">Input Saldo Akun</a></li>
                                 <li class="{{ set_active('account/saldo') }}"><a href="{{ url('/account/saldo') }}">Daftar Input Saldo Akun</a></li>
-                                <li class="{{ set_active('account/saldo/jurnal') }}"><a href="{{ url('/account/saldo/jurnal') }}">Jurnal Akun</a></li>
+                                <li class="{{ set_active('account/saldo/jurnal*') }}">
+                                    <a href="javascript:;">
+                                    Jurnal
+                                    <span class="arrow"></span>
+                                    </a>
+                                    <ul class="sub-menu">
+                                        <li class="{{ set_active('account/saldo/jurnal') }}"><a href="{{ url('/account/saldo/jurnal') }}">Jurnal Akun</a></li>
+                                        <li class="{{ set_active('account/saldo/jurnal/bank') }}"><a href="{{ url('/account/saldo/jurnal/bank') }}">Jurnal Bank</a></li>
+                                    </ul>
+                                </li>
+
                             </ul>
                         </li>
                     </ul>

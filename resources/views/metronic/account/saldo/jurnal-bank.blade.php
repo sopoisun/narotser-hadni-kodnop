@@ -11,7 +11,7 @@
     <div class="col-md-12">
         <!-- BEGIN PAGE TITLE & BREADCRUMB-->
         <h3 class="page-title">
-            Jurnal {{ $types[$type] }}
+            Jurnal Bank {{ $banks[$bank] }}
         </h3>
         <ul class="page-breadcrumb breadcrumb">
             <li>
@@ -27,7 +27,13 @@
                 <a href="{{ url('/account/saldo') }}">Saldo</a>
                 <i class="icon-angle-right"></i>
             </li>
-            <li><a href="javascript:void(0);">Jurnal {{ $types[$type] }}</a></li>
+            <li>
+                <a href="{{ url('/account/saldo/jurnal?tanggal='.$tanggal->format('Y-m-d').'&to_tanggal='.$to_tanggal->format('Y-m-d').'&type=bank') }}">
+                    Jurnal Bank
+                </a>
+                <i class="icon-angle-right"></i>
+            </li>
+            <li><a href="javascript:void(0);">Jurnal {{ $banks[$bank] }}</a></li>
         </ul>
         <!-- END PAGE TITLE & BREADCRUMB-->
     </div>
@@ -66,9 +72,9 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="type" class="col-md-3 control-label">Type Jurnal</label>
+                                    <label for="bank" class="col-md-3 control-label">Bank</label>
                                     <div class="col-md-8">
-                                    {{ Form::select('type', $types, $type, ['class' => 'form-control']) }}
+                                    {{ Form::select('bank', $banks, $bank, ['class' => 'form-control']) }}
                                     </div>
                                 </div>
                             </div>
@@ -94,7 +100,7 @@
         <!-- BEGIN SAMPLE TABLE PORTLET-->
         <div class="portlet box blue">
             <div class="portlet-title">
-                <div class="caption"><i class="icon-tasks"></i>Jurnal {{ $types[$type] }} {{ $tanggal->format('d M Y').' s/d '.$to_tanggal->format('d M Y') }}</div>
+                <div class="caption"><i class="icon-tasks"></i>Jurnal Bank {{ $banks[$bank] }} {{ $tanggal->format('d M Y').' s/d '.$to_tanggal->format('d M Y') }}</div>
                 <div class="tools">
                     <a href="javascript:;" class="collapse"></a>
                     <a href="#portlet-config" data-toggle="modal" class="config"></a>

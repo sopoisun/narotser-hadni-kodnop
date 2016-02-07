@@ -186,6 +186,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/account/saldo/edit/{id}', 'AccountController@saveEditInputManual');
     # Jurnal Harian
     Route::get('/account/saldo/jurnal', 'AccountController@jurnal');
+    Route::get('/account/saldo/jurnal/bank', 'AccountController@jurnalBank');
 
     Route::group(['prefix' => 'ajax'], function(){
         // Karyawan
