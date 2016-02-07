@@ -27,9 +27,9 @@ class Account extends Model
         return $this->hasMany('App\AccountSaldo', 'account_id', 'id');
     }
 
-    public static function TotalPenjualan($where="")
+    public static function TotalPenjualan($where="", $groupBy="")
     {
-        $query = "SELECT ifnull(SUM(
+        $query = "SELECT orders.`id`, orders.`tanggal`, ifnull(SUM(
             	((temp_order_details.total+temp_order_places.total) +
             	ROUND((temp_order_details.total+temp_order_places.total) * (order_taxes.`procentage`/ 100)) +
             	ROUND(((temp_order_details.total+temp_order_places.total) +
@@ -55,13 +55,13 @@ class Account extends Model
                 WHERE $where orders.`state` = 'Closed'
                 GROUP BY orders.`id`
             )temp_order_details ON orders.`id` = temp_order_details.order_id
-            WHERE $where orders.`state` = 'Closed'";
+            WHERE $where orders.`state` = 'Closed' $groupBy";
         return DB::select($query);
     }
 
     public static function TotalPembelian($where="")
     {
-        $query = "SELECT SUM(pembelian_bayars.`nominal`)total FROM pembelian_bayars
+        $query = "SELECT pembelian_bayars.tanggal, SUM(pembelian_bayars.`nominal`)total FROM pembelian_bayars
             WHERE $where";
         return DB::select($query);
     }

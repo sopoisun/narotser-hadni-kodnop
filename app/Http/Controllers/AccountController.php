@@ -13,6 +13,7 @@ use Validator;
 use Carbon\Carbon;
 use App\Order;
 use App\PembelianBayar;
+use DB;
 
 class AccountController extends Controller
 {
@@ -264,8 +265,19 @@ class AccountController extends Controller
         $type       = $request->get('type') ? $request->get('type') : 'cash';
         $tanggal    = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
         $CTanggal   = Carbon::createFromFormat('Y-m-d', $tanggal);
+        $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : date('Y-m-d');
+        $CToTanggal = Carbon::createFromFormat('Y-m-d', $to_tanggal);
         $CYesterday = $CTanggal->copy()->addDays(-1);
         $yesterday  = $CYesterday->format('Y-m-d');
+
+        $start  = $CTanggal->copy();
+        $end    = $CToTanggal->copy();
+
+        $dates = [];
+        while ($start->lte($end)) {
+            $dates[] = $start->copy();
+            $start->addDay();
+        }
 
         if( $type == 'cash' ){
             // Penjualan for sisa saldo
@@ -294,59 +306,85 @@ class AccountController extends Controller
             ]);
             $saldo = $sisaSaldo;
             array_push($tableTemp, [
+                'tanggal'   => $CYesterday->format('Y-m-d'),
                 'keterangan' => 'Sisa Saldo '.$CYesterday->format('d M Y'),
                 'debet'     => '',
                 'kredit'    => '',
                 'saldo'     => $sisaSaldo,
             ]);
 
-            // Penjualan $tanggal ini
-            $where      = "orders.tanggal = '$tanggal' AND order_bayars.type_bayar = 'tunai' AND";
-            $totalPenjualan = ConvertRawQueryToArray(Account::TotalPenjualan($where))[0]['total'];
-            if( $totalPenjualan > 0 ){
-                $saldo += $totalPenjualan;
-                array_push($tableTemp, [
-                    'keterangan' => 'Total Penjualan '.$CTanggal->format('d M Y'),
-                    'debet'     => $totalPenjualan,
-                    'kredit'    => '',
-                    'saldo'     => $saldo,
-                ]);
-            }
-            // Pembelian $tanggal ini
-            $where      = "pembelian_bayars.`tanggal` = '$tanggal'";
-            $totalPembelian = ConvertRawQueryToArray(Account::TotalPembelian($where))[0]['total'];
-            if( $totalPembelian > 0 ){
-                $saldo -= $totalPembelian;
-                array_push($tableTemp, [
-                    'keterangan' => 'Total Pembelian '.$CTanggal->format('d M Y'),
-                    'debet'     => '',
-                    'kredit'    => $totalPembelian,
-                    'saldo'     => $saldo
-                ]);
-            }
-            // Account Saldo $tanggal ini
-            $accountSaldo = AccountSaldo::with(['account', 'bank'])->where('tanggal', $tanggal)->get();
-            foreach($accountSaldo as $as){
-                $bank   = ( $as->relation_id == NULL ) ? $as->bank->nama_bank : '';
-                $row['keterangan'] = $as->account->nama_akun.' '.$bank;
-                if( $as->type == 'kredit' ){
-                    $saldo  -= $as->nominal;
-                    $row += [
-                        'debet'     => '',
-                        'kredit'    => $as->nominal,
-                        'saldo'     => $saldo,
-                    ];
-                }else{ // debet
-                    $saldo  += $as->nominal;
-                    $row += [
-                        'debet'     => $as->nominal,
-                        'kredit'    => '',
-                        'saldo'     => $saldo,
-                    ];
-                }
+            // Penjualan range $tanggal s/d $to_tanggal
+            $where      = "(orders.tanggal BETWEEN '$tanggal' AND '$to_tanggal' ) AND order_bayars.type_bayar = 'tunai' AND";
+            $groupBy    = "GROUP BY orders.tanggal";
+            $penjualans = ConvertRawQueryToArray(Account::TotalPenjualan($where, $groupBy));
+            $penjualanGroup = collect($penjualans)->groupBy('tanggal');
 
-                array_push($tableTemp, $row);
+            // Pembelian range $tanggal s/d $to_tanggal
+            $where      = "(pembelian_bayars.`tanggal` BETWEEN '$tanggal' AND '$to_tanggal' ) GROUP BY pembelian_bayars.tanggal";
+            $pembelians = ConvertRawQueryToArray(Account::TotalPembelian($where));
+            $pembelianGroup = collect($pembelians)->groupBy('tanggal');
+
+            // Account Saldo range $tanggal s/d $to_tanggal
+            $accountSaldos  = AccountSaldo::with(['account', 'bank'])->whereBetween('tanggal', [$tanggal, $to_tanggal])
+                ->select(['account_saldos.*', DB::raw('tanggal as _date')])->get()->groupBy('_date');
+
+            foreach($dates as $date){
+                // Penjualan
+                if( isset($penjualanGroup[$date->format('Y-m-d')]) ){
+                    $pjl = $penjualanGroup[$date->format('Y-m-d')];
+                    foreach($pjl as $p){
+                        $saldo += $p['total'];
+                        array_push($tableTemp, [
+                            'tanggal'       => $date->format('Y-m-d'),
+                            'keterangan'    => 'Penjualan',
+                            'debet'         => $p['total'],
+                            'kredit'        => '',
+                            'saldo'         => $saldo,
+                        ]);
+                    }
+                }
+                // Pembelian
+                if( isset($pembelianGroup[$date->format('Y-m-d')]) ){
+                    $pbl = $pembelianGroup[$date->format('Y-m-d')];
+                    foreach($pbl as $p){
+                        $saldo -= $p['total'];
+                        array_push($tableTemp, [
+                            'tanggal'       => $date->format('Y-m-d'),
+                            'keterangan'    => 'Pembelian',
+                            'debet'         => '',
+                            'kredit'        => $p['total'],
+                            'saldo'         => $saldo,
+                        ]);
+                    }
+                }
+                // Account Saldo
+                if( isset($accountSaldos[$date->format('Y-m-d')]) ){
+                    $acs = $accountSaldos[$date->format('Y-m-d')];
+                    foreach($acs as $as){
+                        if( $as['type'] == 'kredit' ){
+                            $saldo -= $as['nominal'];
+                            array_push($tableTemp, [
+                                'tanggal'       => $date->format('Y-m-d'),
+                                'keterangan'    => $as['account']['nama_akun'].' '.$as['bank']['nama_bank'],
+                                'debet'         => '',
+                                'kredit'        => $as['nominal'],
+                                'saldo'         => $saldo,
+                            ]);
+                        }else{ // debet
+                            $saldo += $as['nominal'];
+                            array_push($tableTemp, [
+                                'tanggal'       => $date->format('Y-m-d'),
+                                'keterangan'    => $as['account']['nama_akun'].' '.$as['bank']['nama_bank'],
+                                'debet'         => $as['nominal'],
+                                'kredit'        => '',
+                                'saldo'         => $saldo,
+                            ]);
+                        }
+                    }
+                }
             }
+
+            $tableTemp = collect($tableTemp)->groupBy('tanggal');
         }else{
             // Penjualan for sisa saldo
             $firstDate  = Order::where('state', 'Closed')->orderBy('tanggal')->limit(1)->first()->tanggal->format('Y-m-d');
@@ -355,7 +393,7 @@ class AccountController extends Controller
 
             // Account Saldo for sisa saldo
             $firstDate  = AccountSaldo::orderBy('tanggal')->limit(1)->first()->tanggal->format('Y-m-d');
-            $where      = "(account_saldos.`tanggal` BETWEEN '$firstDate' AND '$yesterday')";
+            $where      = "(account_saldos.`tanggal` BETWEEN '$firstDate' AND '$yesterday') and relation_id is not null";
             $column     = "IF(account_saldos.`type` = 'kredit', account_saldos.`nominal`, -ABS(account_saldos.`nominal`))";
             $totalAccountSaldo = ConvertRawQueryToArray(Account::TotalAccountSaldo($column, $where))[0]['total'];
 
@@ -369,54 +407,73 @@ class AccountController extends Controller
 
             $saldo = $sisaSaldo;
             array_push($tableTemp, [
+                'tanggal'   => $CYesterday->format('Y-m-d'),
                 'keterangan' => 'Sisa Saldo '.$CYesterday->format('d M Y'),
                 'debet'     => '',
                 'kredit'    => '',
                 'saldo'     => $sisaSaldo,
             ]);
 
-            // Penjualan $tanggal ini
-            $where      = "orders.tanggal = '$tanggal' AND order_bayars.type_bayar != 'tunai' AND";
-            $totalPenjualan = ConvertRawQueryToArray(Account::TotalPenjualan($where))[0]['total'];
-            if( $totalPenjualan > 0 ){
-                $saldo += $totalPenjualan;
-                array_push($tableTemp, [
-                    'keterangan' => 'Total Penjualan '.$CTanggal->format('d M Y'),
-                    'debet'     => $totalPenjualan,
-                    'kredit'    => '',
-                    'saldo'     => $saldo,
-                ]);
-            }
-            // Account Saldo $tanggal ini
-            $accountSaldo = AccountSaldo::with(['account', 'bank'])
-                ->where('tanggal', $tanggal)
-                ->whereNotNull('relation_id')->get();
+            // Penjualan range $tanggal s/d $to_tanggal
+            $where      = "(orders.tanggal BETWEEN '$tanggal' AND '$to_tanggal' ) AND order_bayars.type_bayar != 'tunai' AND";
+            $groupBy    = "GROUP BY orders.tanggal";
+            $penjualans = ConvertRawQueryToArray(Account::TotalPenjualan($where, $groupBy));
+            $penjualanGroup = collect($penjualans)->groupBy('tanggal');
 
-            foreach($accountSaldo as $as){
-                $bank   = ( $as->relation_id == NULL ) ? $as->bank->nama_bank : '';
-                $row['keterangan'] = $as->account->nama_akun.' '.$bank;
-                if( $as->type == 'debet' ){
-                    $saldo  -= $as->nominal;
-                    $row += [
-                        'debet'     => '',
-                        'kredit'    => $as->nominal,
-                        'saldo'     => $saldo,
-                    ];
-                }else{ // kredit
-                    $saldo  += $as->nominal;
-                    $row += [
-                        'debet'     => $as->nominal,
-                        'kredit'    => '',
-                        'saldo'     => $saldo,
-                    ];
+            // Account Saldo range $tanggal s/d $to_tanggal
+            $accountSaldos  = AccountSaldo::with(['account', 'bank'])->whereNotNull('relation_id')
+                ->whereBetween('tanggal', [$tanggal, $to_tanggal])
+                ->select(['account_saldos.*', DB::raw('tanggal as _date')])->get()
+                ->groupBy('_date');
+
+            foreach($dates as $date){
+                // Penjualan
+                if( isset($penjualanGroup[$date->format('Y-m-d')]) ){
+                    $pjl = $penjualanGroup[$date->format('Y-m-d')];
+                    foreach($pjl as $p){
+                        $saldo += $p['total'];
+                        array_push($tableTemp, [
+                            'tanggal'       => $date->format('Y-m-d'),
+                            'keterangan'    => 'Penjualan',
+                            'debet'         => $p['total'],
+                            'kredit'        => '',
+                            'saldo'         => $saldo,
+                        ]);
+                    }
                 }
-
-                array_push($tableTemp, $row);
+                // Account Saldo
+                if( isset($accountSaldos[$date->format('Y-m-d')]) ){
+                    $acs = $accountSaldos[$date->format('Y-m-d')];
+                    foreach($acs as $as){
+                        if( $as['type'] == 'debet' ){
+                            $saldo -= $as['nominal'];
+                            array_push($tableTemp, [
+                                'tanggal'       => $date->format('Y-m-d'),
+                                'keterangan'    => $as['account']['nama_akun'].' '.$as['bank']['nama_bank'],
+                                'debet'         => '',
+                                'kredit'        => $as['nominal'],
+                                'saldo'         => $saldo,
+                            ]);
+                        }else{ // kredit
+                            $saldo += $as['nominal'];
+                            array_push($tableTemp, [
+                                'tanggal'       => $date->format('Y-m-d'),
+                                'keterangan'    => $as['account']['nama_akun'].' '.$as['bank']['nama_bank'],
+                                'debet'         => $as['nominal'],
+                                'kredit'        => '',
+                                'saldo'         => $saldo,
+                            ]);
+                        }
+                    }
+                }
             }
+
+            $tableTemp = collect($tableTemp)->groupBy('tanggal');
         }
 
         $data = [
             'tanggal'   => $CTanggal,
+            'to_tanggal'=> $CToTanggal,
             'type'      => $type,
             'types'     => ['cash' => 'Kas', 'bank' => 'Bank'],
             'table'     => $tableTemp,

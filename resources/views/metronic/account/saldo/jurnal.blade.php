@@ -56,7 +56,11 @@
                                 <div class="form-group">
                                     <label for="tgl" class="col-md-3 control-label">Tanggal</label>
                                     <div class="col-md-8">
-                                    {{ Form::text('tanggal', $tanggal->format('Y-m-d'), ['class' => 'form-control tanggalan', 'id' => 'tgl', 'data-date-format' => 'yyyy-mm-dd']) }}
+                                        <div class="input-group input-large tanggalan input-daterange" data-date="10/11/2012" data-date-format="yyyy-mm-dd">
+                                            <input type="text" class="form-control" name="tanggal" value="{{ $tanggal->format('Y-m-d') }}" />
+                                            <span class="input-group-addon">to</span>
+                                            <input type="text" class="form-control" name="to_tanggal" value="{{ $to_tanggal->format('Y-m-d') }}" />
+                                         </div>
                                     </div>
                                 </div>
                             </div>
@@ -90,7 +94,7 @@
         <!-- BEGIN SAMPLE TABLE PORTLET-->
         <div class="portlet box blue">
             <div class="portlet-title">
-                <div class="caption"><i class="icon-tasks"></i>Jurnal {{ $types[$type] }} {{ $tanggal->format('d M Y') }}</div>
+                <div class="caption"><i class="icon-tasks"></i>Jurnal {{ $types[$type] }} {{ $tanggal->format('d M Y').' s/d '.$to_tanggal->format('d M Y') }}</div>
                 <div class="tools">
                     <a href="javascript:;" class="collapse"></a>
                     <a href="#portlet-config" data-toggle="modal" class="config"></a>
@@ -111,16 +115,21 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach($table as $key => $val)
+                            <tr>
+                                <td colspan="5" style="font-weight:bold;">{{ date('d M Y', strtotime($key)) }}</td>
+                            </tr>
                             {{--*/ $no = 0; /*--}}
-                            @foreach($table as $t)
+                            @foreach($val as $v)
                             {{--*/ $no++ /*--}}
                             <tr>
                                 <td>{{ $no }}</td>
-                                <td>{{ $t['keterangan'] }}</td>
-                                <td>{{ is_numeric($t['debet']) ? number_format($t['debet'], 0, ',', '.') : $t['debet'] }}</td>
-                                <td>{{ is_numeric($t['kredit']) ? number_format($t['kredit'], 0, ',', '.') : $t['kredit'] }}</td>
-                                <td>{{ is_numeric($t['saldo']) ? number_format($t['saldo'], 0, ',', '.') : $t['saldo'] }}</td>
+                                <td>{{ $v['keterangan'] }}</td>
+                                <td>{{ is_numeric($v['debet']) ? number_format($v['debet'], 0, ',', '.') : $v['debet'] }}</td>
+                                <td>{{ is_numeric($v['kredit']) ? number_format($v['kredit'], 0, ',', '.') : $v['kredit'] }}</td>
+                                <td>{{ is_numeric($v['saldo']) ? number_format($v['saldo'], 0, ',', '.') : $v['saldo'] }}</td>
                             </tr>
+                            @endforeach
                             @endforeach
                         </tbody>
                     </table>
