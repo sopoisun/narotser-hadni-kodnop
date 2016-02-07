@@ -636,8 +636,11 @@ Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-templa
                         <span class="arrow "></span>
                     </a>
                     <ul class="sub-menu">
+                        <li class="{{ set_active('tax/add') }}">
+                            <a href="{{ url('/tax/add') }}">Tambah Type Pajak</a>
+                        </li>
                         <li class="{{ set_active('tax') }}">
-                            <a href="{{ url('/tax') }}">Daftar Pajak</a>
+                            <a href="{{ url('/tax') }}">Daftar Type Pajak</a>
                         </li>
                     </ul>
                 </li>

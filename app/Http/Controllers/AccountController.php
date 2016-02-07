@@ -281,20 +281,32 @@ class AccountController extends Controller
 
         if( $type == 'cash' ){
             // Penjualan for sisa saldo
-            $firstDate  = Order::where('state', 'Closed')->orderBy('tanggal')->limit(1)->first()->tanggal->format('Y-m-d');
-            $where      = "(orders.tanggal between '$firstDate' AND '$yesterday') AND order_bayars.type_bayar = 'tunai' AND";
-            $totalPenjualan = ConvertRawQueryToArray(Account::TotalPenjualan($where))[0]['total'];
+            $totalPenjualan = 0;
+            $firstPenjualan = Order::where('state', 'Closed')->orderBy('tanggal')->limit(1)->first();
+            if( $firstPenjualan ){
+                $firstDate  = $firstPenjualan->tanggal->format('Y-m-d');
+                $where      = "(orders.tanggal between '$firstDate' AND '$yesterday') AND order_bayars.type_bayar = 'tunai' AND";
+                $totalPenjualan = ConvertRawQueryToArray(Account::TotalPenjualan($where))[0]['total'];
+            }
 
             // Pembelian for sisa saldo
-            $firstDate  = PembelianBayar::orderBy('tanggal')->limit(1)->first()->tanggal->format('Y-m-d');
-            $where      = "(pembelian_bayars.`tanggal` BETWEEN '$firstDate' AND '$yesterday')";
-            $totalPembelian = ConvertRawQueryToArray(Account::TotalPembelian($where))[0]['total'];
+            $totalPembelian = 0;
+            $firstPembelian = PembelianBayar::orderBy('tanggal')->limit(1)->first();
+            if( $firstPembelian ){
+                $firstDate  = $firstPembelian->tanggal->format('Y-m-d');
+                $where      = "(pembelian_bayars.`tanggal` BETWEEN '$firstDate' AND '$yesterday')";
+                $totalPembelian = ConvertRawQueryToArray(Account::TotalPembelian($where))[0]['total'];
+            }
 
             // Account Saldo for sisa saldo
-            $firstDate  = AccountSaldo::orderBy('tanggal')->limit(1)->first()->tanggal->format('Y-m-d');
-            $where      = "(account_saldos.`tanggal` BETWEEN '$firstDate' AND '$yesterday')";
-            $column     = "IF(account_saldos.`type` = 'debet', account_saldos.`nominal`, -ABS(account_saldos.`nominal`))";
-            $totalAccountSaldo = ConvertRawQueryToArray(Account::TotalAccountSaldo($column, $where))[0]['total'];
+            $totalAccountSaldo = 0;
+            $firstAccountSaldo = AccountSaldo::orderBy('tanggal')->limit(1)->first();
+            if( $firstAccountSaldo ){
+                $firstDate  = $firstAccountSaldo->tanggal->format('Y-m-d');
+                $where      = "(account_saldos.`tanggal` BETWEEN '$firstDate' AND '$yesterday')";
+                $column     = "IF(account_saldos.`type` = 'debet', account_saldos.`nominal`, -ABS(account_saldos.`nominal`))";
+                $totalAccountSaldo = ConvertRawQueryToArray(Account::TotalAccountSaldo($column, $where))[0]['total'];
+            }
 
             $tableTemp = [];
 
@@ -387,15 +399,23 @@ class AccountController extends Controller
             $tableTemp = collect($tableTemp)->groupBy('tanggal');
         }else{
             // Penjualan for sisa saldo
-            $firstDate  = Order::where('state', 'Closed')->orderBy('tanggal')->limit(1)->first()->tanggal->format('Y-m-d');
-            $where      = "(orders.tanggal between '$firstDate' AND '$yesterday') AND order_bayars.type_bayar != 'tunai' AND";
-            $totalPenjualan = ConvertRawQueryToArray(Account::TotalPenjualan($where))[0]['total'];
+            $totalPenjualan = 0;
+            $firstPenjualan = Order::where('state', 'Closed')->orderBy('tanggal')->limit(1)->first();
+            if( $firstPenjualan ){
+                $firstDate  = $firstPenjualan->tanggal->format('Y-m-d');
+                $where      = "(orders.tanggal between '$firstDate' AND '$yesterday') AND order_bayars.type_bayar != 'tunai' AND";
+                $totalPenjualan = ConvertRawQueryToArray(Account::TotalPenjualan($where))[0]['total'];
+            }
 
             // Account Saldo for sisa saldo
-            $firstDate  = AccountSaldo::orderBy('tanggal')->limit(1)->first()->tanggal->format('Y-m-d');
-            $where      = "(account_saldos.`tanggal` BETWEEN '$firstDate' AND '$yesterday') and relation_id is not null";
-            $column     = "IF(account_saldos.`type` = 'kredit', account_saldos.`nominal`, -ABS(account_saldos.`nominal`))";
-            $totalAccountSaldo = ConvertRawQueryToArray(Account::TotalAccountSaldo($column, $where))[0]['total'];
+            $totalAccountSaldo = 0;
+            $firstAccountSaldo = AccountSaldo::orderBy('tanggal')->limit(1)->first();
+            if( $firstAccountSaldo ){
+                $firstDate  = $firstAccountSaldo->tanggal->format('Y-m-d');
+                $where      = "(account_saldos.`tanggal` BETWEEN '$firstDate' AND '$yesterday') and relation_id is not null";
+                $column     = "IF(account_saldos.`type` = 'kredit', account_saldos.`nominal`, -ABS(account_saldos.`nominal`))";
+                $totalAccountSaldo = ConvertRawQueryToArray(Account::TotalAccountSaldo($column, $where))[0]['total'];
+            }
 
             $tableTemp = [];
 
@@ -504,16 +524,24 @@ class AccountController extends Controller
         }
 
         // Penjualan for sisa saldo
-        $firstDate  = Order::where('state', 'Closed')->orderBy('tanggal')->limit(1)->first()->tanggal->format('Y-m-d');
-        $where      = "(orders.tanggal between '$firstDate' AND '$yesterday') AND order_bayars.type_bayar != 'tunai'
-                        AND order_bayar_banks.bank_id = '$bank' AND";
-        $totalPenjualan = ConvertRawQueryToArray(Account::TotalPenjualan($where))[0]['total'];
+        $totalPenjualan = 0;
+        $firstPenjualan = Order::where('state', 'Closed')->orderBy('tanggal')->limit(1)->first();
+        if( $firstPenjualan ){
+            $firstDate  = $firstPenjualan->tanggal->format('Y-m-d');
+            $where      = "(orders.tanggal between '$firstDate' AND '$yesterday') AND order_bayars.type_bayar != 'tunai'
+                            AND order_bayar_banks.bank_id = '$bank' AND";
+            $totalPenjualan = ConvertRawQueryToArray(Account::TotalPenjualan($where))[0]['total'];
+        }
 
         // Account Saldo for sisa saldo
-        $firstDate  = AccountSaldo::orderBy('tanggal')->limit(1)->first()->tanggal->format('Y-m-d');
-        $where      = "(account_saldos.`tanggal` BETWEEN '$firstDate' AND '$yesterday') and relation_id = '$bank'";
-        $column     = "IF(account_saldos.`type` = 'kredit', account_saldos.`nominal`, -ABS(account_saldos.`nominal`))";
-        $totalAccountSaldo = ConvertRawQueryToArray(Account::TotalAccountSaldo($column, $where))[0]['total'];
+        $totalAccountSaldo = 0;
+        $firstAccountSaldo = AccountSaldo::orderBy('tanggal')->limit(1)->first();
+        if( $firstAccountSaldo ){
+            $firstDate  = $firstAccountSaldo->tanggal->format('Y-m-d');
+            $where      = "(account_saldos.`tanggal` BETWEEN '$firstDate' AND '$yesterday') and relation_id = '$bank'";
+            $column     = "IF(account_saldos.`type` = 'kredit', account_saldos.`nominal`, -ABS(account_saldos.`nominal`))";
+            $totalAccountSaldo = ConvertRawQueryToArray(Account::TotalAccountSaldo($column, $where))[0]['total'];
+        }
 
         $tableTemp = [];
 
