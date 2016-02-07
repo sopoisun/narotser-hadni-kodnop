@@ -18,7 +18,7 @@ class CreateAccountSaldosTable extends Migration
             $table->string('account_id');
             $table->enum('type', ['debet', 'kredit'])->default('debet');
             $table->integer('nominal');
-            $table->string('relation_id');
+            $table->string('relation_id')->nullable();
             $table->timestamps();
         });
     }
