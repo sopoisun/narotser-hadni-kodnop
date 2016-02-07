@@ -193,6 +193,15 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/account/saldo/jurnal', 'AccountController@jurnal');
     Route::get('/account/saldo/jurnal/bank', 'AccountController@jurnalBank');
 
+    // PDF
+    Route::get('/pdf', function(){
+        FPDF::AddPage();
+        FPDF::SetFont('Arial','B',16);
+        FPDF::Cell(40,10,'Hello World!');
+        FPDF::Output();
+        exit;
+    });
+
     Route::group(['prefix' => 'ajax'], function(){
         // Karyawan
         Route::get('/karyawan', 'KaryawanController@ajaxLoad');
