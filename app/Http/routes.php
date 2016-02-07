@@ -160,12 +160,12 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/report/pertanggal/karyawan', 'ReportController@karyawan');
     Route::get('/report/pertanggal/karyawan/detail', 'ReportController@karyawanDetail');
     Route::get('/report/pertanggal/detail/{id}', 'ReportController@detail');
-    # Periode
-    Route::get('/report/periode', 'ReportController@periode');
+    Route::get('/report/pertanggal/labarugi', 'ReportController@labaRugi');
     # Perbulan
     Route::get('/report/perbulan', 'ReportController@perbulan');
     Route::get('/report/perbulan/solditem', 'ReportController@soldItemPerbulan');
     Route::get('/report/perbulan/karyawan', 'ReportController@karyawanPerbulan');
+    Route::get('/report/perbulan/labarugi', 'ReportController@labaRugiPerbulan');
     # Pertahun
     Route::get('/report/pertahun', 'ReportController@pertahun');
     Route::get('/report/pertahun/solditem', 'ReportController@soldItemPertahun');

@@ -131,9 +131,9 @@
                             <tr>
                                 <td>{{ $no }}</td>
                                 <td>{{ $v['keterangan'] }}</td>
-                                <td>{{ is_numeric($v['debet']) ? number_format($v['debet'], 0, ',', '.') : $v['debet'] }}</td>
-                                <td>{{ is_numeric($v['kredit']) ? number_format($v['kredit'], 0, ',', '.') : $v['kredit'] }}</td>
-                                <td>{{ is_numeric($v['saldo']) ? number_format($v['saldo'], 0, ',', '.') : $v['saldo'] }}</td>
+                                <td style="text-align:right;">{{ is_numeric($v['debet']) ? number_format($v['debet'], 0, ',', '.') : $v['debet'] }}</td>
+                                <td style="text-align:right;">{{ is_numeric($v['kredit']) ? number_format($v['kredit'], 0, ',', '.') : $v['kredit'] }}</td>
+                                <td style="text-align:right;">{{ is_numeric($v['saldo']) ? number_format($v['saldo'], 0, ',', '.') : $v['saldo'] }}</td>
                             </tr>
                             @endforeach
                             @endforeach

@@ -167,6 +167,92 @@ class ReportController extends Controller
             abort(404);
         }
     }
+
+    public function labaRugi(Request $request)
+    {
+        $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
+
+        $penjualans = Order::ReportGroup("orders.`tanggal` = '$tanggal'", "GROUP BY tanggal");
+        $penjualans = ConvertRawQueryToArray($penjualans);
+
+        $accountSaldo = \App\AccountSaldo::join('accounts', 'account_saldos.account_id', '=', 'accounts.id')
+            ->where('account_saldos.tanggal', $tanggal)
+            ->whereNull('account_saldos.relation_id')
+            ->groupBy('account_id')->select([
+                'accounts.nama_akun', DB::raw('SUM(account_saldos.nominal)total'), 'account_saldos.type'
+                ])->get()->groupBy('type');
+
+        $tableTemp = [];
+
+        // Pendapatan
+        if( count($penjualans) ){
+            $penjualans = $penjualans[0];
+
+            array_push($tableTemp, [
+                'keterangan'    => 'Total Penjualan',
+                'nominal'       => $penjualans['total_penjualan'],
+                'sum'           => $penjualans['total_penjualan'],
+                'type'          => 'pendapatan',
+            ]);
+
+            array_push($tableTemp, [
+                'keterangan'    => 'Total Reservasi',
+                'nominal'       => $penjualans['total_reservasi'],
+                'sum'           => $penjualans['total_reservasi'],
+                'type'          => 'pendapatan',
+            ]);
+
+            array_push($tableTemp, [
+                'keterangan'    => 'Total Pajak',
+                'nominal'       => $penjualans['pajak'],
+                'sum'           => $penjualans['pajak'],
+                'type'          => 'pendapatan',
+            ]);
+
+            array_push($tableTemp, [
+                'keterangan'    => 'Total Pajak Pembayaran',
+                'nominal'       => $penjualans['pajak_pembayaran'],
+                'sum'           => $penjualans['pajak_pembayaran'],
+                'type'          => 'pendapatan',
+            ]);
+
+        }
+
+        if( isset($accountSaldo['debet']) ){
+            foreach($accountSaldo['debet'] as $debet){
+                array_push($tableTemp, [
+                    'keterangan'    => $debet['nama_akun'],
+                    'nominal'       => $debet['total'],
+                    'sum'           => $debet['total'],
+                    'type'          => 'pendapatan',
+                ]);
+            }
+        }
+
+        // Biaya
+        if( count($penjualans) ){
+            array_push($tableTemp, [
+                'keterangan'    => 'HPP',
+                'nominal'       => $penjualans['total_hpp'],
+                'sum'           => -abs($penjualans['total_hpp']),
+                'type'          => 'biaya',
+            ]);
+        }
+
+        if( isset($accountSaldo['kredit']) ){
+            foreach($accountSaldo['kredit'] as $kredit){
+                array_push($tableTemp, [
+                    'keterangan'    => $kredit['nama_akun'],
+                    'nominal'       => $kredit['total'],
+                    'sum'           => -abs($kredit['total']),
+                    'type'          => 'biaya',
+                ]);
+            }
+        }
+
+        $data = ['tanggal' => Carbon::createFromFormat('Y-m-d', $tanggal), 'tableTemp' => $tableTemp];
+        return view(config('app.template').'.report.pertanggal-labarugi', $data);
+    }
     /* End Pertanggal */
 
     /* Perbulan */
@@ -254,6 +340,91 @@ class ReportController extends Controller
         ];
 
         return view(config('app.template').'.report.perbulan-karyawan', $data);
+    }
+
+    public function labaRugiPerbulan(Request $request)
+    {
+        $bulan = $request->get('bulan') ? $request->get('bulan') : date('Y-m');
+
+        $penjualans = Order::ReportGroup("SUBSTRING(orders.`tanggal`, 1, 7) = '$bulan'", "GROUP BY SUBSTRING(tanggal, 1, 7)");
+        $penjualans = ConvertRawQueryToArray($penjualans);
+
+        $accountSaldo = \App\AccountSaldo::join('accounts', 'account_saldos.account_id', '=', 'accounts.id')
+            ->where(DB::raw('SUBSTRING(account_saldos.tanggal, 1, 7)'), $bulan)
+            ->whereNull('account_saldos.relation_id')
+            ->groupBy('account_id')->select([
+                'accounts.nama_akun', DB::raw('SUM(account_saldos.nominal)total'), 'account_saldos.type'
+                ])->get()->groupBy('type');
+
+        $tableTemp = [];
+
+        // Pendapatan
+        if( count($penjualans) ){
+            $penjualans = $penjualans[0];
+
+            array_push($tableTemp, [
+                'keterangan'    => 'Total Penjualan',
+                'nominal'       => $penjualans['total_penjualan'],
+                'sum'           => $penjualans['total_penjualan'],
+                'type'          => 'pendapatan',
+            ]);
+
+            array_push($tableTemp, [
+                'keterangan'    => 'Total Reservasi',
+                'nominal'       => $penjualans['total_reservasi'],
+                'sum'           => $penjualans['total_reservasi'],
+                'type'          => 'pendapatan',
+            ]);
+
+            array_push($tableTemp, [
+                'keterangan'    => 'Total Pajak',
+                'nominal'       => $penjualans['pajak'],
+                'sum'           => $penjualans['pajak'],
+                'type'          => 'pendapatan',
+            ]);
+
+            array_push($tableTemp, [
+                'keterangan'    => 'Total Pajak Pembayaran',
+                'nominal'       => $penjualans['pajak_pembayaran'],
+                'sum'           => $penjualans['pajak_pembayaran'],
+                'type'          => 'pendapatan',
+            ]);
+        }
+
+        if( isset($accountSaldo['debet']) ){
+            foreach($accountSaldo['debet'] as $debet){
+                array_push($tableTemp, [
+                    'keterangan'    => $debet['nama_akun'],
+                    'nominal'       => $debet['total'],
+                    'sum'           => $debet['total'],
+                    'type'          => 'pendapatan',
+                ]);
+            }
+        }
+
+        // Biaya
+        if( count($penjualans) ){
+            array_push($tableTemp, [
+                'keterangan'    => 'HPP',
+                'nominal'       => $penjualans['total_hpp'],
+                'sum'           => -abs($penjualans['total_hpp']),
+                'type'          => 'biaya',
+            ]);
+        }
+
+        if( isset($accountSaldo['kredit']) ){
+            foreach($accountSaldo['kredit'] as $kredit){
+                array_push($tableTemp, [
+                    'keterangan'    => $kredit['nama_akun'],
+                    'nominal'       => $kredit['total'],
+                    'sum'           => -abs($kredit['total']),
+                    'type'          => 'biaya',
+                ]);
+            }
+        }
+
+        $data = ['tanggal' => Carbon::createFromFormat('Y-m', $bulan), 'tableTemp' => $tableTemp];
+        return view(config('app.template').'.report.perbulan-labarugi', $data);
     }
     /* End Perbulan */
 

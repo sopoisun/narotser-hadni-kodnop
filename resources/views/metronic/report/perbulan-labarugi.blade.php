@@ -11,7 +11,7 @@
     <div class="col-md-12">
         <!-- BEGIN PAGE TITLE & BREADCRUMB-->
         <h3 class="page-title">
-            Jurnal {{ $types[$type] }}
+            Laporan Laba Rugi
         </h3>
         <ul class="page-breadcrumb breadcrumb">
             <li>
@@ -20,14 +20,10 @@
                 <i class="icon-angle-right"></i>
             </li>
             <li>
-                <a href="{{ url('/account') }}">Akuntansi</a>
+                <a href="javascript:void(0)">Laporan</a>
                 <i class="icon-angle-right"></i>
             </li>
-            <li>
-                <a href="{{ url('/account/saldo') }}">Saldo</a>
-                <i class="icon-angle-right"></i>
-            </li>
-            <li><a href="javascript:void(0);">Jurnal {{ $types[$type] }}</a></li>
+            <li><a href="javascript:void(0)">Laporan Laba/Rugi {{ $tanggal->format('M Y') }}</a></li>
         </ul>
         <!-- END PAGE TITLE & BREADCRUMB-->
     </div>
@@ -39,7 +35,7 @@
         <!-- BEGIN SAMPLE TABLE PORTLET-->
         <div class="portlet box yellow">
             <div class="portlet-title">
-                <div class="caption"><i class="icon-filter"></i>Filter Tanggal</div>
+                <div class="caption"><i class="icon-filter"></i>Filter Bulan</div>
                 <div class="tools">
                     <a href="javascript:;" class="collapse"></a>
                     <a href="#portlet-config" data-toggle="modal" class="config"></a>
@@ -56,22 +52,11 @@
                                 <div class="form-group">
                                     <label for="tgl" class="col-md-3 control-label">Tanggal</label>
                                     <div class="col-md-8">
-                                        <div class="input-group input-large tanggalan input-daterange" data-date="10/11/2012" data-date-format="yyyy-mm-dd">
-                                            <input type="text" class="form-control" name="tanggal" value="{{ $tanggal->format('Y-m-d') }}" />
-                                            <span class="input-group-addon">s/d</span>
-                                            <input type="text" class="form-control" name="to_tanggal" value="{{ $to_tanggal->format('Y-m-d') }}" />
-                                         </div>
+                                        {{ Form::text('bulan', $tanggal->format('Y-m'), ['class' => 'form-control tanggalan', 'id' => 'bulan', 'data-date-format' => 'yyyy-mm']) }}
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="type" class="col-md-3 control-label">Type Jurnal</label>
-                                    <div class="col-md-8">
-                                    {{ Form::select('type', $types, $type, ['class' => 'form-control']) }}
-                                    </div>
-                                </div>
-                            </div>
+                            <div class="col-md-6"></div>
                         </div>
                     </div>
                     <div class="form-actions fluid">
@@ -94,7 +79,7 @@
         <!-- BEGIN SAMPLE TABLE PORTLET-->
         <div class="portlet box blue">
             <div class="portlet-title">
-                <div class="caption"><i class="icon-tasks"></i>Jurnal {{ $types[$type] }} {{ $tanggal->format('d M Y').' s/d '.$to_tanggal->format('d M Y') }}</div>
+                <div class="caption"><i class="icon-tasks"></i>Laporan Laba/Rugi {{ $tanggal->format('M Y') }}</div>
                 <div class="tools">
                     <a href="javascript:;" class="collapse"></a>
                     <a href="#portlet-config" data-toggle="modal" class="config"></a>
@@ -109,15 +94,16 @@
                             <tr>
                                 <th>#</th>
                                 <th>Keterangan</th>
-                                <th>Debet</th>
-                                <th>Kredit</th>
-                                <th>Saldo</th>
+                                <th>Nominal</th>
                             </tr>
                         </thead>
+                        {{--*/
+                            $tableGroup = collect($tableTemp)->groupBy('type');
+                        /*--}}
                         <tbody>
-                            @foreach($table as $key => $val)
-                            <tr>
-                                <td colspan="5" style="font-weight:bold;">{{ date('d M Y', strtotime($key)) }}</td>
+                            @foreach($tableGroup as $key => $val)
+                            <tr style="font-weight:bold;">
+                                <td colspan="3">{{ strtoupper($key) }}</td>
                             </tr>
                             {{--*/ $no = 0; /*--}}
                             @foreach($val as $v)
@@ -125,12 +111,19 @@
                             <tr>
                                 <td>{{ $no }}</td>
                                 <td>{{ $v['keterangan'] }}</td>
-                                <td style="text-align:right;">{{ is_numeric($v['debet']) ? number_format($v['debet'], 0, ',', '.') : $v['debet'] }}</td>
-                                <td style="text-align:right;">{{ is_numeric($v['kredit']) ? number_format($v['kredit'], 0, ',', '.') : $v['kredit'] }}</td>
-                                <td style="text-align:right;">{{ is_numeric($v['saldo']) ? number_format($v['saldo'], 0, ',', '.') : $v['saldo'] }}</td>
+                                <td style="text-align:right;">{{ number_format($v['nominal'], 0, ',', '.') }}</td>
                             </tr>
                             @endforeach
+                            <tr style="font-weight:bold;">
+                                <td></td>
+                                <td>Total {{ ucfirst($key) }}</td>
+                                <td style="text-align:right;">{{ number_format(collect($val)->sum('nominal'), 0, ',', '.') }}</td>
+                            </tr>
                             @endforeach
+                            <tr style="font-weight:bold;">
+                                <td colspan="2">Laba/Rugi</td>
+                                <td style="text-align:right;">{{ number_format(collect($tableTemp)->sum('sum'), 0, ',', '.') }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
