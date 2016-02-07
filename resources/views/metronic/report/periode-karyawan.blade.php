@@ -11,7 +11,7 @@
     <div class="col-md-12">
         <!-- BEGIN PAGE TITLE & BREADCRUMB-->
         <h3 class="page-title">
-            Laporan Laba/Rugi
+            Laporan Penjualan Karyawan
         </h3>
         <ul class="page-breadcrumb breadcrumb">
             <li>
@@ -24,10 +24,10 @@
                 <i class="icon-angle-right"></i>
             </li>
             <li>
-                <a href="{{ url('/report/pertanggal') }}">Pertanggal</a>
+                <a href="{{ url('/report/periode/solditem') }}">Periode</a>
                 <i class="icon-angle-right"></i>
             </li>
-            <li><a href="javascript:void(0)">Laporan Laba/Rugi {{ $tanggal->format('d M Y') }}</a></li>
+            <li><a href="javascript:void(0)">Laporan Karyawan {{ $tanggal->format('d M Y').' s/d '.$to_tanggal->format('d M Y') }}</a></li>
         </ul>
         <!-- END PAGE TITLE & BREADCRUMB-->
     </div>
@@ -48,7 +48,7 @@
                 </div>
             </div>
             <div class="portlet-body form">
-                {!! Form::open(['method' => 'GET', 'role' => 'form', 'class' => 'form-horizontal', 'id' => 'formTypeFilter']) !!}
+                {!! Form::open(['method' => 'GET', 'role' => 'form', 'class' => 'form-horizontal', 'id' => 'formTanggalFilter']) !!}
                     <div class="form-body">
                         <br />
                         <div class="row">
@@ -56,7 +56,11 @@
                                 <div class="form-group">
                                     <label for="tgl" class="col-md-3 control-label">Tanggal</label>
                                     <div class="col-md-8">
-                                        {{ Form::text('tanggal', $tanggal->format('Y-m-d'), ['class' => 'form-control tanggalan', 'id' => 'tanggal', 'data-date-format' => 'yyyy-mm-dd']) }}
+                                        <div class="input-group input-large tanggalan input-daterange" data-date="10/11/2012" data-date-format="yyyy-mm-dd">
+                                            <input type="text" class="form-control" name="tanggal" value="{{ $tanggal->format('Y-m-d') }}" />
+                                            <span class="input-group-addon">s/d</span>
+                                            <input type="text" class="form-control" name="to_tanggal" value="{{ $to_tanggal->format('Y-m-d') }}" />
+                                         </div>
                                     </div>
                                 </div>
                             </div>
@@ -81,9 +85,9 @@
 <div class="row">
     <div class="col-md-12">
         <!-- BEGIN SAMPLE TABLE PORTLET-->
-        <div class="portlet box blue">
+        <div class="portlet box green">
             <div class="portlet-title">
-                <div class="caption"><i class="icon-tasks"></i>Laporan Laba/Rugi {{ $tanggal->format('d M Y') }}</div>
+                <div class="caption"><i class="icon-comments"></i>Daftar Penjualan Karyawan {{ $tanggal->format('d M Y').' s/d '.$to_tanggal->format('d M Y') }}</div>
                 <div class="tools">
                     <a href="javascript:;" class="collapse"></a>
                     <a href="#portlet-config" data-toggle="modal" class="config"></a>
@@ -97,37 +101,46 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Keterangan</th>
-                                <th>Nominal</th>
+                                <th>Nama Karyawan</th>
+                                <th>Total Penjualan</th>
+                                <th>Act</th>
                             </tr>
                         </thead>
-                        {{--*/
-                            $tableGroup = collect($tableTemp)->groupBy('type');
-                        /*--}}
                         <tbody>
-                            @foreach($tableGroup as $key => $val)
-                            <tr style="font-weight:bold;">
-                                <td colspan="3">{{ strtoupper($key) }}</td>
-                            </tr>
-                            {{--*/ $no = 0; /*--}}
-                            @foreach($val as $v)
-                            {{--*/ $no++ /*--}}
+                            @if($karyawans->count())
+                            {{--*/
+                                $no = 0;
+                                $grandTotal = 0;
+                            /*--}}
+                            @foreach($karyawans as $karyawan)
+                            {{--*/
+                                $no++;
+                                $grandTotal += $karyawan->total_penjualan
+                            /*--}}
                             <tr>
                                 <td>{{ $no }}</td>
-                                <td>{{ $v['keterangan'] }}</td>
-                                <td style="text-align:right;">{{ number_format($v['nominal'], 0, ',', '.') }}</td>
+                                <td>{{ $karyawan->nama }}</td>
+                                <td style="text-align:right;">{{ number_format($karyawan->total_penjualan, 0, ',', '.') }}</td>
+                                <td>
+                                    <a href="{{ url('/report/pertanggal/karyawan/detail?tanggal='.$tanggal->format('Y-m-d').'&to_tanggal='.$to_tanggal->format('Y-m-d').'&karyawan_id='.$karyawan->id) }}" data-toggle="modal"
+                                        data-target="#ajax" class="btn btn-sm blue">
+                                        <i class="icon-search"></i>
+                                    </a>
+                                </td>
                             </tr>
                             @endforeach
-                            <tr style="font-weight:bold;">
+
+                            <tr>
                                 <td></td>
-                                <td>Total {{ ucfirst($key) }}</td>
-                                <td style="text-align:right;">{{ number_format(collect($val)->sum('nominal'), 0, ',', '.') }}</td>
+                                <td>Total</td>
+                                <td style="text-align:right;">{{ number_format($grandTotal, 0, ',', '.') }}</td>
+                                <td></td>
                             </tr>
-                            @endforeach
-                            <tr style="font-weight:bold;">
-                                <td colspan="2">Laba/Rugi</td>
-                                <td style="text-align:right;">{{ number_format(collect($tableTemp)->sum('sum'), 0, ',', '.') }}</td>
+                            @else
+                            <tr>
+                                <td colspan="11" style="text-align:center;">No Data Here</td>
                             </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -135,6 +148,9 @@
         </div>
         <!-- END SAMPLE TABLE PORTLET-->
     </div>
+</div>
+<div class="modal fade" id="ajax" tabindex="-1" role="basic" aria-hidden="true">
+    <img src="{{ url('/') }}/assets/metronic/img/ajax-modal-loading.gif" alt="" class="loading">
 </div>
 <!-- END PAGE CONTENT-->
 @stop
@@ -146,5 +162,9 @@
 @section('js_section')
 <script>
     $(".tanggalan").datepicker();
+
+    $("#ajax").on("show.bs.modal", function(e) {
+        $(this).removeData('bs.modal');
+    });
 </script>
 @stop

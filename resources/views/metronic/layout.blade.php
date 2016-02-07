@@ -432,6 +432,17 @@ Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-templa
                                 <li class="{{ set_active('report/pertanggal/labarugi') }}"><a href="{{ url('/report/pertanggal/labarugi') }}">Laporan Laba/Rugi</a></li>
                             </ul>
                         </li>
+                        <li class="{{ set_active('report/periode*') }}">
+                            <a href="javascript:;">
+                            Laporan Perperiode
+                            <span class="arrow"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li class="{{ set_active('report/periode/solditem') }}"><a href="{{ url('/report/periode/solditem') }}">Laporan Sold Item</a></li>
+                                <li class="{{ set_active('report/periode/karyawan') }}"><a href="{{ url('/report/periode/karyawan') }}">Laporan Karyawan</a></li>
+                                <li class="{{ set_active('report/periode/labarugi') }}"><a href="{{ url('/report/periode/labarugi') }}">Laporan Laba/Rugi</a></li>
+                            </ul>
+                        </li>
                         <li class="{{ set_active('report/perbulan*') }}">
                             <a href="javascript:;">
                             Laporan Perbulan

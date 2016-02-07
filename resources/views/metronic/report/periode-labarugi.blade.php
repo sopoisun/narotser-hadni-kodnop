@@ -24,10 +24,10 @@
                 <i class="icon-angle-right"></i>
             </li>
             <li>
-                <a href="{{ url('/report/pertanggal') }}">Pertanggal</a>
+                <a href="{{ url('/report/periode/solditem') }}">Periode</a>
                 <i class="icon-angle-right"></i>
             </li>
-            <li><a href="javascript:void(0)">Laporan Laba/Rugi {{ $tanggal->format('d M Y') }}</a></li>
+            <li><a href="javascript:void(0)">Laporan Laba/Rugi {{ $tanggal->format('d M Y').' s/d '.$to_tanggal->format('d M Y') }}</a></li>
         </ul>
         <!-- END PAGE TITLE & BREADCRUMB-->
     </div>
@@ -48,7 +48,7 @@
                 </div>
             </div>
             <div class="portlet-body form">
-                {!! Form::open(['method' => 'GET', 'role' => 'form', 'class' => 'form-horizontal', 'id' => 'formTypeFilter']) !!}
+                {!! Form::open(['method' => 'GET', 'role' => 'form', 'class' => 'form-horizontal', 'id' => 'formTanggalFilter']) !!}
                     <div class="form-body">
                         <br />
                         <div class="row">
@@ -56,7 +56,11 @@
                                 <div class="form-group">
                                     <label for="tgl" class="col-md-3 control-label">Tanggal</label>
                                     <div class="col-md-8">
-                                        {{ Form::text('tanggal', $tanggal->format('Y-m-d'), ['class' => 'form-control tanggalan', 'id' => 'tanggal', 'data-date-format' => 'yyyy-mm-dd']) }}
+                                        <div class="input-group input-large tanggalan input-daterange" data-date="10/11/2012" data-date-format="yyyy-mm-dd">
+                                            <input type="text" class="form-control" name="tanggal" value="{{ $tanggal->format('Y-m-d') }}" />
+                                            <span class="input-group-addon">s/d</span>
+                                            <input type="text" class="form-control" name="to_tanggal" value="{{ $to_tanggal->format('Y-m-d') }}" />
+                                         </div>
                                     </div>
                                 </div>
                             </div>
@@ -81,9 +85,9 @@
 <div class="row">
     <div class="col-md-12">
         <!-- BEGIN SAMPLE TABLE PORTLET-->
-        <div class="portlet box blue">
+        <div class="portlet box green">
             <div class="portlet-title">
-                <div class="caption"><i class="icon-tasks"></i>Laporan Laba/Rugi {{ $tanggal->format('d M Y') }}</div>
+                <div class="caption"><i class="icon-comments"></i>Laporan Laba/Rugi {{ $tanggal->format('d M Y').' s/d '.$to_tanggal->format('d M Y') }}</div>
                 <div class="tools">
                     <a href="javascript:;" class="collapse"></a>
                     <a href="#portlet-config" data-toggle="modal" class="config"></a>
@@ -136,6 +140,9 @@
         <!-- END SAMPLE TABLE PORTLET-->
     </div>
 </div>
+<div class="modal fade" id="ajax" tabindex="-1" role="basic" aria-hidden="true">
+    <img src="{{ url('/') }}/assets/metronic/img/ajax-modal-loading.gif" alt="" class="loading">
+</div>
 <!-- END PAGE CONTENT-->
 @stop
 
@@ -146,5 +153,9 @@
 @section('js_section')
 <script>
     $(".tanggalan").datepicker();
+
+    $("#ajax").on("show.bs.modal", function(e) {
+        $(this).removeData('bs.modal');
+    });
 </script>
 @stop

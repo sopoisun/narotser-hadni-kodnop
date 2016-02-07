@@ -145,7 +145,12 @@ class ReportController extends Controller
 
                 if( $request->get('tanggal') ){
                     $tanggal = $request->get('tanggal');
-                    $orderProduks = $orderProduks->where('orders.tanggal', $tanggal)->get();
+                    if( $request->get('to_tanggal') ){
+                        $to_tanggal     = $request->get('to_tanggal');
+                        $orderProduks   = $orderProduks->whereBetween('orders.tanggal', [$tanggal, $to_tanggal])->get();
+                    }else{
+                        $orderProduks   = $orderProduks->where('orders.tanggal', $tanggal)->get();
+                    }
                 }elseif( $request->get('bulan') ){
                     $bulan = $request->get('bulan');
                     $orderProduks = $orderProduks->where(DB::raw('SUBSTRING(orders.tanggal, 1, 7)'), $bulan)->get();
@@ -195,7 +200,7 @@ class ReportController extends Controller
         $tanggal    = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
         $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : $tanggal;
 
-        return $produk = Produk::leftJoin(DB::raw("(SELECT order_details.id, order_details.`order_id`, order_details.`produk_id`,
+        $produk = Produk::leftJoin(DB::raw("(SELECT order_details.id, order_details.`order_id`, order_details.`produk_id`,
             IF(order_details.`use_mark_up` = 'Tidak', order_details.`hpp`, SUM(order_detail_bahans.`harga` * ( order_detail_bahans.`qty`)))hpp,
             order_details.`harga_jual`, order_details.`qty` AS qty_ori, IFNULL(order_detail_returns.`qty`, 0)qty_return,
             (order_details.`qty` - IFNULL(order_detail_returns.`qty`, 0))qty,
@@ -224,20 +229,61 @@ class ReportController extends Controller
             ->get();
 
         $data = [
-            'tanggal'   => Carbon::parse($tanggal),
+            'tanggal'   => Carbon::createFromFormat('Y-m-d', $tanggal),
+            'to_tanggal'=> Carbon::createFromFormat('Y-m-d', $to_tanggal),
             'produks'   => $produk
         ];
-        return view(config('app.template').'.report.pertanggal-solditem', $data);
+        return view(config('app.template').'.report.periode-solditem', $data);
     }
 
     public function karyawanPeriode(Request $request)
     {
+        $tanggal    = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
+        $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : $tanggal;
 
+        $karyawans  = \App\Karyawan::join('orders', 'karyawans.id', '=', 'orders.karyawan_id')
+            ->join('order_details', 'orders.id', '=', 'order_details.order_id')
+            ->leftJoin('order_detail_returns', 'order_details.id', '=', 'order_detail_returns.order_detail_id')
+            ->whereBetween('orders.tanggal', [$tanggal, $to_tanggal])
+            ->where('state', 'Closed')
+            ->select(['karyawans.id', 'karyawans.nama',
+                DB::raw('SUM( order_details.`harga_jual` * (order_details.`qty` - ifnull(order_detail_returns.qty, 0)) )total_penjualan')
+            ])
+            ->groupBy('karyawans.id')
+            ->get();
+
+        $data = [
+            'tanggal'   => Carbon::createFromFormat('Y-m-d', $tanggal),
+            'to_tanggal'=> Carbon::createFromFormat('Y-m-d', $to_tanggal),
+            'karyawans' => $karyawans,
+        ];
+
+        return view(config('app.template').'.report.periode-karyawan', $data);
     }
 
     public function labaRugiPeriode(Request $request)
     {
+        $tanggal    = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
+        $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : $tanggal;
 
+        $penjualans = Order::ReportGroup("(orders.`tanggal` BETWEEN '$tanggal' AND '$to_tanggal')", "");
+        $penjualans = ConvertRawQueryToArray($penjualans);
+
+        $accountSaldo = \App\AccountSaldo::join('accounts', 'account_saldos.account_id', '=', 'accounts.id')
+            ->whereBetween('account_saldos.tanggal', [$tanggal, $to_tanggal])
+            ->whereNull('account_saldos.relation_id')
+            ->groupBy('account_id')->select([
+                'accounts.nama_akun', DB::raw('SUM(account_saldos.nominal)total'), 'account_saldos.type'
+                ])->get()->groupBy('type');
+
+        $tableTemp = $this->buildLabaRugiTable(['penjualans' => $penjualans, 'account_saldo' => $accountSaldo]);
+
+        $data = [
+            'tanggal'       => Carbon::createFromFormat('Y-m-d', $tanggal),
+            'to_tanggal'    => Carbon::createFromFormat('Y-m-d', $to_tanggal),
+            'tableTemp'     => $tableTemp
+        ];
+        return view(config('app.template').'.report.periode-labarugi', $data);
     }
     /* End Periode */
 
