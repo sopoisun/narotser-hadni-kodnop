@@ -20,10 +20,14 @@
                 <i class="icon-angle-right"></i>
             </li>
             <li>
-                <a href="javascript:void(0)">Laporan</a>
+                <a href="{{ url('/report') }}">Laporan</a>
                 <i class="icon-angle-right"></i>
             </li>
-            <li><a href="javascript:void(0)">Laporan Tanggal {{ $tanggal->format('d M Y') }}</a></li>
+            <li>
+                <a href="{{ url('/report/pertanggal') }}">Pertanggal</a>
+                <i class="icon-angle-right"></i>
+            </li>
+            <li><a href="javascript:void(0)">Laporan Karyawan {{ $tanggal->format('d M Y') }}</a></li>
         </ul>
         <!-- END PAGE TITLE & BREADCRUMB-->
     </div>

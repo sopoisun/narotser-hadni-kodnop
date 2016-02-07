@@ -20,7 +20,11 @@
                 <i class="icon-angle-right"></i>
             </li>
             <li>
-                <a href="javascript:void(0)">Laporan</a>
+                <a href="{{ url('/report') }}">Laporan</a>
+                <i class="icon-angle-right"></i>
+            </li>
+            <li>
+                <a href="{{ url('/report/perbulan') }}">Perbulan</a>
                 <i class="icon-angle-right"></i>
             </li>
             <li><a href="javascript:void(0)">Laporan Laba/Rugi {{ $tanggal->format('M Y') }}</a></li>
@@ -50,7 +54,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="tgl" class="col-md-3 control-label">Tanggal</label>
+                                    <label for="tgl" class="col-md-3 control-label">Bulan</label>
                                     <div class="col-md-8">
                                         {{ Form::text('bulan', $tanggal->format('Y-m'), ['class' => 'form-control tanggalan', 'id' => 'bulan', 'data-date-format' => 'yyyy-mm']) }}
                                     </div>
@@ -141,6 +145,9 @@
 
 @section('js_section')
 <script>
-    $(".tanggalan").datepicker();
+    $(".tanggalan").datepicker({
+        viewMode: 1,
+        minViewMode: 1
+    });
 </script>
 @stop

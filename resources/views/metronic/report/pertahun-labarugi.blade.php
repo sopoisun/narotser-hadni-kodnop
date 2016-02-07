@@ -11,7 +11,7 @@
     <div class="col-md-12">
         <!-- BEGIN PAGE TITLE & BREADCRUMB-->
         <h3 class="page-title">
-            Laporan Produk Terjual [ Sold Item ]
+            Laporan Laba Rugi
         </h3>
         <ul class="page-breadcrumb breadcrumb">
             <li>
@@ -24,10 +24,10 @@
                 <i class="icon-angle-right"></i>
             </li>
             <li>
-                <a href="{{ url('/report/perbulan') }}">Perbulan</a>
+                <a href="{{ url('/report/pertahun') }}">Pertahun</a>
                 <i class="icon-angle-right"></i>
             </li>
-            <li><a href="javascript:void(0)">Laporan Produk Terjual {{ $tanggal->format('M Y') }}</a></li>
+            <li><a href="javascript:void(0)">Laporan Laba/Rugi {{ $tanggal->format('Y') }}</a></li>
         </ul>
         <!-- END PAGE TITLE & BREADCRUMB-->
     </div>
@@ -48,15 +48,15 @@
                 </div>
             </div>
             <div class="portlet-body form">
-                {!! Form::open(['method' => 'GET', 'role' => 'form', 'class' => 'form-horizontal', 'id' => 'formTanggalFilter']) !!}
+                {!! Form::open(['method' => 'GET', 'role' => 'form', 'class' => 'form-horizontal', 'id' => 'formTypeFilter']) !!}
                     <div class="form-body">
                         <br />
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="bulan" class="col-md-3 control-label">Bulan</label>
+                                    <label for="tgl" class="col-md-3 control-label">Tahun</label>
                                     <div class="col-md-8">
-                                    {{ Form::text('bulan', $tanggal->format('Y-m'), ['class' => 'form-control tanggalan', 'id' => 'bulan', 'data-date-format' => 'yyyy-mm']) }}
+                                        {{ Form::text('tahun', $tanggal->format('Y'), ['class' => 'form-control tanggalan', 'id' => 'tahun', 'data-date-format' => 'yyyy']) }}
                                     </div>
                                 </div>
                             </div>
@@ -81,9 +81,9 @@
 <div class="row">
     <div class="col-md-12">
         <!-- BEGIN SAMPLE TABLE PORTLET-->
-        <div class="portlet box green">
+        <div class="portlet box blue">
             <div class="portlet-title">
-                <div class="caption"><i class="icon-comments"></i>Daftar Produk Terjual {{ $tanggal->format('M Y') }}</div>
+                <div class="caption"><i class="icon-tasks"></i>Laporan Laba/Rugi {{ $tanggal->format('Y') }}</div>
                 <div class="tools">
                     <a href="javascript:;" class="collapse"></a>
                     <a href="#portlet-config" data-toggle="modal" class="config"></a>
@@ -97,48 +97,37 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Nama Produk</th>
-                                <th>HPP (Avg)</th>
-                                <th>Harga (Avg)</th>
-                                <th>Terjual</th>
-                                <th>Ttl HPP</th>
-                                <th>Subtotal</th>
-                                <th>Laba</th>
-                                <th>Pros. Laba</th>
+                                <th>Keterangan</th>
+                                <th>Nominal</th>
                             </tr>
                         </thead>
+                        {{--*/
+                            $tableGroup = collect($tableTemp)->groupBy('type');
+                        /*--}}
                         <tbody>
-                            @if($produks->count())
+                            @foreach($tableGroup as $key => $val)
+                            <tr style="font-weight:bold;">
+                                <td colspan="3">{{ strtoupper($key) }}</td>
+                            </tr>
                             {{--*/ $no = 0; /*--}}
-                            @foreach($produks as $produk)
-                            {{--*/ $no++; /*--}}
+                            @foreach($val as $v)
+                            {{--*/ $no++ /*--}}
                             <tr>
                                 <td>{{ $no }}</td>
-                                <td>{{ $produk->nama }}</td>
-                                <td style="text-align:right;">{{ number_format($produk->hpp, 0, ',', '.') }}</td>
-                                <td style="text-align:right;">{{ number_format($produk->harga_jual, 0, ',', '.') }}</td>
-                                <td>{{ $produk->terjual }}</td>
-                                <td style="text-align:right;">{{ number_format($produk->total_hpp, 0, ',', '.') }}</td>
-                                <td style="text-align:right;">{{ number_format($produk->subtotal, 0, ',', '.') }}</td>
-                                <td style="text-align:right;">{{ number_format($produk->laba, 0, ',', '.') }}</td>
-                                <td style="text-align:right;">{{ $produk->laba_procentage.' %' }}</td>
+                                <td>{{ $v['keterangan'] }}</td>
+                                <td style="text-align:right;">{{ number_format($v['nominal'], 0, ',', '.') }}</td>
                             </tr>
                             @endforeach
-
-                            <tr>
+                            <tr style="font-weight:bold;">
                                 <td></td>
-                                <td colspan="4">Total</td>
-                                <td style="text-align:right;">{{ number_format(collect($produks)->sum('total_hpp'), 0, ',', '.') }}</td>
-                                <td style="text-align:right;">{{ number_format(collect($produks)->sum('subtotal'), 0, ',', '.') }}</td>
-                                <td style="text-align:right;">{{ number_format(collect($produks)->sum('laba'), 0, ',', '.') }}</td>
-                                <td></td>
+                                <td>Total {{ ucfirst($key) }}</td>
+                                <td style="text-align:right;">{{ number_format(collect($val)->sum('nominal'), 0, ',', '.') }}</td>
                             </tr>
-
-                            @else
-                            <tr>
-                                <td colspan="10" style="text-align:center;">No Data Here</td>
+                            @endforeach
+                            <tr style="font-weight:bold;">
+                                <td colspan="2">Laba/Rugi</td>
+                                <td style="text-align:right;">{{ number_format(collect($tableTemp)->sum('sum'), 0, ',', '.') }}</td>
                             </tr>
-                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -146,9 +135,6 @@
         </div>
         <!-- END SAMPLE TABLE PORTLET-->
     </div>
-</div>
-<div class="modal fade" id="ajax" tabindex="-1" role="basic" aria-hidden="true">
-    <img src="{{ url('/') }}/assets/metronic/img/ajax-modal-loading.gif" alt="" class="loading">
 </div>
 <!-- END PAGE CONTENT-->
 @stop
@@ -160,12 +146,8 @@
 @section('js_section')
 <script>
     $(".tanggalan").datepicker({
-        viewMode: 1,
-        minViewMode: 1
-    });
-
-    $("#ajax").on("show.bs.modal", function(e) {
-        $(this).removeData('bs.modal');
+        viewMode: 2,
+        minViewMode: 2
     });
 </script>
 @stop

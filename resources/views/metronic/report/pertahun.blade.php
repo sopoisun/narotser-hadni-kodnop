@@ -11,7 +11,7 @@
     <div class="col-md-12">
         <!-- BEGIN PAGE TITLE & BREADCRUMB-->
         <h3 class="page-title">
-            Laporan Pertahun<small>Laporan {{ $tanggal->format('Y') }}</small>
+            Laporan Penjualan<small>Laporan {{ $tanggal->format('Y') }}</small>
         </h3>
         <ul class="page-breadcrumb breadcrumb">
             <li>
@@ -20,10 +20,14 @@
                 <i class="icon-angle-right"></i>
             </li>
             <li>
-                <a href="javascript:void(0)">Laporan</a>
+                <a href="{{ url('/report') }}">Laporan</a>
                 <i class="icon-angle-right"></i>
             </li>
-            <li><a href="javascript:void(0)">Laporan Pertahun {{ $tanggal->format('Y') }}</a></li>
+            <li>
+                <a href="{{ url('/report/pertahun') }}">Pertahun</a>
+                <i class="icon-angle-right"></i>
+            </li>
+            <li><a href="javascript:void(0)">Laporan Penjualan {{ $tanggal->format('Y') }}</a></li>
         </ul>
         <!-- END PAGE TITLE & BREADCRUMB-->
     </div>

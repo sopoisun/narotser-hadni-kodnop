@@ -429,6 +429,7 @@ Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-templa
                                 <li class="{{ set_active('report/pertanggal') }}"><a href="{{ url('/report/pertanggal') }}">Laporan Penjualan</a></li>
                                 <li class="{{ set_active('report/pertanggal/solditem') }}"><a href="{{ url('/report/pertanggal/solditem') }}">Laporan Sold Item</a></li>
                                 <li class="{{ set_active('report/pertanggal/karyawan') }}"><a href="{{ url('/report/pertanggal/karyawan') }}">Laporan Karyawan</a></li>
+                                <li class="{{ set_active('report/pertanggal/labarugi') }}"><a href="{{ url('/report/pertanggal/labarugi') }}">Laporan Laba/Rugi</a></li>
                             </ul>
                         </li>
                         <li class="{{ set_active('report/perbulan*') }}">
@@ -440,6 +441,7 @@ Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-templa
                                 <li class="{{ set_active('report/perbulan') }}"><a href="{{ url('/report/perbulan') }}">Laporan Penjualan</a></li>
                                 <li class="{{ set_active('report/perbulan/solditem') }}"><a href="{{ url('/report/perbulan/solditem') }}">Laporan Sold Item</a></li>
                                 <li class="{{ set_active('report/perbulan/karyawan') }}"><a href="{{ url('/report/perbulan/karyawan') }}">Laporan Karyawan</a></li>
+                                <li class="{{ set_active('report/perbulan/labarugi') }}"><a href="{{ url('/report/perbulan/labarugi') }}">Laporan Laba/Rugi</a></li>
                             </ul>
                         </li>
                         <li class="{{ set_active('report/pertahun*') }}">
@@ -451,6 +453,7 @@ Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-templa
                                 <li class="{{ set_active('report/pertahun') }}"><a href="{{ url('/report/pertahun') }}">Laporan Penjualan</a></li>
                                 <li class="{{ set_active('report/pertahun/solditem') }}"><a href="{{ url('/report/pertahun/solditem') }}">Laporan Sold Item</a></li>
                                 <li class="{{ set_active('report/pertahun/karyawan') }}"><a href="{{ url('/report/pertahun/karyawan') }}">Laporan Karyawan</a></li>
+                                <li class="{{ set_active('report/pertahun/labarugi') }}"><a href="{{ url('/report/pertahun/labarugi') }}">Laporan Laba/Rugi</a></li>
                             </ul>
                         </li>
                     </ul>

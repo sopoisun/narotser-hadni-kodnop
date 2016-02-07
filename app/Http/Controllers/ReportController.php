@@ -88,14 +88,14 @@ class ReportController extends Controller
             )
             ->groupBy('produks.id')
             ->select(['produks.id', 'produks.nama',
-                DB::raw('(SUM(temp_order_produks.hpp)/COUNT(produks.id))hpp'),
-                DB::raw('ROUND(SUM(temp_order_produks.harga_jual)/COUNT(produks.id))harga_jual'),
-                DB::raw('SUM(temp_order_produks.qty)terjual'),
-                DB::raw('SUM(temp_order_produks.hpp * temp_order_produks.qty)AS total_hpp'),
-                DB::raw('SUM(temp_order_produks.harga_jual * temp_order_produks.qty)AS subtotal'),
-                DB::raw('(SUM(temp_order_produks.harga_jual * temp_order_produks.qty) - SUM(temp_order_produks.hpp * temp_order_produks.qty))AS laba'),
-                DB::raw('ROUND(((SUM(temp_order_produks.harga_jual * temp_order_produks.qty) - SUM(temp_order_produks.hpp * temp_order_produks.qty)) /
-                    SUM(temp_order_produks.hpp * temp_order_produks.qty))*100)laba_procentage'),
+                DB::raw('ifnull((SUM(temp_order_produks.hpp)/COUNT(produks.id)), 0)hpp'),
+                DB::raw('ifnull(ROUND(SUM(temp_order_produks.harga_jual)/COUNT(produks.id)), 0)harga_jual'),
+                DB::raw('ifnull(SUM(temp_order_produks.qty), 0)terjual'),
+                DB::raw('ifnull(SUM(temp_order_produks.hpp * temp_order_produks.qty), 0)AS total_hpp'),
+                DB::raw('ifnull(SUM(temp_order_produks.harga_jual * temp_order_produks.qty), 0)AS subtotal'),
+                DB::raw('ifnull((SUM(temp_order_produks.harga_jual * temp_order_produks.qty) - SUM(temp_order_produks.hpp * temp_order_produks.qty)), 0)AS laba'),
+                DB::raw('ifnull(ROUND(((SUM(temp_order_produks.harga_jual * temp_order_produks.qty) - SUM(temp_order_produks.hpp * temp_order_produks.qty)) /
+                    SUM(temp_order_produks.hpp * temp_order_produks.qty))*100), 0)laba_procentage'),
             ])
             ->get();
 
@@ -182,78 +182,64 @@ class ReportController extends Controller
                 'accounts.nama_akun', DB::raw('SUM(account_saldos.nominal)total'), 'account_saldos.type'
                 ])->get()->groupBy('type');
 
-        $tableTemp = [];
-
-        // Pendapatan
-        if( count($penjualans) ){
-            $penjualans = $penjualans[0];
-
-            array_push($tableTemp, [
-                'keterangan'    => 'Total Penjualan',
-                'nominal'       => $penjualans['total_penjualan'],
-                'sum'           => $penjualans['total_penjualan'],
-                'type'          => 'pendapatan',
-            ]);
-
-            array_push($tableTemp, [
-                'keterangan'    => 'Total Reservasi',
-                'nominal'       => $penjualans['total_reservasi'],
-                'sum'           => $penjualans['total_reservasi'],
-                'type'          => 'pendapatan',
-            ]);
-
-            array_push($tableTemp, [
-                'keterangan'    => 'Total Pajak',
-                'nominal'       => $penjualans['pajak'],
-                'sum'           => $penjualans['pajak'],
-                'type'          => 'pendapatan',
-            ]);
-
-            array_push($tableTemp, [
-                'keterangan'    => 'Total Pajak Pembayaran',
-                'nominal'       => $penjualans['pajak_pembayaran'],
-                'sum'           => $penjualans['pajak_pembayaran'],
-                'type'          => 'pendapatan',
-            ]);
-
-        }
-
-        if( isset($accountSaldo['debet']) ){
-            foreach($accountSaldo['debet'] as $debet){
-                array_push($tableTemp, [
-                    'keterangan'    => $debet['nama_akun'],
-                    'nominal'       => $debet['total'],
-                    'sum'           => $debet['total'],
-                    'type'          => 'pendapatan',
-                ]);
-            }
-        }
-
-        // Biaya
-        if( count($penjualans) ){
-            array_push($tableTemp, [
-                'keterangan'    => 'HPP',
-                'nominal'       => $penjualans['total_hpp'],
-                'sum'           => -abs($penjualans['total_hpp']),
-                'type'          => 'biaya',
-            ]);
-        }
-
-        if( isset($accountSaldo['kredit']) ){
-            foreach($accountSaldo['kredit'] as $kredit){
-                array_push($tableTemp, [
-                    'keterangan'    => $kredit['nama_akun'],
-                    'nominal'       => $kredit['total'],
-                    'sum'           => -abs($kredit['total']),
-                    'type'          => 'biaya',
-                ]);
-            }
-        }
+        $tableTemp = $this->buildLabaRugiTable(['penjualans' => $penjualans, 'account_saldo' => $accountSaldo]);
 
         $data = ['tanggal' => Carbon::createFromFormat('Y-m-d', $tanggal), 'tableTemp' => $tableTemp];
         return view(config('app.template').'.report.pertanggal-labarugi', $data);
     }
     /* End Pertanggal */
+
+    /* Periode */
+    public function soldItemPeriode(Request $request)
+    {
+        $tanggal    = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
+        $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : $tanggal;
+
+        return $produk = Produk::leftJoin(DB::raw("(SELECT order_details.id, order_details.`order_id`, order_details.`produk_id`,
+            IF(order_details.`use_mark_up` = 'Tidak', order_details.`hpp`, SUM(order_detail_bahans.`harga` * ( order_detail_bahans.`qty`)))hpp,
+            order_details.`harga_jual`, order_details.`qty` AS qty_ori, IFNULL(order_detail_returns.`qty`, 0)qty_return,
+            (order_details.`qty` - IFNULL(order_detail_returns.`qty`, 0))qty,
+            order_details.`use_mark_up`, order_details.`mark_up`
+            FROM order_details
+            LEFT JOIN order_detail_bahans ON order_details.id = order_detail_bahans.`order_detail_id`
+            LEFT JOIN order_detail_returns ON order_details.`id` = order_detail_returns.`order_detail_id`
+            INNER JOIN orders ON order_details.`order_id` = orders.`id`
+            WHERE (orders.`tanggal` BETWEEN '$tanggal' AND '$to_tanggal' )
+            AND orders.`state` = 'Closed'
+            GROUP BY order_details.`id`)temp_order_produks"), function( $join ){
+                    $join->on('produks.id', '=', 'temp_order_produks.produk_id');
+                }
+            )
+            ->groupBy('produks.id')
+            ->select(['produks.id', 'produks.nama',
+                DB::raw('ifnull((SUM(temp_order_produks.hpp)/COUNT(produks.id)), 0)hpp'),
+                DB::raw('ifnull(ROUND(SUM(temp_order_produks.harga_jual)/COUNT(produks.id)), 0)harga_jual'),
+                DB::raw('ifnull(SUM(temp_order_produks.qty), 0)terjual'),
+                DB::raw('ifnull(SUM(temp_order_produks.hpp * temp_order_produks.qty), 0)AS total_hpp'),
+                DB::raw('ifnull(SUM(temp_order_produks.harga_jual * temp_order_produks.qty), 0)AS subtotal'),
+                DB::raw('ifnull((SUM(temp_order_produks.harga_jual * temp_order_produks.qty) - SUM(temp_order_produks.hpp * temp_order_produks.qty)), 0)AS laba'),
+                DB::raw('ifnull(ROUND(((SUM(temp_order_produks.harga_jual * temp_order_produks.qty) - SUM(temp_order_produks.hpp * temp_order_produks.qty)) /
+                    SUM(temp_order_produks.hpp * temp_order_produks.qty))*100), 0)laba_procentage'),
+            ])
+            ->get();
+
+        $data = [
+            'tanggal'   => Carbon::parse($tanggal),
+            'produks'   => $produk
+        ];
+        return view(config('app.template').'.report.pertanggal-solditem', $data);
+    }
+
+    public function karyawanPeriode(Request $request)
+    {
+
+    }
+
+    public function labaRugiPeriode(Request $request)
+    {
+
+    }
+    /* End Periode */
 
     /* Perbulan */
     public function perbulan(Request $request)
@@ -301,14 +287,14 @@ class ReportController extends Controller
             )
             ->groupBy('produks.id')
             ->select(['produks.id', 'produks.nama',
-                DB::raw('(SUM(temp_order_produks.hpp)/COUNT(produks.id))hpp'),
-                DB::raw('ROUND(SUM(temp_order_produks.harga_jual)/COUNT(produks.id))harga_jual'),
-                DB::raw('SUM(temp_order_produks.qty)terjual'),
-                DB::raw('SUM(temp_order_produks.hpp * temp_order_produks.qty)AS total_hpp'),
-                DB::raw('SUM(temp_order_produks.harga_jual * temp_order_produks.qty)AS subtotal'),
-                DB::raw('(SUM(temp_order_produks.harga_jual * temp_order_produks.qty) - SUM(temp_order_produks.hpp * temp_order_produks.qty))AS laba'),
-                DB::raw('ROUND(((SUM(temp_order_produks.harga_jual * temp_order_produks.qty) - SUM(temp_order_produks.hpp * temp_order_produks.qty)) /
-                    SUM(temp_order_produks.hpp * temp_order_produks.qty))*100)laba_procentage'),
+                DB::raw('ifnull((SUM(temp_order_produks.hpp)/COUNT(produks.id)), 0)hpp'),
+                DB::raw('ifnull(ROUND(SUM(temp_order_produks.harga_jual)/COUNT(produks.id)), 0)harga_jual'),
+                DB::raw('ifnull(SUM(temp_order_produks.qty), 0)terjual'),
+                DB::raw('ifnull(SUM(temp_order_produks.hpp * temp_order_produks.qty), 0)AS total_hpp'),
+                DB::raw('ifnull(SUM(temp_order_produks.harga_jual * temp_order_produks.qty), 0)AS subtotal'),
+                DB::raw('ifnull((SUM(temp_order_produks.harga_jual * temp_order_produks.qty) - SUM(temp_order_produks.hpp * temp_order_produks.qty)), 0)AS laba'),
+                DB::raw('ifnull(ROUND(((SUM(temp_order_produks.harga_jual * temp_order_produks.qty) - SUM(temp_order_produks.hpp * temp_order_produks.qty)) /
+                    SUM(temp_order_produks.hpp * temp_order_produks.qty))*100), 0)laba_procentage'),
             ])
             ->get();
 
@@ -356,72 +342,7 @@ class ReportController extends Controller
                 'accounts.nama_akun', DB::raw('SUM(account_saldos.nominal)total'), 'account_saldos.type'
                 ])->get()->groupBy('type');
 
-        $tableTemp = [];
-
-        // Pendapatan
-        if( count($penjualans) ){
-            $penjualans = $penjualans[0];
-
-            array_push($tableTemp, [
-                'keterangan'    => 'Total Penjualan',
-                'nominal'       => $penjualans['total_penjualan'],
-                'sum'           => $penjualans['total_penjualan'],
-                'type'          => 'pendapatan',
-            ]);
-
-            array_push($tableTemp, [
-                'keterangan'    => 'Total Reservasi',
-                'nominal'       => $penjualans['total_reservasi'],
-                'sum'           => $penjualans['total_reservasi'],
-                'type'          => 'pendapatan',
-            ]);
-
-            array_push($tableTemp, [
-                'keterangan'    => 'Total Pajak',
-                'nominal'       => $penjualans['pajak'],
-                'sum'           => $penjualans['pajak'],
-                'type'          => 'pendapatan',
-            ]);
-
-            array_push($tableTemp, [
-                'keterangan'    => 'Total Pajak Pembayaran',
-                'nominal'       => $penjualans['pajak_pembayaran'],
-                'sum'           => $penjualans['pajak_pembayaran'],
-                'type'          => 'pendapatan',
-            ]);
-        }
-
-        if( isset($accountSaldo['debet']) ){
-            foreach($accountSaldo['debet'] as $debet){
-                array_push($tableTemp, [
-                    'keterangan'    => $debet['nama_akun'],
-                    'nominal'       => $debet['total'],
-                    'sum'           => $debet['total'],
-                    'type'          => 'pendapatan',
-                ]);
-            }
-        }
-
-        // Biaya
-        if( count($penjualans) ){
-            array_push($tableTemp, [
-                'keterangan'    => 'HPP',
-                'nominal'       => $penjualans['total_hpp'],
-                'sum'           => -abs($penjualans['total_hpp']),
-                'type'          => 'biaya',
-            ]);
-        }
-
-        if( isset($accountSaldo['kredit']) ){
-            foreach($accountSaldo['kredit'] as $kredit){
-                array_push($tableTemp, [
-                    'keterangan'    => $kredit['nama_akun'],
-                    'nominal'       => $kredit['total'],
-                    'sum'           => -abs($kredit['total']),
-                    'type'          => 'biaya',
-                ]);
-            }
-        }
+        $tableTemp = $this->buildLabaRugiTable(['penjualans' => $penjualans, 'account_saldo' => $accountSaldo]);
 
         $data = ['tanggal' => Carbon::createFromFormat('Y-m', $bulan), 'tableTemp' => $tableTemp];
         return view(config('app.template').'.report.perbulan-labarugi', $data);
@@ -474,14 +395,14 @@ class ReportController extends Controller
             )
             ->groupBy('produks.id')
             ->select(['produks.id', 'produks.nama',
-                DB::raw('(SUM(temp_order_produks.hpp)/COUNT(produks.id))hpp'),
-                DB::raw('ROUND(SUM(temp_order_produks.harga_jual)/COUNT(produks.id))harga_jual'),
-                DB::raw('SUM(temp_order_produks.qty)terjual'),
-                DB::raw('SUM(temp_order_produks.hpp * temp_order_produks.qty)AS total_hpp'),
-                DB::raw('SUM(temp_order_produks.harga_jual * temp_order_produks.qty)AS subtotal'),
-                DB::raw('(SUM(temp_order_produks.harga_jual * temp_order_produks.qty) - SUM(temp_order_produks.hpp * temp_order_produks.qty))AS laba'),
-                DB::raw('ROUND(((SUM(temp_order_produks.harga_jual * temp_order_produks.qty) - SUM(temp_order_produks.hpp * temp_order_produks.qty)) /
-                    SUM(temp_order_produks.hpp * temp_order_produks.qty))*100)laba_procentage'),
+                DB::raw('ifnull((SUM(temp_order_produks.hpp)/COUNT(produks.id)), 0)hpp'),
+                DB::raw('ifnull(ROUND(SUM(temp_order_produks.harga_jual)/COUNT(produks.id)), 0)harga_jual'),
+                DB::raw('ifnull(SUM(temp_order_produks.qty), 0)terjual'),
+                DB::raw('ifnull(SUM(temp_order_produks.hpp * temp_order_produks.qty), 0)AS total_hpp'),
+                DB::raw('ifnull(SUM(temp_order_produks.harga_jual * temp_order_produks.qty), 0)AS subtotal'),
+                DB::raw('ifnull((SUM(temp_order_produks.harga_jual * temp_order_produks.qty) - SUM(temp_order_produks.hpp * temp_order_produks.qty)), 0)AS laba'),
+                DB::raw('ifnull(ROUND(((SUM(temp_order_produks.harga_jual * temp_order_produks.qty) - SUM(temp_order_produks.hpp * temp_order_produks.qty)) /
+                    SUM(temp_order_produks.hpp * temp_order_produks.qty))*100), 0)laba_procentage'),
             ])
             ->get();
 
@@ -514,5 +435,108 @@ class ReportController extends Controller
 
         return view(config('app.template').'.report.pertahun-karyawan', $data);
     }
+
+    public function labaRugiPertahun(Request $request)
+    {
+        $tahun = $request->get('tahun') ? $request->get('tahun') : date('Y');
+
+        $penjualans = Order::ReportGroup("SUBSTRING(orders.`tanggal`, 1, 4) = '$tahun'", "GROUP BY SUBSTRING(tanggal, 1, 4)");
+        $penjualans = ConvertRawQueryToArray($penjualans);
+
+        $accountSaldo = \App\AccountSaldo::join('accounts', 'account_saldos.account_id', '=', 'accounts.id')
+            ->where(DB::raw('SUBSTRING(account_saldos.tanggal, 1, 4)'), $tahun)
+            ->whereNull('account_saldos.relation_id')
+            ->groupBy('account_id')->select([
+                'accounts.nama_akun', DB::raw('SUM(account_saldos.nominal)total'), 'account_saldos.type'
+                ])->get()->groupBy('type');
+
+        $tableTemp = $this->buildLabaRugiTable(['penjualans' => $penjualans, 'account_saldo' => $accountSaldo]);
+
+        $data = ['tanggal' => Carbon::createFromFormat('Y', $tahun), 'tableTemp' => $tableTemp];
+        return view(config('app.template').'.report.pertahun-labarugi', $data);
+    }
     /* End Pertahun */
+
+    private function buildLabaRugiTable($data)
+    {
+        $penjualans     = $data['penjualans'];
+        $accountSaldo   = $data['account_saldo'];
+
+        $tableTemp = [];
+
+        // Pendapatan
+        if( count($penjualans) ){
+            $penjualans = $penjualans[0];
+
+            array_push($tableTemp, [
+                'keterangan'    => 'Total Penjualan',
+                'nominal'       => $penjualans['total_penjualan'],
+                'sum'           => $penjualans['total_penjualan'],
+                'type'          => 'pendapatan',
+            ]);
+
+            array_push($tableTemp, [
+                'keterangan'    => 'Total Reservasi',
+                'nominal'       => $penjualans['total_reservasi'],
+                'sum'           => $penjualans['total_reservasi'],
+                'type'          => 'pendapatan',
+            ]);
+
+            array_push($tableTemp, [
+                'keterangan'    => 'Total Pajak',
+                'nominal'       => $penjualans['pajak'],
+                'sum'           => $penjualans['pajak'],
+                'type'          => 'pendapatan',
+            ]);
+
+            array_push($tableTemp, [
+                'keterangan'    => 'Total Pajak Pembayaran',
+                'nominal'       => $penjualans['pajak_pembayaran'],
+                'sum'           => $penjualans['pajak_pembayaran'],
+                'type'          => 'pendapatan',
+            ]);
+
+        }
+
+        if( isset($accountSaldo['debet']) ){
+            foreach($accountSaldo['debet'] as $debet){
+                array_push($tableTemp, [
+                    'keterangan'    => $debet['nama_akun'],
+                    'nominal'       => $debet['total'],
+                    'sum'           => $debet['total'],
+                    'type'          => 'pendapatan',
+                ]);
+            }
+        }
+
+        // Biaya
+        if( count($penjualans) ){
+            array_push($tableTemp, [
+                'keterangan'    => 'HPP',
+                'nominal'       => $penjualans['total_hpp'],
+                'sum'           => -abs($penjualans['total_hpp']),
+                'type'          => 'biaya',
+            ]);
+
+            array_push($tableTemp, [
+                'keterangan'    => 'Diskon',
+                'nominal'       => $penjualans['diskon'],
+                'sum'           => -abs($penjualans['diskon']),
+                'type'          => 'biaya',
+            ]);
+        }
+
+        if( isset($accountSaldo['kredit']) ){
+            foreach($accountSaldo['kredit'] as $kredit){
+                array_push($tableTemp, [
+                    'keterangan'    => $kredit['nama_akun'],
+                    'nominal'       => $kredit['total'],
+                    'sum'           => -abs($kredit['total']),
+                    'type'          => 'biaya',
+                ]);
+            }
+        }
+
+        return $tableTemp;
+    }
 }

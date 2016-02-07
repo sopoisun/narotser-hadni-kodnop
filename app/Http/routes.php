@@ -161,6 +161,10 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/report/pertanggal/karyawan/detail', 'ReportController@karyawanDetail');
     Route::get('/report/pertanggal/detail/{id}', 'ReportController@detail');
     Route::get('/report/pertanggal/labarugi', 'ReportController@labaRugi');
+    # Periode
+    Route::get('/report/periode/solditem', 'ReportController@soldItemPeriode');
+    Route::get('/report/periode/karyawan', 'ReportController@karyawanPeriode');
+    Route::get('/report/periode/labarugi', 'ReportController@labaRugiPeriode');
     # Perbulan
     Route::get('/report/perbulan', 'ReportController@perbulan');
     Route::get('/report/perbulan/solditem', 'ReportController@soldItemPerbulan');
@@ -170,6 +174,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/report/pertahun', 'ReportController@pertahun');
     Route::get('/report/pertahun/solditem', 'ReportController@soldItemPertahun');
     Route::get('/report/pertahun/karyawan', 'ReportController@karyawanPertahun');
+    Route::get('/report/pertahun/labarugi', 'ReportController@labaRugiPertahun');
 
     // Account
     Route::get('/account', 'AccountController@index');
