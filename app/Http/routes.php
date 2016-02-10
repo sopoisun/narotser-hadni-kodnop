@@ -212,7 +212,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('/user/add', 'UserController@store');
         Route::get('/user/edit/{id}', 'UserController@edit');
         Route::post('/user/edit/{id}', 'UserController@update');
-        Route::get('/user/destroy/{id}', 'UserController@delete');
+        Route::get('/user/delete/{id}', 'UserController@destroy');
 
         // Permission
         Route::get('/user/permission', 'PermissionController@index');
@@ -228,7 +228,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('/user/role/add', 'RoleController@store');
         Route::get('/user/role/edit/{id}', 'RoleController@edit');
         Route::post('/user/role/edit/{id}', 'RoleController@update');
-        Route::get('/user/role/destroy/{id}', 'RoleController@delete');
+        Route::get('/user/role/delete/{id}', 'RoleController@destroy');
 
         Route::group(['prefix' => 'ajax'], function(){
             // Karyawan
