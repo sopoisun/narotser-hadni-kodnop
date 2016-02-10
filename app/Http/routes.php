@@ -39,6 +39,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::group(['middleware' => ['auth']], function (){
         // Dashboard
         Route::get('/dashboard', 'DashboardController@index');
+
         // Karyawan
         Route::get('/karyawan', 'KaryawanController@index');
         Route::get('/karyawan/add', 'KaryawanController@create');
@@ -204,6 +205,30 @@ Route::group(['middleware' => ['web']], function () {
         # Jurnal Harian
         Route::get('/account/saldo/jurnal', 'AccountController@jurnal');
         Route::get('/account/saldo/jurnal/bank', 'AccountController@jurnalBank');
+
+        // User
+        Route::get('/user', 'UserController@index');
+        Route::get('/user/add', 'UserController@create');
+        Route::post('/user/add', 'UserController@store');
+        Route::get('/user/edit/{id}', 'UserController@edit');
+        Route::post('/user/edit/{id}', 'UserController@update');
+        Route::get('/user/destroy/{id}', 'UserController@delete');
+
+        // Permission
+        Route::get('/user/permission', 'PermissionController@index');
+        Route::get('/user/permission/add', 'PermissionController@create');
+        Route::post('/user/permission/add', 'PermissionController@store');
+        Route::get('/user/permission/edit/{id}', 'PermissionController@edit');
+        Route::post('/user/permission/edit/{id}', 'PermissionController@update');
+        Route::get('/user/permission/delete/{id}', 'PermissionController@destroy');
+
+        // Role
+        Route::get('/user/role', 'RoleController@index');
+        Route::get('/user/role/add', 'RoleController@create');
+        Route::post('/user/role/add', 'RoleController@store');
+        Route::get('/user/role/edit/{id}', 'RoleController@edit');
+        Route::post('/user/role/edit/{id}', 'RoleController@update');
+        Route::get('/user/role/destroy/{id}', 'RoleController@delete');
 
         Route::group(['prefix' => 'ajax'], function(){
             // Karyawan
