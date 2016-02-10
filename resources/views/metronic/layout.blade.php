@@ -1,18 +1,10 @@
 <!DOCTYPE html>
-<!--
-Template Name: Metronic - Responsive Admin Dashboard Template build with Twitter Bootstrap 3.0
-Version: 1.5.2
-Author: KeenThemes
-Website: http://www.keenthemes.com/
-Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes
--->
 <!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
 <!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
 <!--[if !IE]><!-->
 <html lang="en" class="no-js">
 <!--<![endif]-->
 <!-- BEGIN HEAD -->
-
 <head>
     <meta charset="utf-8" />
     <title>Pondok Indah | Software Restoran</title>
@@ -353,7 +345,7 @@ Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-templa
                         </li>
                         <li><a href="extra_lock.html"><i class="icon-lock"></i> Lock Screen</a>
                         </li>
-                        <li><a href="login.html"><i class="icon-key"></i> Log Out</a>
+                        <li><a href="{{ url('/logout') }}"><i class="icon-key"></i> Log Out</a>
                         </li>
                     </ul>
                 </li>

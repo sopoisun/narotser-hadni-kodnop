@@ -7,6 +7,7 @@ use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -28,7 +29,8 @@ class AuthController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo   = '/';
+    protected $username     = "username";
 
     /**
      * Create a new authentication controller instance.
@@ -40,6 +42,15 @@ class AuthController extends Controller
         $this->middleware('guest', ['except' => 'logout']);
     }
 
+    public function getIndex()
+    {
+        return redirect('/auth/login');
+    }
+
+    public function showLoginForm()
+    {
+        return view(config('app.template').'.auth.login');
+    }
     /**
      * Get a validator for an incoming registration request.
      *

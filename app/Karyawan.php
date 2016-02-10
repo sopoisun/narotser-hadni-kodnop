@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Karyawan extends Model
 {
-    protected $fillable = ['nama', 'no_hp', 'alamat', 'jabatan'];
+    protected $fillable = ['nama', 'no_hp', 'alamat', 'jabatan', 'user_id'];
     protected $hidden   = ['created_at', 'updated_at'];
 
     public function pembelian()
@@ -32,5 +32,10 @@ class Karyawan extends Model
     public function orderBayar()
     {
         return $this->hasMany('App\OrderBayar', 'karyawan_id', 'id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }
