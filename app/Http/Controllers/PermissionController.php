@@ -18,7 +18,11 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        $data = ['permissions' => Permission::all()];
+        $limit  = 20;
+        $data   = [
+            'limit'         => $limit,
+            'permissions'   => Permission::paginate($limit)->setPath('permission'),
+        ];
         return view(config('app.template').'.permission.table', $data);
     }
 

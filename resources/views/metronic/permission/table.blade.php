@@ -49,7 +49,7 @@
             </div>
             <div class="portlet-body">
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover">
+                    <table class="table table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -59,7 +59,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {{--*/ $no = 0; /*--}}
+                            {{--*/ $no = $limit * ( $permissions->currentPage() - 1 ); /*--}}
                             @foreach($permissions as $permission)
                             {{--*/ $no++; /*--}}
                             <tr>
@@ -75,6 +75,10 @@
                         </tbody>
                     </table>
                 </div>
+                <div style="float:right;">
+                    @include('metronic.paginator',['paginator' => $permissions])
+                </div>
+                <div style="clear:both;"></div>
             </div>
         </div>
         <!-- END SAMPLE TABLE PORTLET-->

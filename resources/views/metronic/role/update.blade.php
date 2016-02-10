@@ -50,30 +50,45 @@
                     <div class="form-group @if($errors->has('name')) has-error @endif">
                         <label for="name" class="control-label col-md-2">Nama Role</label>
                         <div class="col-md-5">
-                            {{ Form::text('name', null, ['class' => 'form-control', 'id' => 'name']) }}
+                            {{ Form::text('name', null, ['class' => 'form-control', 'id' => 'name', 'readonly' => 'readonly']) }}
                             @if($errors->has('name'))<span class="help-block">{{ $errors->first('name') }}</span>@endif
                         </div>
                     </div>
-
+                    <div class="form-group @if($errors->has('display')) has-error @endif">
+                        <label for="display" class="control-label col-md-2">Alias</label>
+                        <div class="col-md-5">
+                            {{ Form::text('display', null, ['class' => 'form-control', 'id' => 'display']) }}
+                            @if($errors->has('display'))<span class="help-block">{{ $errors->first('display') }}</span>@endif
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label for="permissions" class="control-label col-md-2">Permission</label>
-                        <div class="col-md-10">
                             {{--*/
-                                $pageCount = ceil($permissions->count() / 4);
-                                $rolePermission = $role->permissions;
+                                $Cpermissions = $permissions->groupBy('key');
                             /*--}}
-                            @for( $i = 0; $i<$pageCount; $i++ )
-                            {{--*/ $chunks = $permissions->forPage(($i+1), 4) /*--}}
-                                @foreach($chunks as $chunk)
-                                <div class="col-md-3" style="padding-left:0">
-                                    <div class="checkbox-list">
-                                        <label class="checkbox-inline">
-                                            {{ Form::checkbox('permissions[]', $chunk['id'], $rolePermission->contains('name', $chunk['name']), ['id' => 'permissions']) }} {{ $chunk['display'] }}
-                                        </label>
+                        <div class="col-md-10">
+                            @foreach($Cpermissions as $key => $Cpermission)
+                            <div class="row-fluid">
+                                <h4>{{ ucfirst(str_replace('_', ' ', $key)) }}</h4>
+                                {{--*/
+                                    $pageCount = ceil($Cpermission->count() / 4);
+                                /*--}}
+                                @for( $i = 0; $i<$pageCount; $i++ )
+                                {{--*/ $chunks = $Cpermission->forPage(($i+1), 4) /*--}}
+                                    @foreach($chunks as $chunk)
+                                    <div class="col-md-3" style="padding-left:0">
+                                        <div class="checkbox-list">
+                                            <label class="checkbox-inline">
+                                                {{ Form::checkbox('permissions[]', $chunk['id'], null, ['id' => 'permissions']) }} {{ $chunk['display'] }}
+                                            </label>
+                                        </div>
                                     </div>
-                                </div>
-                                @endforeach
-                            @endfor
+                                    @endforeach
+                                @endfor
+                                <div style="clear:both;"></div>
+                            </div>
+                            <br />
+                            @endforeach
                         </div>
                     </div>
                 </div>

@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Role;
 use App\Permission;
 use Validator;
+use DB;
 
 class RoleController extends Controller
 {
@@ -30,7 +31,8 @@ class RoleController extends Controller
      */
     public function create()
     {
-        $data = ['permissions' => Permission::all()];
+        $permissions = Permission::select(['permissions.*', DB::raw('SUBSTRING(`name`, 1, LOCATE(".", `name`)-1)AS `key`')])->get();
+        $data = ['permissions' => $permissions];
         return view(config('app.template').'.role.create', $data);
     }
 
@@ -44,8 +46,10 @@ class RoleController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name'      => 'required',
+            'display'   => 'required',
         ], [
             'name.required'     => 'Nama Role tidak boleh kosong.',
+            'display.required'  => 'Alias tidak boleh kosong.',
         ]);
 
         if( $validator->fails() ){
@@ -57,7 +61,8 @@ class RoleController extends Controller
         $role = Role::create($request->all());
 
         if( $role ){
-            $role->addPermission($request->get('permissions'));
+            $permissions = $request->get('permissions') != "" ? $request->get('permissions') : [];
+            $role->addPermission($permissions);
 
             return redirect('/user/role')->with('succcess', 'Sukses simpan role.');
         }
@@ -92,7 +97,7 @@ class RoleController extends Controller
 
         $data = [
             'role'          => $role,
-            'permissions'   => Permission::all(),
+            'permissions'   => Permission::select(['permissions.*', DB::raw('SUBSTRING(`name`, 1, LOCATE(".", `name`)-1)AS `key`')])->get(),
         ];
 
         return view(config('app.template').'.role.update', $data);
@@ -109,8 +114,10 @@ class RoleController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name'      => 'required',
+            'display'   => 'required',
         ], [
             'name.required'     => 'Nama Role tidak boleh kosong.',
+            'display.required'  => 'Alias tidak boleh kosong.'
         ]);
 
         if( $validator->fails() ){
@@ -121,16 +128,20 @@ class RoleController extends Controller
 
         $role = Role::with('permissions')->find($id);
 
-        $inPermission   = $request->get('permissions');
+        $inPermission   = $request->get('permissions') != "" ? $request->get('permissions') : [];
         $rolePermission = array_column($role->permissions->toArray(), 'id');
 
         if( $role->update($request->all()) ){
             // for new permissions
             $newPermission = array_diff($inPermission, $rolePermission);
-            $role->addPermission($newPermission);
+            if( count($newPermission) ){
+                $role->addPermission($newPermission);
+            }
             // for delete permissions
             $deletePermission = array_diff($rolePermission, $inPermission);
-            $role->removePermission($deletePermission);
+            if( count($deletePermission) ){
+                $role->removePermission($deletePermission);
+            }
 
             return redirect('/user/role')->with('succcess', 'Sukses ubah role.');
         }

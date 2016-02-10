@@ -123,15 +123,15 @@
                                 <td>
                                     @if( $place->state == 'On Going' )
                                         <a href="{{ url('/order/'.$place->order_id.'/change') }}" class="btn btn-sm yellow"><i class="icon-cog"></i> Change</a>
-                                        <a href="{{ url('/ajax/order/'.$place->order_id.'/merge?tanggal='.$tgl) }}" data-toggle="modal"
+                                        <!--<a href="{{ url('/ajax/order/'.$place->order_id.'/merge?tanggal='.$tgl) }}" data-toggle="modal"
                                             data-target="#ajax" class="btn btn-sm blue" data-id="{{ $place->id }}">
                                             <i class="icon-sitemap"></i> Gabung
-                                        </a>
+                                        </a>-->
                                         <a href="{{ url('/order/'.$place->order_id.'/close') }}" class="btn btn-sm green"><i class="icon-ok"></i> Close</a>
-                                        <a href="{{ url('/ajax/order/'.$place->order_id.'/cancel') }}" data-toggle="modal"
+                                        <!--<a href="{{ url('/ajax/order/'.$place->order_id.'/cancel') }}" data-toggle="modal"
                                             data-target="#ajax" class="btn btn-sm red" data-id="{{ $place->id }}">
                                             <i class="icon-remove"></i> Cancel
-                                        </a>
+                                        </a>-->
                                     @else
                                         <a href="{{ url('/order/'.$place->id.'/open') }}" class="btn btn-sm blue"><i class="icon-pencil"></i> Open</a>
                                     @endif

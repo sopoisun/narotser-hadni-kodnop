@@ -666,6 +666,49 @@
                         </li>
                     </ul>
                 </li>
+                <li class="{{ set_active('user*') }}">
+                    <a class="active" href="javascript:;">
+                        <i class="icon-user"></i>
+                        <span class="title">User Aplikasi</span>
+                        <span class="arrow "></span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li class="{{ set_active('user/permission*') }}">
+                            <a href="javascript:;">
+                                Permission
+                                <span class="arrow "></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li class="{{ set_active('user/permission/add') }}">
+                                    <a href="{{ url('/user/permission/add') }}">Tambah Permission</a>
+                                </li>
+                                <li class="{{ set_active('user/permission') }}">
+                                    <a href="{{ url('/user/permission') }}">Daftar Permission</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="{{ set_active('user/role*') }}">
+                            <a href="javascript:;">
+                                Role
+                                <span class="arrow "></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li class="{{ set_active('user/role/add') }}">
+                                    <a href="{{ url('/user/role/add') }}">Tambah Role</a>
+                                </li>
+                                <li class="{{ set_active('user/role') }}">
+                                    <a href="{{ url('/user/role') }}">Daftar Role</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="{{ set_active('user/add') }}">
+                            <a href="{{ url('/user/add') }}">Tambah User</a>
+                        </li>
+                        <li class="{{ set_active('user') }}">
+                            <a href="{{ url('/user') }}">Daftar User</a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="{{ set_active('setting*') }}">
                     <a href="{{ url('/setting') }}">
                         <i class="icon-cogs"></i>

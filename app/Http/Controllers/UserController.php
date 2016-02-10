@@ -6,6 +6,11 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\User;
+use App\Role;
+use App\Karyawan;
+use Validator;
+use Hash;
 
 class UserController extends Controller
 {
@@ -16,7 +21,11 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $users  = User::join('karyawans', 'users.id', '=', 'karyawans.user_id')
+                        ->with(['roles'])
+                        ->select(['users.*', 'karyawans.nama'])->get();
+        $data   = ['users' => $users];
+        return view(config('app.template').'.user.table', $data);
     }
 
     /**
@@ -26,7 +35,9 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        $roles  = Role::where('name', '!=', 'superuser')->get();
+        $data   = ['roles' => $roles];
+        return view(config('app.template').'.user.create', $data);
     }
 
     /**
@@ -37,7 +48,41 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'karyawan_id'   => 'required',
+            'username'      => 'required|unique:users,username',
+            'password'      => 'required|confirmed',
+            'roles'         => 'required',
+        ], [
+            'karyawan_id.required'  => "Karyawan tidak boleh kosong.",
+            'username.required'     => "Username tidak boleh kosong.",
+            'username.unique'       => "Username sudah dipakai.",
+            'password.required'     => "Password tidak boleh kosong.",
+            'password.confirmed'    => "Password konfirmasi tidak sama.",
+            'roles.required'        => "Role tidak boleh kosong.",
+        ]);
+
+        if( $validator->fails() ){
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $user = User::create([
+            'username' => $request->get('username'),
+            'password' => Hash::make($request->get('username')),
+        ]);
+
+        if( $user ){
+            $roles = $request->get('roles') != "" ? $request->get('roles') : [];
+            $user->assignRole($roles);
+
+            Karyawan::find($request->get('karyawan_id'))->update(['user_id' => $user->id]);
+
+            return redirect('/user')->with('succcess', 'Sukses simpan user.');
+        }
+
+        return redirect()->back()->withErrors(['failed' => 'Gagal simpan user.']);
     }
 
     /**
@@ -59,7 +104,15 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = User::with(['karyawan', 'roles'])->find($id);
+
+        if( !$user ){
+            abort(404);
+        }
+
+        $roles  = Role::where('name', '!=', 'superuser')->get();
+        $data   = ['roles' => $roles, 'user' => $user];
+        return view(config('app.template').'.user.update', $data);
     }
 
     /**
@@ -71,7 +124,23 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = User::with(['roles'])->find($id);
+
+        $inRoles   = $request->get('roles') != "" ? $request->get('roles') : [];
+        $userRoles = array_column($user->roles->toArray(), 'id');
+
+        // for new permissions
+        $newRoles = array_diff($inRoles, $userRoles);
+        if( count($newRoles) ){
+            $user->assignRole($newRoles);
+        }
+        // for delete permissions
+        $deleteRoles = array_diff($userRoles, $inRoles);
+        if( count($deleteRoles) ){
+            $user->revokeRole($deleteRoles);
+        }
+
+        return redirect()->back()->with('succcess', 'Sukses ubah user.');
     }
 
     /**
@@ -82,6 +151,12 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::find($id);
+
+        if( $user && $user->delete() ){
+            return redirect()->back()->with('succcess', 'Sukses hapus user.');
+        }
+
+        return redirect()->back()->withErrors(['failed' => 'Gagal hapus user.']);
     }
 }

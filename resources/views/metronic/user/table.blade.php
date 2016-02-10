@@ -7,7 +7,7 @@
     <div class="col-md-12">
         <!-- BEGIN PAGE TITLE & BREADCRUMB-->
         <h3 class="page-title">
-            Permission
+            User Aplikasi
         </h3>
         <ul class="page-breadcrumb breadcrumb">
             <li class="btn-group">
@@ -15,7 +15,7 @@
                     <span>Actions</span> <i class="icon-angle-down"></i>
                 </button>
                 <ul class="dropdown-menu pull-right" role="menu">
-                    <li><a href="{{ url('/user/role/add') }}">Tambah Role</a></li>
+                    <li><a href="{{ url('/user/add') }}">Tambah user</a></li>
                 </ul>
             </li>
             <li>
@@ -23,11 +23,7 @@
                 <a href="javascript:void(0)">Home</a>
                 <i class="icon-angle-right"></i>
             </li>
-            <li>
-                <a href="{{ url('/user') }}">User</a>
-                <i class="icon-angle-right"></i>
-            </li>
-            <li><a href="javascript:void(0)">Role</a></li>
+            <li><a href="javascript:void(0)">User</a></li>
         </ul>
         <!-- END PAGE TITLE & BREADCRUMB-->
     </div>
@@ -39,7 +35,7 @@
         <!-- BEGIN SAMPLE TABLE PORTLET-->
         <div class="portlet box green">
             <div class="portlet-title">
-                <div class="caption"><i class="icon-comments"></i>Daftar Role</div>
+                <div class="caption"><i class="icon-comments"></i>Daftar User</div>
                 <div class="tools">
                     <a href="javascript:;" class="collapse"></a>
                     <a href="#portlet-config" data-toggle="modal" class="config"></a>
@@ -53,27 +49,31 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Role</th>
+                                <th>Username</th>
+                                <th>Nama Karyawan</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @if( $roles->count() )
+                            @if( $users->count() )
                             {{--*/ $no = 0; /*--}}
-                            @foreach($roles as $role)
+                            @foreach($users as $user)
+                            @if( !$user->roles->contains('name', 'superuser') )
                             {{--*/ $no++; /*--}}
                             <tr>
                                 <td>{{ $no }}</td>
-                                <td>{{ $role->display }}</td>
+                                <td>{{ $user->username }}</td>
+                                <td>{{ $user->nama }}</td>
                                 <td>
-                                    <a href="{{ url('/user/role/edit/'.$role->id) }}" class="btn btn-sm yellow"><i class="icon-edit"></i></a>
-                                    <a href="{{ url('/user/role/delete/'.$role->id) }}" onclick="return confirm('Yakin hapus {{ $role->name }} ??')" class="btn btn-sm red"><i class="icon-trash"></i></a>
+                                    <a href="{{ url('/user/edit/'.$user->id) }}" class="btn btn-sm yellow"><i class="icon-edit"></i></a>
+                                    <a href="{{ url('/user/delete/'.$user->id) }}" onclick="return confirm('Yakin hapus {{ $user->nama }} ??')" class="btn btn-sm red"><i class="icon-trash"></i></a>
                                 </td>
                             </tr>
+                            @endif
                             @endforeach
                             @else
                             <tr>
-                                <td colspan="3" style="text-align:center;">No Data Here</td>
+                                <td colspan="4" style="text-align:center;">No Data Here</td>
                             </tr>
                             @endif
                         </tbody>

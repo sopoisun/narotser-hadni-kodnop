@@ -122,8 +122,11 @@ class KaryawanController extends Controller
         }elseif($request->get('ids')){
             return Karyawan::whereIn('id', explode('+', $request->get('ids')))->get();
         }else{
-            return Karyawan::where('nama', 'like', '%'.$request->get('q').'%')
-                        ->get();
+            $karyawan = Karyawan::where('nama', 'like', '%'.$request->get('q').'%');
+            if( $request->get('foruser') ){
+                $karyawan = $karyawan->whereNull('user_id');
+            }
+            return $karyawan->get();
         }
     }
 

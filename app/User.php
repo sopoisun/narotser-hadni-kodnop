@@ -18,9 +18,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
+    protected $hidden = [ 'password', 'remember_token', 'created_at', 'updated_at' ];
 
     public function karyawan()
     {
@@ -31,7 +29,7 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Role::class);
     }
-    
+
     public function permissions()
     {
         return $this->hasManyThrough(Permission::class, Role::class);

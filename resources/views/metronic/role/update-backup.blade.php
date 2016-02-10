@@ -23,7 +23,7 @@
                 <a href="{{ url('/user/role') }}">Role</a>
                 <i class="icon-angle-right"></i>
             </li>
-            <li><a href="javascript:void(0)">Tambah Role</a></li>
+            <li><a href="javascript:void(0)">Ubah Role</a></li>
         </ul>
         <!-- END PAGE TITLE & BREADCRUMB-->
     </div>
@@ -35,7 +35,7 @@
         <div class="portlet box blue">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="icon-reorder"></i> Form tambah role
+                    <i class="icon-reorder"></i> Form ubah role
                 </div>
                 <div class="tools">
                     <a href="" class="collapse"></a>
@@ -45,12 +45,12 @@
                 </div>
             </div>
             <div class="portlet-body form">
-                {!! Form::open(['role' => 'form', 'class' => 'form-horizontal']) !!}
+                {!! Form::model($role, ['role' => 'form', 'class' => 'form-horizontal']) !!}
                 <div class="form-body">
                     <div class="form-group @if($errors->has('name')) has-error @endif">
                         <label for="name" class="control-label col-md-2">Nama Role</label>
                         <div class="col-md-5">
-                            {{ Form::text('name', null, ['class' => 'form-control', 'id' => 'name']) }}
+                            {{ Form::text('name', null, ['class' => 'form-control', 'id' => 'name', 'readonly' => 'readonly']) }}
                             @if($errors->has('name'))<span class="help-block">{{ $errors->first('name') }}</span>@endif
                         </div>
                     </div>
@@ -63,9 +63,10 @@
                     </div>
                     <div class="form-group">
                         <label for="permissions" class="control-label col-md-2">Permission</label>
-                        {{--*/
-                            $Cpermissions = $permissions->groupBy('key');
-                        /*--}}
+                            {{--*/
+                                $Cpermissions = $permissions->groupBy('key');
+                                $rolePermission = $role->permissions;
+                            /*--}}
                         <div class="col-md-10">
                             @foreach($Cpermissions as $key => $Cpermission)
                             <div class="row-fluid">
@@ -79,7 +80,7 @@
                                     <div class="col-md-3" style="padding-left:0">
                                         <div class="checkbox-list">
                                             <label class="checkbox-inline">
-                                                {{ Form::checkbox('permissions[]', $chunk['id'], null, ['id' => 'permissions']) }} {{ $chunk['display'] }}
+                                                {{ Form::checkbox('permissions[]', $chunk['id'], $rolePermission->contains('name', $chunk['name']), ['id' => 'permissions']) }} {{ $chunk['display'] }}
                                             </label>
                                         </div>
                                     </div>
