@@ -10,6 +10,7 @@
             Customer Card IDs <small>Daftar ID Customer</small>
         </h3>
         <ul class="page-breadcrumb breadcrumb">
+            @can('customer.read')
             <li class="btn-group">
                 <button type="button" class="btn blue dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
                     <span>Actions</span> <i class="icon-angle-down"></i>
@@ -18,6 +19,7 @@
                     <li><a href="{{ url('/customer') }}"> Daftar Customer</a></li>
                 </ul>
             </li>
+            @endcan
             <li>
                 <i class="icon-home"></i>
                 <a href="javascript:void(0)">Home</a>

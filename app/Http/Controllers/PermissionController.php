@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Permission;
 use Validator;
+use Gate;
 
 class PermissionController extends Controller
 {
@@ -18,6 +19,10 @@ class PermissionController extends Controller
      */
     public function index()
     {
+        if( Gate::denies('permission.read') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $limit  = 20;
         $data   = [
             'limit'         => $limit,
@@ -33,6 +38,10 @@ class PermissionController extends Controller
      */
     public function create()
     {
+        if( Gate::denies('permission.create') ){
+            return view(config('app.template').'.error.403');
+        }
+
         return view(config('app.template').'.permission.create');
     }
 
@@ -84,10 +93,14 @@ class PermissionController extends Controller
      */
     public function edit($id)
     {
+        if( Gate::denies('permission.update') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $permission = Permission::find($id);
 
         if( !$permission ){
-            abort(404);
+            return view(config('app.template').'.error.404');
         }
 
         $data = ['permission' => $permission];
@@ -132,6 +145,10 @@ class PermissionController extends Controller
      */
     public function destroy($id)
     {
+        if( Gate::denies('permission.delete') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $permission = Permission::find($id);
 
         if( $permission && $permission->delete() ){

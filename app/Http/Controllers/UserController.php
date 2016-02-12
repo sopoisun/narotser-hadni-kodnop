@@ -23,8 +23,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        //$this->authorize('user.create');
-        if( Gate::denies('user.create') ){
+        //$this->authorize('user.read');
+        if( Gate::denies('user.read') ){
             return view(config('app.template').'.error.403');
         }
 
@@ -42,6 +42,10 @@ class UserController extends Controller
      */
     public function create()
     {
+        if( Gate::denies('user.create') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $roles  = Role::where('name', '!=', 'superuser')->get();
         $data   = ['roles' => $roles];
         return view(config('app.template').'.user.create', $data);
@@ -111,10 +115,14 @@ class UserController extends Controller
      */
     public function edit($id)
     {
+        if( Gate::denies('user.update') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $user = User::with(['karyawan', 'roles'])->find($id);
 
         if( !$user ){
-            abort(404);
+            return view(config('app.template').'.error.404');
         }
 
         $roles  = Role::where('name', '!=', 'superuser')->get();
@@ -158,10 +166,14 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
+        if( Gate::denies('user.delete') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $user = User::find($id);
 
         if( !$user ){
-            abort(404);
+            return view(config('app.template').'.error.404');
         }
 
         $karyawan_id = $user->karyawan->id;

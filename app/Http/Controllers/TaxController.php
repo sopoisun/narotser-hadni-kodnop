@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TaxRequest;
 use App\Tax;
+use Gate;
 
 class TaxController extends Controller
 {
@@ -18,6 +19,10 @@ class TaxController extends Controller
      */
     public function index()
     {
+        if( Gate::denies('tax.read') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = [
             'taxes' => Tax::all(),
         ];
@@ -27,6 +32,10 @@ class TaxController extends Controller
 
     public function create()
     {
+        if( Gate::denies('tax.create') ){
+            return view(config('app.template').'.error.403');
+        }
+
         return view(config('app.template').'.tax.create');
     }
 
@@ -47,10 +56,14 @@ class TaxController extends Controller
      */
     public function edit($id)
     {
+        if( Gate::denies('tax.update') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $tax = Tax::find($id);
 
         if( !$tax ){
-            abort(404);
+            return view(config('app.template').'.error.404');
         }
 
         $data = [ 'tax' => $tax ];

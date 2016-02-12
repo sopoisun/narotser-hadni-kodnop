@@ -10,6 +10,7 @@
             Kategori Produk <small>Daftar Kategori Produk</small>
         </h3>
         <ul class="page-breadcrumb breadcrumb">
+            @can('produk_kategori.create')
             <li class="btn-group">
                 <button type="button" class="btn blue dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
                     <span>Actions</span> <i class="icon-angle-down"></i>
@@ -18,6 +19,7 @@
                     <li><a href="{{ url('/produk/kategori/add') }}">Tambah Kategori Produk</a></li>
                 </ul>
             </li>
+            @endcan
             <li>
                 <i class="icon-home"></i>
                 <a href="javascript:void(0)">Home</a>
@@ -65,8 +67,12 @@
                                 <td>{{ $no }}</td>
                                 <td>{{ $kategori->nama }}</td>
                                 <td>
+                                    @can('produk_kategori.update')
                                     <a href="{{ url('/produk-kategori/edit/'.$kategori->id) }}" class="btn btn-sm yellow"><i class="icon-edit"></i></a>
+                                    @endcan
+                                    @can('produk_kategori.delete')
                                     <a href="{{ url('/produk-kategori/delete/'.$kategori->id) }}" onclick="return confirm('Yakin hapus {{ $kategori->nama }} ??')" class="btn btn-sm red"><i class="icon-trash"></i></a>
+                                    @endcan
                                 </td>
                             </tr>
                             @endforeach

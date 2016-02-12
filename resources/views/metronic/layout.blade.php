@@ -542,6 +542,27 @@
                     </ul>
                 </li>
                 @endcan
+                @can('bank.read')
+                <li class="{{ set_active('bank*') }}">
+                    <a class="active" href="javascript:;">
+                        <i class="icon-hdd"></i>
+                        <span class="title">Bank</span>
+                        <span class="arrow "></span>
+                    </a>
+                    <ul class="sub-menu">
+                        @can('bank.create')
+                        <li class="{{ set_active('bank/add') }}">
+                            <a href="{{ url('/bank/add') }}">Tambah Bank</a>
+                        </li>
+                        @endcan
+                        @can('bank.read')
+                        <li class="{{ set_active('bank') }}">
+                            <a href="{{ url('/bank') }}">Daftar Bank</a>
+                        </li>
+                        @endcan
+                    </ul>
+                </li>
+                @endcan
                 @can('produk.read')
                 <li class="{{ set_active('produk*') }}">
                     <a href="javascript:;">

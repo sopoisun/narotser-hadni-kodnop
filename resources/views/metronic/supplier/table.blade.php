@@ -10,6 +10,7 @@
             Supplier <small>Daftar Supplier</small>
         </h3>
         <ul class="page-breadcrumb breadcrumb">
+            @can('supplier.create')
             <li class="btn-group">
                 <button type="button" class="btn blue dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
                     <span>Actions</span> <i class="icon-angle-down"></i>
@@ -18,6 +19,7 @@
                     <li><a href="{{ url('/supplier/add') }}">Tambah Supplier</a></li>
                 </ul>
             </li>
+            @endcan
             <li>
                 <i class="icon-home"></i>
                 <a href="javascript:void(0)">Home</a>
@@ -71,8 +73,12 @@
                                 <td>{{ $supplier->alamat }}</td>
                                 <td>{{ $supplier->nama_perusahaan }}</td>
                                 <td>
+                                    @can('supplier.update')
                                     <a href="{{ url('/supplier/edit/'.$supplier->id) }}" class="btn btn-sm yellow"><i class="icon-edit"></i></a>
+                                    @endcan
+                                    @can('supplier.delete')
                                     <a href="{{ url('/supplier/delete/'.$supplier->id) }}" onclick="return confirm('Yakin hapus {{ $supplier->nama }} ??')" class="btn btn-sm red"><i class="icon-trash"></i></a>
+                                    @endcan
                                 </td>
                             </tr>
                             @endforeach

@@ -10,6 +10,7 @@
             Pembelian <small>Daftar pembelian bahan / produk</small>
         </h3>
         <ul class="page-breadcrumb breadcrumb">
+            @can('pembelian.create')
             <li class="btn-group">
                 <button type="button" class="btn blue dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
                     <span>Actions</span> <i class="icon-angle-down"></i>
@@ -18,6 +19,7 @@
                     <li><a href="{{ url('/pembelian/add') }}">Tambah Pembelian</a></li>
                 </ul>
             </li>
+            @endcan
             <li>
                 <i class="icon-home"></i>
                 <a href="javascript:void(0)">Home</a>
@@ -77,8 +79,12 @@
                                     {{ number_format(collect($pembelian->bayar->toArray())->pluck('nominal')->sum(), 0, ',', '.') }}
                                 </td>
                                 <td>
+                                    @can('pembelian.read.detail')
                                     <a href="{{ url('/pembelian/detail/'.$pembelian->id) }}" class="btn btn-sm yellow" title="detail"><i class="icon-search"></i></a>
+                                    @endcan
+                                    @can('pembelian.bayar')
                                     <a href="{{ url('/pembelian/bayar/'.$pembelian->id) }}" class="btn btn-sm blue" title="pembayaran"><i class="icon-money"></i></a>
+                                    @endcan
                                 </td>
                             </tr>
                             @endforeach

@@ -10,6 +10,7 @@
             Permission
         </h3>
         <ul class="page-breadcrumb breadcrumb">
+            @can('userrole.create')
             <li class="btn-group">
                 <button type="button" class="btn blue dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
                     <span>Actions</span> <i class="icon-angle-down"></i>
@@ -18,6 +19,7 @@
                     <li><a href="{{ url('/user/role/add') }}">Tambah Role</a></li>
                 </ul>
             </li>
+            @endcan
             <li>
                 <i class="icon-home"></i>
                 <a href="javascript:void(0)">Home</a>
@@ -66,8 +68,12 @@
                                 <td>{{ $no }}</td>
                                 <td>{{ $role->display }}</td>
                                 <td>
+                                    @can('userrole.update')
                                     <a href="{{ url('/user/role/edit/'.$role->id) }}" class="btn btn-sm yellow"><i class="icon-edit"></i></a>
+                                    @endcan
+                                    @can('userrole.delete')
                                     <a href="{{ url('/user/role/delete/'.$role->id) }}" onclick="return confirm('Yakin hapus {{ $role->name }} ??')" class="btn btn-sm red"><i class="icon-trash"></i></a>
+                                    @endcan
                                 </td>
                             </tr>
                             @endforeach

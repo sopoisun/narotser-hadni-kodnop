@@ -11,6 +11,7 @@ use App\Customer;
 use Validator;
 use Uuid;
 use DB;
+use Gate;
 
 class CustomerController extends Controller
 {
@@ -21,6 +22,10 @@ class CustomerController extends Controller
      */
     public function index(Request $request)
     {
+        if( Gate::denies('customer.read') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $type = $request->get('type') ? $request->get('type') : 'registered';
 
         if( $type == 'registered' ){
@@ -55,6 +60,10 @@ class CustomerController extends Controller
      */
     public function create()
     {
+        if( Gate::denies('customer.create') ){
+            return view(config('app.template').'.error.403');
+        }
+
         return view(config('app.template').'.customer.create');
     }
 
@@ -120,10 +129,14 @@ class CustomerController extends Controller
      */
     public function edit($id)
     {
+        if( Gate::denies('customer.update') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $customer = Customer::find($id);
 
         if( !$customer ){
-            abort(404);
+            return view(config('app.template').'.error.404');
         }
 
         $data = ['customer' => $customer];

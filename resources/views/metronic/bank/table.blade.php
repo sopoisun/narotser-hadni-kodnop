@@ -10,6 +10,7 @@
             Bank <small>Daftar Bank</small>
         </h3>
         <ul class="page-breadcrumb breadcrumb">
+            @can('bank.create')
             <li class="btn-group">
                 <button type="button" class="btn blue dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
                     <span>Actions</span> <i class="icon-angle-down"></i>
@@ -18,6 +19,7 @@
                     <li><a href="{{ url('/bank/add') }}">Tambah Bank</a></li>
                 </ul>
             </li>
+            @endcan
             <li>
                 <i class="icon-home"></i>
                 <a href="javascript:void(0)">Home</a>
@@ -67,8 +69,12 @@
                                 <td>{{ $bank->nama_bank }}</td>
                                 <td>{{ $bank->credit_card_tax.' %' }}</td>
                                 <td>
+                                    @can('bank.update')
                                     <a href="{{ url('/bank/edit/'.$bank->id) }}" class="btn btn-sm yellow"><i class="icon-edit"></i></a>
+                                    @endcan
+                                    @can('bank.delete')
                                     <a href="{{ url('/bank/delete/'.$bank->id) }}" class="btn btn-sm red" onclick="return confirm('Yakin hapus {{ $bank->nama }} ??')"><i class="icon-edit"></i></a>
+                                    @endcan
                                 </td>
                             </tr>
                             @endforeach

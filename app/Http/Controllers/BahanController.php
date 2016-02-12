@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\BahanRequest;
 use App\Bahan;
 use DB;
+use Gate;
 
 class BahanController extends Controller
 {
@@ -19,6 +20,10 @@ class BahanController extends Controller
      */
     public function index()
     {
+        if( Gate::denies('bahan.read') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = [
             'bahans' => Bahan::all(),
         ];
@@ -28,6 +33,10 @@ class BahanController extends Controller
 
     public function stok()
     {
+        if( Gate::denies('bahan.stok') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $bahans = Bahan::stok()->orderBy('bahans.id')->get();
         $data = ['bahans' => $bahans];
         return view(config('app.template').'.bahan.stok', $data);
@@ -40,6 +49,10 @@ class BahanController extends Controller
      */
     public function create()
     {
+        if( Gate::denies('bahan.create') ){
+            return view(config('app.template').'.error.403');
+        }
+
         return view(config('app.template').'.bahan.create');
     }
 
@@ -77,10 +90,14 @@ class BahanController extends Controller
      */
     public function edit($id)
     {
+        if( Gate::denies('bahan.update') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $bahan = Bahan::find($id);
 
         if( !$bahan ){
-            abort(404);
+            return view(config('app.template').'.error.404');
         }
 
         $data = ['bahan' => $bahan];
@@ -112,6 +129,10 @@ class BahanController extends Controller
      */
     public function destroy($id)
     {
+        if( Gate::denies('bahan.delete') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $bahan = Bahan::find($id);
 
         if( $bahan && $bahan->delete() ){

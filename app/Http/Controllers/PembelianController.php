@@ -13,6 +13,7 @@ use App\PembelianDetail;
 use App\PembelianBayar;
 use Auth;
 use DB;
+use Gate;
 
 class PembelianController extends Controller
 {
@@ -23,6 +24,10 @@ class PembelianController extends Controller
      */
     public function index()
     {
+        if( Gate::denies('pembelian.read') ){
+            return view(config('app.template').'.error.403');
+        }
+
          $data = [
              'pembelians' => Pembelian::with('detail', 'bayar', 'supplier', 'karyawan')->get(),
          ];
@@ -32,6 +37,10 @@ class PembelianController extends Controller
 
     public function detail($id)
     {
+        if( Gate::denies('pembelian.read.detail') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = [
             'id' => $id,
             'details' => PembelianDetail::with('bahan', 'produk')
@@ -43,6 +52,10 @@ class PembelianController extends Controller
 
     public function create(Request $request)
     {
+        if( Gate::denies('pembelian.create') ){
+            return view(config('app.template').'.error.403');
+        }
+
         if( !$request->old() ){
             $request->session()->forget('data_pembelian');
         }
@@ -183,6 +196,10 @@ class PembelianController extends Controller
 
     public function bayar($id)
     {
+        if( Gate::denies('pembelian.bayar') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = [
             'id'     => $id,
             'total'  => PembelianDetail::where('pembelian_id', $id)->get()->sum('harga'),
@@ -239,7 +256,7 @@ class PembelianController extends Controller
         if( $request->get('id') && $request->get('type') ){
             $request->session()->forget('data_pembelian.'.$request->get('type').'.'.$request->get('id'));
         }else{
-            abort(404);
+            return view(config('app.template').'.error.404');
         }
     }
 }

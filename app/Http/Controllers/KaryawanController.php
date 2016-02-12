@@ -10,6 +10,7 @@ use App\Http\Requests\KaryawanRequest;
 use App\Karyawan;
 use Carbon\Carbon;
 use DB;
+use Gate;
 
 class KaryawanController extends Controller
 {
@@ -20,6 +21,10 @@ class KaryawanController extends Controller
      */
     public function index()
     {
+        if( Gate::denies('karyawan.read') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = [
             'karyawans' => Karyawan::with('user.roles')->get(),
         ];
@@ -34,6 +39,10 @@ class KaryawanController extends Controller
      */
     public function create()
     {
+        if( Gate::denies('karyawan.create') ){
+            return view(config('app.template').'.error.403');
+        }
+
         return view(config('app.template').'.karyawan.create');
     }
 
@@ -71,10 +80,14 @@ class KaryawanController extends Controller
      */
     public function edit($id)
     {
+        if( Gate::denies('karyawan.update') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $karyawan = Karyawan::find($id);
 
         if( !$karyawan ){
-            abort(404);
+            return view(config('app.template').'.error.404');
         }
 
         $data = ['karyawan' => $karyawan];
@@ -106,6 +119,10 @@ class KaryawanController extends Controller
      */
     public function destroy($id)
     {
+        if( Gate::denies('karyawan.delete') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $karyawan = Karyawan::find($id);
 
         if( $karyawan && $karyawan->delete() ){
@@ -132,6 +149,10 @@ class KaryawanController extends Controller
 
     public function reportPerbulan(Request $request)
     {
+        if( Gate::denies('report.perbulan.karyawan') ){
+            return view(config('app.template').'.error.403');
+        }
+
         if( $request->get('karyawan_id') ){
             $id = $request->get('karyawan_id');
             $bulan = $request->get('bulan') ? $request->get('bulan') : date('Y-m');
@@ -176,6 +197,10 @@ class KaryawanController extends Controller
 
     public function reportPertahun(Request $request)
     {
+        if( Gate::denies('report.pertahun.karyawan') ){
+            return view(config('app.template').'.error.403');
+        }
+
         if( $request->get('karyawan_id') ){
             $id     = $request->get('karyawan_id');
             $tahun  = $request->get('tahun') ? $request->get('tahun') : date('Y');

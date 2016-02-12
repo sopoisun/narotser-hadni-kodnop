@@ -10,6 +10,7 @@
             Akuntansi <small>Daftar Akun</small>
         </h3>
         <ul class="page-breadcrumb breadcrumb">
+            @can('account.create')
             <li class="btn-group">
                 <button type="button" class="btn blue dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
                     <span>Actions</span> <i class="icon-angle-down"></i>
@@ -18,6 +19,7 @@
                     <li><a href="{{ url('/account/add') }}">Tambah Akun</a></li>
                 </ul>
             </li>
+            @endcan
             <li>
                 <i class="icon-home"></i>
                 <a href="javascript:void(0)">Home</a>
@@ -69,6 +71,7 @@
                                 <td>{{ $states[$account->data_state] }}</td>
                                 <td>{{ $types[$account->type] }}</td>
                                 <td>
+                                    @can('account.update')
                                     {{--*/
                                         $txt = '';
                                         if( $account->can_edit == 'Tidak' ){
@@ -76,6 +79,7 @@
                                         }
                                     /*--}}
                                     <a href="{{ url('/account/edit/'.$account->id) }}" class="btn btn-sm yellow" {{ $txt }}><i class="icon-edit"></i></a>
+                                    @endcan
                                 </td>
                             </tr>
                             @endforeach

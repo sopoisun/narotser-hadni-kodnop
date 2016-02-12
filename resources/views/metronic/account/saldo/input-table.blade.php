@@ -14,6 +14,7 @@
             Daftar Input Saldo <small>Daftar Input Saldo</small>
         </h3>
         <ul class="page-breadcrumb breadcrumb">
+            @can('account.saldo.create')
             <li class="btn-group">
                 <button type="button" class="btn blue dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
                     <span>Actions</span> <i class="icon-angle-down"></i>
@@ -22,6 +23,7 @@
                     <li><a href="{{ url('/account/saldo/add') }}">Input Saldo</a></li>
                 </ul>
             </li>
+            @endcan
             <li>
                 <i class="icon-home"></i>
                 <a href="javascript:void(0)">Home</a>
@@ -126,7 +128,9 @@
                                     /*--}}
                                 </td>
                                 <td>
+                                    @can('account.saldo.update')
                                     <a href="{{ url('/account/saldo/edit/'.$saldo->id) }}" class="btn btn-sm yellow"><i class="icon-edit"></i></a>
+                                    @endcan
                                 </td>
                             </tr>
                             @endforeach

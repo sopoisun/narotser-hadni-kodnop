@@ -10,6 +10,7 @@
             Pajak <small>Daftar Pajak</small>
         </h3>
         <ul class="page-breadcrumb breadcrumb">
+            @can('tax.create')
             <li class="btn-group">
                 <button type="button" class="btn blue dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
                     <span>Actions</span> <i class="icon-angle-down"></i>
@@ -18,6 +19,7 @@
                     <li><a href="{{ url('/tax/add') }}">Tambah Type Pajak</a></li>
                 </ul>
             </li>
+            @endcan
             <li>
                 <i class="icon-home"></i>
                 <a href="javascript:void(0)">Home</a>
@@ -67,7 +69,9 @@
                                 <td>{{ $tax->type }}</td>
                                 <td>{{ $tax->procentage.' %' }}</td>
                                 <td>
+                                    @can('tax.update')
                                     <a href="{{ url('/tax/edit/'.$tax->id) }}" class="btn btn-sm yellow"><i class="icon-edit"></i></a>
+                                    @endcan
                                 </td>
                             </tr>
                             @endforeach

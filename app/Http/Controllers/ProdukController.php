@@ -11,6 +11,7 @@ use App\Produk;
 use App\ProdukKategori;
 use App\ProdukDetail;
 use DB;
+use Gate;
 
 class ProdukController extends Controller
 {
@@ -21,6 +22,10 @@ class ProdukController extends Controller
      */
     public function index()
     {
+        if( Gate::denies('produk.read') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = [
             'produks' => Produk::with(['kategori', 'detail' => function($query){
                 $query->join('bahans', 'produk_details.bahan_id', '=', 'bahans.id');
@@ -32,6 +37,10 @@ class ProdukController extends Controller
 
     public function stok()
     {
+        if( Gate::denies('produk.stok') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $produks = Produk::stok()->orderBy('produks.id')->get();;
         $data = ['produks' => $produks];
         return view(config('app.template').".produk.stok", $data);
@@ -44,6 +53,10 @@ class ProdukController extends Controller
      */
     public function create()
     {
+        if( Gate::denies('produk.create') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = ['kategoris' => ProdukKategori::lists('nama', 'id')];
         return view(config('app.template').".produk.create", $data);
     }
@@ -100,6 +113,10 @@ class ProdukController extends Controller
      */
     public function edit($id)
     {
+        if( Gate::denies('produk.update') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $produk = Produk::with(['detail' => function($query){
             $query->join('bahans', 'produk_details.bahan_id', '=', 'bahans.id');
         }])->leftJoin('suppliers', 'produks.supplier_id', '=', 'suppliers.id')
@@ -107,7 +124,7 @@ class ProdukController extends Controller
         ->find($id);
 
         if( !$produk ){
-            abort(404);
+            return view(config('app.template').'.error.404');
         }
 
         $produk['konsinyasi'] = ($produk['konsinyasi'] == 'Ya') ? true : false;
@@ -206,6 +223,10 @@ class ProdukController extends Controller
      */
     public function destroy($id)
     {
+        if( Gate::denies('produk.delete') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $produk = Produk::find($id);
 
         if( $produk && $produk->delete() ){

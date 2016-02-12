@@ -10,6 +10,7 @@
             Adjustment <small>Daftar adjustment</small>
         </h3>
         <ul class="page-breadcrumb breadcrumb">
+            @can('adjustment.create')
             <li class="btn-group">
                 <button type="button" class="btn blue dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
                     <span>Actions</span> <i class="icon-angle-down"></i>
@@ -18,6 +19,7 @@
                     <li><a href="{{ url('/adjustment/add') }}">Tambah Adjustment</a></li>
                 </ul>
             </li>
+            @endcan
             <li>
                 <i class="icon-home"></i>
                 <a href="javascript:void(0)">Home</a>
@@ -69,7 +71,9 @@
                                 <td>{{ $adjustment->karyawan->nama }}</td>
                                 <td>{{ $adjustment->keterangan }}</td>
                                 <td>
+                                    @can('adjustment.detail')
                                     <a href="{{ url('/adjustment/detail/'.$adjustment->id) }}" class="btn btn-sm yellow" title="detail"><i class="icon-search"></i></a>
+                                    @endcan
                                 </td>
                             </tr>
                             @endforeach

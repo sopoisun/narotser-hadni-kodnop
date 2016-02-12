@@ -26,11 +26,16 @@ use DB;
 use Auth;
 use Validator;
 use Carbon\Carbon;
+use Gate;
 
 class OrderController extends Controller
 {
     public function index(Request $request)
     {
+        if( Gate::denies('order.select_place') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $types  = PlaceKategori::lists('nama', 'id');
         $type   = $request->get('type') ? $request->get('type') : PlaceKategori::first()->id;
         $tgl    = $request->get('tgl') ? $request->get('tgl') : date('Y-m-d');
@@ -50,12 +55,16 @@ class OrderController extends Controller
             ];
             return view(config('app.template').'.order.table', $data);
         }else{
-            abort(404);
+            return view(config('app.template').'.error.404');
         }
     }
 
     public function openOrder(Request $request, $id)
     {
+        if( Gate::denies('order.open') ){
+            return view(config('app.template').'.error.403');
+        }
+
         if( !$request->old() ){
             $request->session()->forget('data_order');
         }
@@ -161,6 +170,10 @@ class OrderController extends Controller
 
     public function cancelOrder($id)
     {
+        if( Gate::denies('order.cancel') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = [
             'order_id'  => $id,
             'places'    => OrderPlace::join('places', 'order_places.place_id', '=', 'places.id')
@@ -184,6 +197,10 @@ class OrderController extends Controller
 
     public function changeOrder(Request $request, $id)
     {
+        if( Gate::denies('order.change') ){
+            return view(config('app.template').'.error.403');
+        }
+
         if( !$request->old() ){
             $request->session()->forget('order_detail_remove');
             $request->session()->forget('data_order');
@@ -192,7 +209,7 @@ class OrderController extends Controller
         $order = Order::with(['karyawan', 'detail.produk', 'place'])->find($id);
 
         if( !$order ){
-            abort(404);
+            return view(config('app.template').'.error.404');
         }
 
         $current_place = implode(',', array_column($order->place->toArray(), 'place_id'));
@@ -316,6 +333,10 @@ class OrderController extends Controller
 
     public function mergeOrder(Request $request, $id)
     {
+        if( Gate::denies('order.merge') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = [
             'tanggal'   => $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d'),
             'order_id'  => $id,
@@ -379,10 +400,14 @@ class OrderController extends Controller
 
     public function closeOrder($id)
     {
+        if( Gate::denies('order.close') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $order = Order::with(['karyawan', 'detail.produk', 'place.place'])->find($id);
 
         if( !$order ){
-            abort(404);
+            return view(config('app.template').'.error.404');
         }
 
         // Detail Order
@@ -480,6 +505,10 @@ class OrderController extends Controller
 
     public function pertanggal(Request $request)
     {
+        if( Gate::denies('order.list') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
 
         $orders = Order::with('karyawan')->where(DB::raw('SUBSTRING(tanggal, 1, 10)'), $tanggal)->get();
@@ -494,13 +523,17 @@ class OrderController extends Controller
 
     public function pertanggalDetail(Request $request)
     {
+        if( Gate::denies('order.list.detail') ){
+            return view(config('app.template').'.error.403');
+        }
+
         if( $request->get('id') ){
             $id = $request->get('id'); // order_id
 
             $order = Order::with('customer', 'bayar.karyawan', 'tax.tax', 'bayarBank.bank', 'place.place')->find($id);
 
             if( !$order ){
-                abort(404);
+                return view(config('app.template').'.error.404');
             }
 
             $orderDetail = OrderDetail::with('order')->leftJoin('order_detail_returns', 'order_details.id', '=', 'order_detail_returns.order_detail_id')
@@ -532,7 +565,7 @@ class OrderController extends Controller
             return view(config('app.template').'.order.pertanggal-detail', $data);
 
         }else{
-            abort(404);
+            return view(config('app.template').'.error.404');
         }
     }
 
@@ -586,7 +619,7 @@ class OrderController extends Controller
             $data = ['orderDetail' => $orderDetail];
             return view(config('app.template').'.order.pertanggal-detail-return', $data);
         }else{
-            abort(404);
+            return view(config('app.template').'.error.404');
         }
     }
 

@@ -11,11 +11,16 @@ use App\Adjustment;
 use App\AdjustmentDetail;
 use Auth;
 use DB;
+use Gate;
 
 class AdjustmentController extends Controller
 {
     public function index(Request $request)
     {
+        if( Gate::denies('adjustment.read') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = [
             'adjustments' => Adjustment::with('karyawan', 'detail')->get(),
         ];
@@ -25,6 +30,10 @@ class AdjustmentController extends Controller
 
     public function detail($id)
     {
+        if( Gate::denies('adjustment.detail') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = [
             'id' => $id,
             'details' => AdjustmentDetail::with('bahan', 'produk')->where('adjustment_id', $id)->get(),
@@ -37,6 +46,10 @@ class AdjustmentController extends Controller
 
     public function create(Request $request)
     {
+        if( Gate::denies('adjustment.create') ){
+            return view(config('app.template').'.error.403');
+        }
+
         if( !$request->old() ){
             $request->session()->forget('data_adjustment');
         }

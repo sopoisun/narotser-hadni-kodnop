@@ -11,6 +11,7 @@ use App\OrderDetail;
 use App\Produk;
 use DB;
 use Carbon\Carbon;
+use Gate;
 
 class ReportController extends Controller
 {
@@ -22,6 +23,10 @@ class ReportController extends Controller
 
     public function pertanggal(Request $request)
     {
+        if( Gate::denies('report.pertanggal.penjualan') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $tanggal    = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
 
         $reports    = Order::ReportByDate($tanggal);
@@ -37,6 +42,10 @@ class ReportController extends Controller
 
     public function detail($id)
     {
+        if( Gate::denies('report.pertanggal.penjualan.detail') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $order = Order::find($id);
 
         if( $order->state == 'Closed' ){
@@ -69,6 +78,10 @@ class ReportController extends Controller
 
     public function soldItem(Request $request)
     {
+        if( Gate::denies('report.pertanggal.solditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
 
         $produk = Produk::leftJoin(DB::raw("(SELECT order_details.id, order_details.`order_id`, order_details.`produk_id`,
@@ -108,6 +121,10 @@ class ReportController extends Controller
 
     public function karyawan(Request $request)
     {
+        if( Gate::denies('report.pertanggal.karyawan') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $tanggal    = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
         $karyawans  = \App\Karyawan::join('orders', 'karyawans.id', '=', 'orders.karyawan_id')
             ->join('order_details', 'orders.id', '=', 'order_details.order_id')
@@ -130,6 +147,10 @@ class ReportController extends Controller
 
     public function karyawanDetail(Request $request)
     {
+        if( Gate::denies('report.pertanggal.karyawan.detail') ){
+            return view(config('app.template').'.error.403');
+        }
+
         if( $request->get('karyawan_id') ){
             if( $request->get('tanggal') || $request->get('bulan') || $request->get('tahun') ){
                 $karyawan_id    = $request->get('karyawan_id');
@@ -166,15 +187,19 @@ class ReportController extends Controller
 
                 return view(config('app.template').'.report.pertanggal-karyawan-detail', $data);
             }else{
-                abort(404);
+                return view(config('app.template').'.error.404');
             }
         }else{
-            abort(404);
+            return view(config('app.template').'.error.404');
         }
     }
 
     public function labaRugi(Request $request)
     {
+        if( Gate::denies('report.pertanggal.labarugi') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
 
         $penjualans = Order::ReportGroup("orders.`tanggal` = '$tanggal'", "GROUP BY tanggal");
@@ -197,6 +222,10 @@ class ReportController extends Controller
     /* Periode */
     public function soldItemPeriode(Request $request)
     {
+        if( Gate::denies('report.periode.solditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $tanggal    = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
         $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : $tanggal;
 
@@ -238,6 +267,10 @@ class ReportController extends Controller
 
     public function karyawanPeriode(Request $request)
     {
+        if( Gate::denies('report.periode.karyawan') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $tanggal    = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
         $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : $tanggal;
 
@@ -263,6 +296,10 @@ class ReportController extends Controller
 
     public function labaRugiPeriode(Request $request)
     {
+        if( Gate::denies('report.periode.labarugi') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $tanggal    = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
         $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : $tanggal;
 
@@ -290,6 +327,10 @@ class ReportController extends Controller
     /* Perbulan */
     public function perbulan(Request $request)
     {
+        if( Gate::denies('report.perbulan.penjualan') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $bulan      = $request->get('bulan') ? $request->get('bulan') : date('Y-m');
         $start      = Carbon::parse($bulan)->startOfMonth();
         $end        = Carbon::parse($bulan)->endOfMonth();
@@ -314,6 +355,10 @@ class ReportController extends Controller
 
     public function soldItemPerbulan(Request $request)
     {
+        if( Gate::denies('report.perbulan.solditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $bulan = $request->get('bulan') ? $request->get('bulan') : date('Y-m');
 
         $produk = Produk::leftJoin(DB::raw("(SELECT order_details.id, order_details.`order_id`, order_details.`produk_id`,
@@ -353,6 +398,10 @@ class ReportController extends Controller
 
     public function karyawanPerbulan(Request $request)
     {
+        if( Gate::denies('report.perbulan.karyawan') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $bulan      = $request->get('bulan') ? $request->get('bulan') : date('Y-m');
 
         $karyawans  = \App\Karyawan::join('orders', 'karyawans.id', '=', 'orders.karyawan_id')
@@ -376,6 +425,10 @@ class ReportController extends Controller
 
     public function labaRugiPerbulan(Request $request)
     {
+        if( Gate::denies('report.perbulan.labarugi') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $bulan = $request->get('bulan') ? $request->get('bulan') : date('Y-m');
 
         $penjualans = Order::ReportGroup("SUBSTRING(orders.`tanggal`, 1, 7) = '$bulan'", "GROUP BY SUBSTRING(tanggal, 1, 7)");
@@ -398,6 +451,10 @@ class ReportController extends Controller
     /* Pertahun */
     public function pertahun(Request $request)
     {
+        if( Gate::denies('report.pertahun.penjualan') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $tahun      = $request->get('tahun') ? $request->get('tahun') : date('Y');
         $start      = Carbon::createFromFormat('Y', $tahun)->startOfYear();
         $end        = Carbon::createFromFormat('Y', $tahun)->endOfYear();
@@ -422,6 +479,10 @@ class ReportController extends Controller
 
     public function soldItemPertahun(Request $request)
     {
+        if( Gate::denies('report.pertahun.solditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $tahun = $request->get('tahun') ? $request->get('tahun') : date('Y');
 
         $produk = Produk::leftJoin(DB::raw("(SELECT order_details.id, order_details.`order_id`, order_details.`produk_id`,
@@ -461,6 +522,10 @@ class ReportController extends Controller
 
     public function karyawanPertahun(Request $request)
     {
+        if( Gate::denies('report.pertahun.karyawan') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $tahun      = $request->get('tahun') ? $request->get('tahun') : date('Y');
 
         $karyawans  = \App\Karyawan::join('orders', 'karyawans.id', '=', 'orders.karyawan_id')
@@ -484,6 +549,10 @@ class ReportController extends Controller
 
     public function labaRugiPertahun(Request $request)
     {
+        if( Gate::denies('report.pertahun.labarugi') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $tahun = $request->get('tahun') ? $request->get('tahun') : date('Y');
 
         $penjualans = Order::ReportGroup("SUBSTRING(orders.`tanggal`, 1, 4) = '$tahun'", "GROUP BY SUBSTRING(tanggal, 1, 4)");

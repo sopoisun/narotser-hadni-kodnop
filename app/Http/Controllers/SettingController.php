@@ -8,11 +8,16 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Setting;
 use Validator;
+use Gate;
 
 class SettingController extends Controller
 {
     public function index()
     {
+        if( Gate::denies('setting.update') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = ['setting' => Setting::first()];
         return view(config('app.template').'.setting.setting', $data);
     }

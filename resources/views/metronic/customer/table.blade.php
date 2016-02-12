@@ -15,8 +15,12 @@
                     <span>Actions</span> <i class="icon-angle-down"></i>
                 </button>
                 <ul class="dropdown-menu pull-right" role="menu">
+                    @can('customer.create')
                     <li><a href="{{ url('/customer?type=unregistered') }}"> Buat Customer Baru</a></li>
+                    @endcan
+                    @can('customer.create-list')
                     <li><a href="{{ url('/customer/add') }}"> Buat ID Customer Baru</a></li>
+                    @endcan
                 </ul>
             </li>
             <li>
@@ -75,7 +79,9 @@
                                 <td>{{ $customer->jumlah_kunjungan }}</td>
                                 <td>{{ number_format($customer->total, 0, ',', '.') }}</td>
                                 <td>
+                                    @can('customer.update')
                                     <a href="{{ url('/customer/edit/'.$customer->id) }}" class="btn btn-sm yellow"><i class="icon-edit"></i></a>
+                                    @endcan
                                 </td>
                             </tr>
                             @endforeach

@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use App\Order;
 use App\PembelianBayar;
 use DB;
+use Gate;
 
 class AccountController extends Controller
 {
@@ -24,6 +25,10 @@ class AccountController extends Controller
      */
     public function index()
     {
+        if( Gate::denies('account.read') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $accounts = Account::all();
 
         $data = [
@@ -42,6 +47,10 @@ class AccountController extends Controller
      */
     public function create()
     {
+        if( Gate::denies('account.create') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = ['types' => Account::$types];
         return view(config('app.template').'.account.create', $data);
     }
@@ -94,10 +103,14 @@ class AccountController extends Controller
      */
     public function edit($id)
     {
+        if( Gate::denies('account.update') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $account = Account::find($id);
 
         if( !$account ){
-            abort(404);
+            return view(config('app.template').'.error.404');
         }
 
         $data = [
@@ -148,6 +161,10 @@ class AccountController extends Controller
 
     public function inputSaldo(Request $request)
     {
+        if( Gate::denies('account.saldo') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
 
         $saldos = AccountSaldo::with('account', 'bank')->where('tanggal', $tanggal)->get();
@@ -162,6 +179,10 @@ class AccountController extends Controller
 
     public function inputManual()
     {
+        if( Gate::denies('account.saldo.create') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = [
             'accounts' => Account::where('data_state', 'input')->lists('nama_akun', 'id'),
         ];
@@ -217,6 +238,10 @@ class AccountController extends Controller
 
     public function editInputManual($id)
     {
+        if( Gate::denies('account.saldo.update') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $accountSaldo = AccountSaldo::find($id);
 
         if( !$accountSaldo ){
@@ -262,6 +287,10 @@ class AccountController extends Controller
 
     public function jurnal(Request $request)
     {
+        if( Gate::denies('account.saldo.cash') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $type       = $request->get('type') ? $request->get('type') : 'cash';
         $tanggal    = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
         $CTanggal   = Carbon::createFromFormat('Y-m-d', $tanggal);
@@ -504,6 +533,10 @@ class AccountController extends Controller
 
     public function jurnalBank(Request $request)
     {
+        if( Gate::denies('account.saldo.bank') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $bank       = $request->get('bank') ? $request->get('bank') : Bank::first()->id;
         $tanggal    = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
         $CTanggal   = Carbon::createFromFormat('Y-m-d', $tanggal);

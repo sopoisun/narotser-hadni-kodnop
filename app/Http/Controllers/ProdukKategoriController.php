@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\ProdukKategori;
 use App\Http\Requests\ProdukKategoriRequest;
+use Gate;
 
 class ProdukKategoriController extends Controller
 {
@@ -18,6 +19,10 @@ class ProdukKategoriController extends Controller
      */
     public function index()
     {
+        if( Gate::denies('produk_kategori.read') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = [
             'kategoris' => ProdukKategori::all(),
         ];
@@ -32,6 +37,10 @@ class ProdukKategoriController extends Controller
      */
     public function create()
     {
+        if( Gate::denies('produk_kategori.create') ){
+            return view(config('app.template').'.error.403');
+        }
+
         return view(config('app.template').'.produk-kategori.create');
     }
 
@@ -69,10 +78,14 @@ class ProdukKategoriController extends Controller
      */
     public function edit($id)
     {
+        if( Gate::denies('produk_kategori.update') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $kategori = ProdukKategori::find($id);
 
         if( !$kategori ){
-            abort(404);
+            return view(config('app.template').'.error.404');
         }
 
         $data = ['kategori' => $kategori];
@@ -103,6 +116,10 @@ class ProdukKategoriController extends Controller
      */
     public function destroy($id)
     {
+        if( Gate::denies('produk_kategori.delete') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $kategori = ProdukKategori::find($id);
 
         if( $kategori && $kategori->delete() ){

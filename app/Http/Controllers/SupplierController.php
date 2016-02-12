@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SupplierRequest;
 use App\Supplier;
 use Input;
+use Gate;
 
 class SupplierController extends Controller
 {
@@ -19,6 +20,10 @@ class SupplierController extends Controller
      */
     public function index()
     {
+        if( Gate::denies('supplier.read') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = [
             'suppliers' => Supplier::all(),
         ];
@@ -33,6 +38,10 @@ class SupplierController extends Controller
      */
     public function create()
     {
+        if( Gate::denies('supplier.create') ){
+            return view(config('app.template').'.error.403');
+        }
+
         return view(config('app.template').'.supplier.create');
     }
 
@@ -70,10 +79,14 @@ class SupplierController extends Controller
      */
     public function edit($id)
     {
+        if( Gate::denies('supplier.update') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $supplier = Supplier::find($id);
 
         if( !$supplier ){
-            abort(404);
+            return view(config('app.template').'.error.404');
         }
 
         $data = [
@@ -107,6 +120,10 @@ class SupplierController extends Controller
      */
     public function destroy($id)
     {
+        if( Gate::denies('supplier.delete') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $supplier = Supplier::find($id);
 
         if( $supplier && $supplier->delete() ){

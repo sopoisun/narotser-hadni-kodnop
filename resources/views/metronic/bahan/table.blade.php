@@ -10,6 +10,7 @@
             Bahan <small>Daftar bahan produksi</small>
         </h3>
         <ul class="page-breadcrumb breadcrumb">
+            @can('bahan.create')
             <li class="btn-group">
                 <button type="button" class="btn blue dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
                     <span>Actions</span> <i class="icon-angle-down"></i>
@@ -18,6 +19,7 @@
                     <li><a href="{{ url('/bahan-produksi/add') }}">Tambah Bahan Produksi</a></li>
                 </ul>
             </li>
+            @endcan
             <li>
                 <i class="icon-home"></i>
                 <a href="javascript:void(0)">Home</a>
@@ -69,8 +71,12 @@
                                 <td>{{ $bahan->satuan }}</td>
                                 <td>{{ number_format($bahan->harga, 0, ",", ".") }}</td>
                                 <td>
+                                    @can('bahan.update')
                                     <a href="{{ url('/bahan-produksi/edit/'.$bahan->id) }}" class="btn btn-sm yellow"><i class="icon-edit"></i></a>
+                                    @endcan
+                                    @can('bahan.delete')
                                     <a href="{{ url('/bahan-produksi/delete/'.$bahan->id) }}" onclick="return confirm('Yakin hapus {{ $bahan->nama }} ??')" class="btn btn-sm red"><i class="icon-trash"></i></a>
+                                    @endcan
                                 </td>
                             </tr>
                             @endforeach

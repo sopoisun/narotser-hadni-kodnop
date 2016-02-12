@@ -10,6 +10,7 @@
             User Aplikasi
         </h3>
         <ul class="page-breadcrumb breadcrumb">
+            @can('user.create')
             <li class="btn-group">
                 <button type="button" class="btn blue dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
                     <span>Actions</span> <i class="icon-angle-down"></i>
@@ -18,6 +19,7 @@
                     <li><a href="{{ url('/user/add') }}">Tambah user</a></li>
                 </ul>
             </li>
+            @endcan
             <li>
                 <i class="icon-home"></i>
                 <a href="javascript:void(0)">Home</a>
@@ -65,8 +67,12 @@
                                 <td>{{ $user->username }}</td>
                                 <td>{{ $user->nama }}</td>
                                 <td>
+                                    @can('user.update')
                                     <a href="{{ url('/user/edit/'.$user->id) }}" class="btn btn-sm yellow"><i class="icon-edit"></i></a>
+                                    @endcan
+                                    @can('user.delete')
                                     <a href="{{ url('/user/delete/'.$user->id) }}" onclick="return confirm('Yakin hapus {{ $user->nama }} ??')" class="btn btn-sm red"><i class="icon-trash"></i></a>
+                                    @endcan
                                 </td>
                             </tr>
                             @endif

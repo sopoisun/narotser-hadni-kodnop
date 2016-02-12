@@ -10,6 +10,7 @@
             Tempat <small>Daftar Tempat Pelanggan</small>
         </h3>
         <ul class="page-breadcrumb breadcrumb">
+            @can('place.create')
             <li class="btn-group">
                 <button type="button" class="btn blue dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
                     <span>Actions</span> <i class="icon-angle-down"></i>
@@ -18,6 +19,7 @@
                     <li><a href="{{ url('/place/add') }}">Tambah Tempat</a></li>
                 </ul>
             </li>
+            @endcan
             <li>
                 <i class="icon-home"></i>
                 <a href="javascript:void(0)">Home</a>
@@ -71,8 +73,12 @@
                                 <td>{{ number_format($place->harga, 0, ",", ".") }}</td>
                                 <td>{{ $place->orderPlace->count() }}</td>
                                 <td>
+                                    @can('place.update')
                                     <a href="{{ url('/place/edit/'.$place->id) }}" class="btn btn-sm yellow"><i class="icon-edit"></i></a>
+                                    @endcan
+                                    @can('place.delete')
                                     <a href="{{ url('/place/delete/'.$place->id) }}" onclick="return confirm('Yakin hapus {{ $place->nama }} ??')" class="btn btn-sm red"><i class="icon-trash"></i></a>
+                                    @endcan
                                 </td>
                             </tr>
                             @endforeach

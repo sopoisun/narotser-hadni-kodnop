@@ -7,7 +7,7 @@
     <div class="col-md-12">
         <!-- BEGIN PAGE TITLE & BREADCRUMB-->
         <h3 class="page-title">
-            Input Nominal Akun
+            Ubah Input Nominal Akun
         </h3>
         <ul class="page-breadcrumb breadcrumb">
             <li>
@@ -23,7 +23,7 @@
                 <a href="{{ url('/account/saldo') }}">Saldo</a>
                 <i class="icon-angle-right"></i>
             </li>
-            <li><a href="javascript:void(0)">Input Saldo</a></li>
+            <li><a href="javascript:void(0)">Ubah Input Saldo</a></li>
         </ul>
         <!-- END PAGE TITLE & BREADCRUMB-->
     </div>
@@ -35,7 +35,7 @@
         <div class="portlet box blue">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="icon-reorder"></i> Form Nominal Akun
+                    <i class="icon-reorder"></i> Form Ubah Nominal Akun
                 </div>
                 <div class="tools">
                     <a href="" class="collapse"></a>

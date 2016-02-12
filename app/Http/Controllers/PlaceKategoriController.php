@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\PlaceKategori;
 use Validator;
+use Gate;
 
 class PlaceKategoriController extends Controller
 {
@@ -18,6 +19,10 @@ class PlaceKategoriController extends Controller
      */
     public function index()
     {
+        if( Gate::denies('place_kategori.read') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = ['kategoris' => PlaceKategori::all()];
         return view(config('app.template').'.place-kategori.table', $data);
     }
@@ -29,6 +34,10 @@ class PlaceKategoriController extends Controller
      */
     public function create()
     {
+        if( Gate::denies('place_kategori.create') ){
+            return view(config('app.template').'.error.403');
+        }
+
         return view(config('app.template').'.place-kategori.create');
     }
 
@@ -78,10 +87,14 @@ class PlaceKategoriController extends Controller
      */
     public function edit($id)
     {
+        if( Gate::denies('place_kategori.update') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $kategori = PlaceKategori::find($id);
 
         if( !$kategori ){
-            abort(404);
+            return view(config('app.template').'.error.404');
         }
 
         $data = ['kategori' => $kategori];
@@ -124,6 +137,10 @@ class PlaceKategoriController extends Controller
      */
     public function destroy($id)
     {
+        if( Gate::denies('place_kategori.delete') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $kategori = PlaceKategori::find($id);
 
         if( $kategori && $kategori->delete() ){

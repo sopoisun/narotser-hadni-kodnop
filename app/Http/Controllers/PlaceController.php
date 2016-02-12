@@ -10,6 +10,7 @@ use App\Http\Requests\PlaceRequest;
 use App\Place;
 use App\PlaceKategori;
 use DB;
+use Gate;
 
 class PlaceController extends Controller
 {
@@ -20,6 +21,10 @@ class PlaceController extends Controller
      */
     public function index()
     {
+        if( Gate::denies('place.read') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = [
             'places' => Place::with(['kategori', 'orderPlace' => function( $query ){
                             $query->join('orders', 'order_places.order_id', '=', 'orders.id')
@@ -37,6 +42,10 @@ class PlaceController extends Controller
      */
     public function create()
     {
+        if( Gate::denies('place.create') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = [
             'types' => PlaceKategori::lists('nama', 'id'),
         ];
@@ -78,10 +87,14 @@ class PlaceController extends Controller
      */
     public function edit($id)
     {
+        if( Gate::denies('place.update') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $place = Place::find($id);
 
         if( !$place ){
-            abort(404);
+            return view(config('app.template').'.error.404');
         }
 
         $data = [
@@ -116,6 +129,10 @@ class PlaceController extends Controller
      */
     public function destroy($id)
     {
+        if( Gate::denies('place.delete') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $place = Place::find($id);
 
         if( $place && $place->delete() ){

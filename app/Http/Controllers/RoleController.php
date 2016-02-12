@@ -10,6 +10,7 @@ use App\Role;
 use App\Permission;
 use Validator;
 use DB;
+use Gate;
 
 class RoleController extends Controller
 {
@@ -20,6 +21,10 @@ class RoleController extends Controller
      */
     public function index()
     {
+        if( Gate::denies('userrole.read') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = ['roles' => Role::all()];
         return view(config('app.template').'.role.table', $data);
     }
@@ -31,6 +36,10 @@ class RoleController extends Controller
      */
     public function create()
     {
+        if( Gate::denies('userrole.create') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $permissions = Permission::select(['permissions.*', DB::raw('SUBSTRING(`name`, 1, LOCATE(".", `name`)-1)AS `key`')])->get();
         $data = ['permissions' => $permissions];
         return view(config('app.template').'.role.create', $data);
@@ -89,10 +98,14 @@ class RoleController extends Controller
      */
     public function edit($id)
     {
+        if( Gate::denies('userrole.update') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $role = Role::with('permissions')->find($id);
 
         if( !$role ){
-            abort(404);
+            return view(config('app.template').'.error.404');
         }
 
         $data = [
@@ -157,6 +170,10 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
+        if( Gate::denies('userrole.delete') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $role = Role::find($id);
 
         if( $role && $role->delete() ){

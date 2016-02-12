@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Bank;
 use Validator;
+use Gate;
 
 class BankController extends Controller
 {
@@ -18,6 +19,10 @@ class BankController extends Controller
      */
     public function index()
     {
+        if( Gate::denies('bank.read') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = ['banks' => Bank::all()];
         return view(config('app.template').'.bank.table', $data);
     }
@@ -29,6 +34,10 @@ class BankController extends Controller
      */
     public function create()
     {
+        if( Gate::denies('bank.create') ){
+            return view(config('app.template').'.error.403');
+        }
+
         return view(config('app.template').'.bank.create');
     }
 
@@ -81,10 +90,14 @@ class BankController extends Controller
      */
     public function edit($id)
     {
+        if( Gate::denies('bank.update') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $bank = Bank::find($id);
 
         if( !$bank ){
-            abort(404);
+            return view(config('app.template').'.error.404');
         }
 
         $data = ['bank' => $bank];
@@ -130,6 +143,10 @@ class BankController extends Controller
      */
     public function destroy($id)
     {
+        if( Gate::denies('bank.delete') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $bank = Bank::find($id);
 
         if( $bank && $bank->delete() ){
