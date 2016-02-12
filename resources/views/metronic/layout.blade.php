@@ -327,25 +327,15 @@
                 <!-- BEGIN USER LOGIN DROPDOWN -->
                 <li class="dropdown user">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                        <img alt="" src="{{ url('/') }}/assets/metronic/img/avatar1_small.jpg" />
-                        <span class="username">Bob Nilson</span>
+                        <img alt="" src="{{ url('/') }}/assets/metronic/user-avatar.png" />
+                        <span class="username">{{ auth()->user()->karyawan->nama }}</span>
                         <i class="icon-angle-down"></i>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="extra_profile.html"><i class="icon-user"></i> My Profile</a>
-                        </li>
-                        <li><a href="page_calendar.html"><i class="icon-calendar"></i> My Calendar</a>
-                        </li>
-                        <li><a href="inbox.html"><i class="icon-envelope"></i> My Inbox <span class="badge badge-danger">3</span></a>
-                        </li>
-                        <li><a href="#"><i class="icon-tasks"></i> My Tasks <span class="badge badge-success">7</span></a>
+                        <li><a href="{{ url('/change-password') }}"><i class="icon-lock"></i> Change Password</a>
                         </li>
                         <li class="divider"></li>
-                        <li><a href="javascript:;" id="trigger_fullscreen"><i class="icon-move"></i> Full Screen</a>
-                        </li>
-                        <li><a href="extra_lock.html"><i class="icon-lock"></i> Lock Screen</a>
-                        </li>
-                        <li><a href="{{ url('/logout') }}"><i class="icon-key"></i> Log Out</a>
+                        <li><a href="{{ url('/logout') }}" onclick="return confirm('Yakin Logout ??')"><i class="icon-key"></i> Log Out</a>
                         </li>
                     </ul>
                 </li>
@@ -666,6 +656,7 @@
                         </li>
                     </ul>
                 </li>
+                @can('user.read')
                 <li class="{{ set_active('user*') }}">
                     <a class="active" href="javascript:;">
                         <i class="icon-user"></i>
@@ -673,6 +664,7 @@
                         <span class="arrow "></span>
                     </a>
                     <ul class="sub-menu">
+                        @can('permission.read')
                         <li class="{{ set_active('user/permission*') }}">
                             <a href="javascript:;">
                                 Permission
@@ -687,6 +679,8 @@
                                 </li>
                             </ul>
                         </li>
+                        @endcan
+                        @can('userrole.read')
                         <li class="{{ set_active('user/role*') }}">
                             <a href="javascript:;">
                                 Role
@@ -701,6 +695,7 @@
                                 </li>
                             </ul>
                         </li>
+                        @endcan
                         <li class="{{ set_active('user/add') }}">
                             <a href="{{ url('/user/add') }}">Tambah User</a>
                         </li>
@@ -709,6 +704,7 @@
                         </li>
                     </ul>
                 </li>
+                @endcan
                 <li class="{{ set_active('setting*') }}">
                     <a href="{{ url('/setting') }}">
                         <i class="icon-cogs"></i>

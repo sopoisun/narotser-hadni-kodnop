@@ -63,6 +63,15 @@
                         <tbody>
                             {{--*/ $no = 0; /*--}}
                             @foreach($karyawans as $karyawan)
+                            {{--*/
+                                $show = true;
+                                if( $karyawan->user != null ){
+                                    if( $karyawan->user->roles->contains('name', 'superuser') ){
+                                        $show = false;
+                                    }
+                                }
+                            /*--}}
+                            @if($show)
                             {{--*/ $no++; /*--}}
                             <tr>
                                 <td>{{ $no }}</td>
@@ -77,6 +86,7 @@
                                     <a href="{{ url('/karyawan/delete/'.$karyawan->id) }}" onclick="return confirm('Yakin hapus {{ $karyawan->nama }} ??')" class="btn btn-sm red"><i class="icon-trash"></i></a>
                                 </td>
                             </tr>
+                            @endif
                             @endforeach
                         </tbody>
                     </table>

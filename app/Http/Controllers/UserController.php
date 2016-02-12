@@ -11,6 +11,8 @@ use App\Role;
 use App\Karyawan;
 use Validator;
 use Hash;
+use DB;
+use Gate;
 
 class UserController extends Controller
 {
@@ -21,6 +23,11 @@ class UserController extends Controller
      */
     public function index()
     {
+        //$this->authorize('user.create');
+        if( Gate::denies('user.create') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $users  = User::join('karyawans', 'users.id', '=', 'karyawans.user_id')
                         ->with(['roles'])
                         ->select(['users.*', 'karyawans.nama'])->get();
@@ -70,7 +77,7 @@ class UserController extends Controller
 
         $user = User::create([
             'username' => $request->get('username'),
-            'password' => Hash::make($request->get('username')),
+            'password' => Hash::make($request->get('password')),
         ]);
 
         if( $user ){
@@ -153,10 +160,57 @@ class UserController extends Controller
     {
         $user = User::find($id);
 
-        if( $user && $user->delete() ){
+        if( !$user ){
+            abort(404);
+        }
+
+        $karyawan_id = $user->karyawan->id;
+
+        if( $user->delete() ){
+
+            DB::statement("UPDATE karyawans SET `user_id` = NULL where `id` = '$karyawan_id'");
+
             return redirect()->back()->with('succcess', 'Sukses hapus user.');
         }
 
         return redirect()->back()->withErrors(['failed' => 'Gagal hapus user.']);
+    }
+
+    public function changePassword()
+    {
+        $user = auth()->user();
+        $data = ['user' => $user];
+        return view(config('app.template').'.user.change-password', $data);
+    }
+
+    public function saveChangePassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'old_password'  => 'required',
+            'password'      => 'required|confirmed',
+        ], [
+            'old_password.required' => "Old password tidak boleh kosong.",
+            'password.required'     => "New Password tidak boleh kosong.",
+            'password.confirmed'    => "Password konfirmasi tidak sama.",
+        ]);
+
+        if( $validator->fails() ){
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $user = auth()->user();
+
+        if( !Hash::check($request->get('old_password'), $user->password) ){
+            return redirect()->back()
+                ->withErrors(['old_password' => 'Password lama sesuai.']);
+        }
+
+        if( $user->update(['password' => Hash::make($request->get('password'))]) ){
+            return redirect()->back()->with('succcess', 'Sukses ubah password.');
+        }
+
+        return redirect()->back()->withErrors(['failed' => 'Gagal ubah password.']);
     }
 }

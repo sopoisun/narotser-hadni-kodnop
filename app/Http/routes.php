@@ -213,6 +213,8 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/user/edit/{id}', 'UserController@edit');
         Route::post('/user/edit/{id}', 'UserController@update');
         Route::get('/user/delete/{id}', 'UserController@destroy');
+        Route::get('/change-password', 'UserController@changePassword');
+        Route::post('/change-password', 'UserController@saveChangePassword');
 
         // Permission
         Route::get('/user/permission', 'PermissionController@index');

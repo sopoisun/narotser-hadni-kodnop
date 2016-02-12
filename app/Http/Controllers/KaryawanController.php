@@ -21,7 +21,7 @@ class KaryawanController extends Controller
     public function index()
     {
         $data = [
-            'karyawans' => Karyawan::all(),
+            'karyawans' => Karyawan::with('user.roles')->get(),
         ];
 
         return view(config('app.template').'.karyawan.table', $data);

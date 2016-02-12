@@ -37,7 +37,7 @@ class User extends Authenticatable
 
     public function isSuper()
     {
-       if ($this->roles->contains('name', 'super')) {
+       if ($this->roles->contains('name', 'superuser')) {
             return true;
         }
         return false;
