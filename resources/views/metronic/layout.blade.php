@@ -377,6 +377,7 @@
                         <span class="title">Dashboard</span>
                     </a>
                 </li>
+                @can('order.select_place')
                 <li class="{{ set_active('order*') }}">
                     <a href="javascript:;">
                         <i class="icon-trophy"></i>
@@ -384,17 +385,25 @@
                         <span class="arrow "></span>
                     </a>
                     <ul class="sub-menu">
+                        @can('order.select_place')
                         <li class="{{ set_active('order') }}">
                             <a href="{{ url('/order') }}">Open Order</a>
                         </li>
+                        @endcan
+                        @can('order.list')
                         <li class="{{ set_active('order/pertanggal') }}">
                             <a href="{{ url('/order/pertanggal') }}">Daftar Order</a>
                         </li>
+                        @endcan
+                        @can('order.list')
                         <li class="{{ set_active('order/pertanggal/return') }}">
                             <a href="{{ url('/order/pertanggal/return') }}">Daftar Order Return</a>
                         </li>
+                        @endcan
                     </ul>
                 </li>
+                @endcan
+                @can('report.pertanggal.penjualan')
                 <li class="{{ set_active('report*') }}">
                     <a href="javascript:;">
                         <i class="icon-book"></i>
@@ -408,10 +417,18 @@
                             <span class="arrow"></span>
                             </a>
                             <ul class="sub-menu">
+                                @can('report.pertanggal.penjualan')
                                 <li class="{{ set_active('report/pertanggal') }}"><a href="{{ url('/report/pertanggal') }}">Laporan Penjualan</a></li>
+                                @endcan
+                                @can('report.pertanggal.solditem')
                                 <li class="{{ set_active('report/pertanggal/solditem') }}"><a href="{{ url('/report/pertanggal/solditem') }}">Laporan Sold Item</a></li>
+                                @endcan
+                                @can('report.pertanggal.karyawan')
                                 <li class="{{ set_active('report/pertanggal/karyawan') }}"><a href="{{ url('/report/pertanggal/karyawan') }}">Laporan Karyawan</a></li>
+                                @endcan
+                                @can('report.pertanggal.labarugi')
                                 <li class="{{ set_active('report/pertanggal/labarugi') }}"><a href="{{ url('/report/pertanggal/labarugi') }}">Laporan Laba/Rugi</a></li>
+                                @endcan
                             </ul>
                         </li>
                         <li class="{{ set_active('report/periode*') }}">
@@ -420,9 +437,15 @@
                             <span class="arrow"></span>
                             </a>
                             <ul class="sub-menu">
+                                @can('report.periode.solditem')
                                 <li class="{{ set_active('report/periode/solditem') }}"><a href="{{ url('/report/periode/solditem') }}">Laporan Sold Item</a></li>
+                                @endcan
+                                @can('report.periode.karyawan')
                                 <li class="{{ set_active('report/periode/karyawan') }}"><a href="{{ url('/report/periode/karyawan') }}">Laporan Karyawan</a></li>
+                                @endcan
+                                @can('report.periode.labarugi')
                                 <li class="{{ set_active('report/periode/labarugi') }}"><a href="{{ url('/report/periode/labarugi') }}">Laporan Laba/Rugi</a></li>
+                                @endcan
                             </ul>
                         </li>
                         <li class="{{ set_active('report/perbulan*') }}">
@@ -431,10 +454,18 @@
                             <span class="arrow"></span>
                             </a>
                             <ul class="sub-menu">
+                                @can('report.perbulan.penjualan')
                                 <li class="{{ set_active('report/perbulan') }}"><a href="{{ url('/report/perbulan') }}">Laporan Penjualan</a></li>
+                                @endcan
+                                @can('report.perbulan.solditem')
                                 <li class="{{ set_active('report/perbulan/solditem') }}"><a href="{{ url('/report/perbulan/solditem') }}">Laporan Sold Item</a></li>
+                                @endcan
+                                @can('report.perbulan.karyawan')
                                 <li class="{{ set_active('report/perbulan/karyawan') }}"><a href="{{ url('/report/perbulan/karyawan') }}">Laporan Karyawan</a></li>
+                                @endcan
+                                @can('report.perbulan.labarugi')
                                 <li class="{{ set_active('report/perbulan/labarugi') }}"><a href="{{ url('/report/perbulan/labarugi') }}">Laporan Laba/Rugi</a></li>
+                                @endcan
                             </ul>
                         </li>
                         <li class="{{ set_active('report/pertahun*') }}">
@@ -443,14 +474,24 @@
                             <span class="arrow"></span>
                             </a>
                             <ul class="sub-menu">
+                                @can('report.pertahun.penjualan')
                                 <li class="{{ set_active('report/pertahun') }}"><a href="{{ url('/report/pertahun') }}">Laporan Penjualan</a></li>
+                                @endcan
+                                @can('report.pertahun.solditem')
                                 <li class="{{ set_active('report/pertahun/solditem') }}"><a href="{{ url('/report/pertahun/solditem') }}">Laporan Sold Item</a></li>
+                                @endcan
+                                @can('report.pertahun.karyawan')
                                 <li class="{{ set_active('report/pertahun/karyawan') }}"><a href="{{ url('/report/pertahun/karyawan') }}">Laporan Karyawan</a></li>
+                                @endcan
+                                @can('report.pertahun.labarugi')
                                 <li class="{{ set_active('report/pertahun/labarugi') }}"><a href="{{ url('/report/pertahun/labarugi') }}">Laporan Laba/Rugi</a></li>
+                                @endcan
                             </ul>
                         </li>
                     </ul>
                 </li>
+                @endcan
+                @can('account.read')
                 <li class="{{ set_active('account*') }}">
                     <a href="javascript:;">
                         <i class="icon-star"></i>
@@ -458,35 +499,50 @@
                         <span class="arrow "></span>
                     </a>
                     <ul class="sub-menu">
+                        @can('account.create')
                         <li class="{{ set_active('account/add') }}">
                             <a href="{{ url('/account/add') }}">Tambah Akun</a>
                         </li>
+                        @endcan
+                        @can('account.read')
                         <li class="{{ set_active('account') }}">
                             <a href="{{ url('/account') }}">Daftar Akun</a>
                         </li>
+                        @endcan
+                        @can('account.saldo')
                         <li class="{{ set_active('account/saldo*') }}">
                             <a href="javascript:;">
                             Saldo Akun
                             <span class="arrow"></span>
                             </a>
                             <ul class="sub-menu">
+                                @can('account.saldo.create')
                                 <li class="{{ set_active('account/saldo/add') }}"><a href="{{ url('/account/saldo/add') }}">Input Saldo Akun</a></li>
+                                @endcan
+                                @can('account.saldo')
                                 <li class="{{ set_active('account/saldo') }}"><a href="{{ url('/account/saldo') }}">Daftar Input Saldo Akun</a></li>
+                                @endcan
                                 <li class="{{ set_active('account/saldo/jurnal*') }}">
                                     <a href="javascript:;">
                                     Jurnal
                                     <span class="arrow"></span>
                                     </a>
                                     <ul class="sub-menu">
+                                        @can('account.saldo.cash')
                                         <li class="{{ set_active('account/saldo/jurnal') }}"><a href="{{ url('/account/saldo/jurnal') }}">Jurnal Akun</a></li>
+                                        @endcan
+                                        @can('account.saldo.bank')
                                         <li class="{{ set_active('account/saldo/jurnal/bank') }}"><a href="{{ url('/account/saldo/jurnal/bank') }}">Jurnal Bank</a></li>
+                                        @endcan
                                     </ul>
                                 </li>
-
                             </ul>
                         </li>
+                        @endcan
                     </ul>
                 </li>
+                @endcan
+                @can('produk.read')
                 <li class="{{ set_active('produk*') }}">
                     <a href="javascript:;">
                         <i class="icon-certificate"></i>
@@ -494,31 +550,45 @@
                         <span class="arrow "></span>
                     </a>
                     <ul class="sub-menu">
+                        @can('produk_kategori.read')
                         <li class="{{ set_active('produk/kategori*') }}">
                             <a href="javascript:;">
                                 Kategori Produk
                                 <span class="arrow "></span>
                             </a>
                             <ul class="sub-menu">
+                                @can('produk_kategori.create')
                                 <li class="{{ set_active('produk/kategori/add') }}">
                                     <a href="{{ url('/produk/kategori/add') }}">Tambah Kategori Produk</a>
                                 </li>
+                                @endcan
+                                @can('produk_kategori.read')
                                 <li class="{{ set_active('produk/kategori') }}">
                                     <a href="{{ url('/produk/kategori') }}">Daftar Kategori Produk</a>
                                 </li>
+                                @endcan
                             </ul>
                         </li>
+                        @endcan
+                        @can('produk.create')
                         <li class="{{ set_active('produk/add') }}">
                             <a href="{{ url('/produk/add') }}">Tambah Produk</a>
                         </li>
+                        @endcan
+                        @can('produk.read')
                         <li class="{{ set_active('produk') }}">
                             <a href="{{ url('/produk') }}">Daftar Produk</a>
                         </li>
+                        @endcan
+                        @can('produk.stok')
                         <li class="{{ set_active('produk/stok') }}">
                             <a href="{{ url('/produk/stok') }}">Stok Produk</a>
                         </li>
+                        @endcan
                     </ul>
                 </li>
+                @endcan
+                @can('bahan.read')
                 <li class="{{ set_active('bahan-produksi*') }}">
                     <a href="javascript:;">
                         <i class="icon-leaf"></i>
@@ -526,17 +596,25 @@
                         <span class="arrow "></span>
                     </a>
                     <ul class="sub-menu">
+                        @can('bahan.create')
                         <li class="{{ set_active('bahan-produksi/add') }}">
                             <a href="{{ url('/bahan-produksi/add') }}">Tambah Bahan Produksi</a>
                         </li>
+                        @endcan
+                        @can('bahan.read')
                         <li class="{{ set_active('bahan-produksi') }}">
                             <a href="{{ url('/bahan-produksi') }}">Daftar Bahan Produksi</a>
                         </li>
+                        @endcan
+                        @can('bahan.stok')
                         <li class="{{ set_active('bahan-produksi/stok') }}">
                             <a href="{{ url('/bahan-produksi/stok') }}">Stok Bahan Produksi</a>
                         </li>
+                        @endcan
                     </ul>
                 </li>
+                @endcan
+                @can('customer.read')
                 <li class="{{ set_active('customer*') }}">
                     <a class="active" href="javascript:;">
                         <i class="icon-user-md"></i>
@@ -544,14 +622,20 @@
                         <span class="arrow "></span>
                     </a>
                     <ul class="sub-menu">
+                        @can('customer.create')
                         <li class="{{ set_active('customer/add') }}">
                             <a href="{{ url('/customer/add') }}">Tambah Customer</a>
                         </li>
+                        @endcan
+                        @can('customer.read')
                         <li class="{{ set_active('customer') }}">
                             <a href="{{ url('/customer') }}">Daftar Customer</a>
                         </li>
+                        @endcan
                     </ul>
                 </li>
+                @endcan
+                @can('place.read')
                 <li class="{{ set_active('place*') }}">
                     <a class="active" href="javascript:;">
                         <i class="icon-flag"></i>
@@ -559,28 +643,40 @@
                         <span class="arrow "></span>
                     </a>
                     <ul class="sub-menu">
+                        @can('place_kategori.read')
                         <li class="{{ set_active('place/kategori*') }}">
                             <a href="javascript:;">
                                 Kategori Tempat
                                 <span class="arrow "></span>
                             </a>
                             <ul class="sub-menu">
+                                @can('place_kategori.create')
                                 <li class="{{ set_active('place/kategori/add') }}">
                                     <a href="{{ url('/place/kategori/add') }}">Tambah Kategori Tempat</a>
                                 </li>
+                                @endcan
+                                @can('place_kategori.read')
                                 <li class="{{ set_active('place/kategori') }}">
                                     <a href="{{ url('/place/kategori') }}">Daftar Kategori Tempat</a>
                                 </li>
+                                @endcan
                             </ul>
                         </li>
+                        @endcan
+                        @can('place.create')
                         <li class="{{ set_active('place/add') }}">
                             <a href="{{ url('/place/add') }}">Tambah Tempat</a>
                         </li>
+                        @endcan
+                        @can('place.read')
                         <li class="{{ set_active('place') }}">
                             <a href="{{ url('/place') }}">Daftar Tempat</a>
                         </li>
+                        @endcan
                     </ul>
                 </li>
+                @endcan
+                @can('karyawan.read')
                 <li class="{{ set_active('karyawan*') }}">
                     <a class="active" href="javascript:;">
                         <i class="icon-user"></i>
@@ -588,14 +684,20 @@
                         <span class="arrow "></span>
                     </a>
                     <ul class="sub-menu">
+                        @can('karyawan.create')
                         <li class="{{ set_active('karyawan/add') }}">
                             <a href="{{ url('/karyawan/add') }}">Tambah Karyawan</a>
                         </li>
+                        @endcan
+                        @can('karyawan.read')
                         <li class="{{ set_active('karyawan') }}">
                             <a href="{{ url('/karyawan') }}">Daftar Karyawan</a>
                         </li>
+                        @endcan
                     </ul>
                 </li>
+                @endcan
+                @can('supplier.read')
                 <li class="{{ set_active('supplier*') }}">
                     <a class="active" href="javascript:;">
                         <i class="icon-truck"></i>
@@ -603,14 +705,20 @@
                         <span class="arrow "></span>
                     </a>
                     <ul class="sub-menu">
+                        @can('supplier.create')
                         <li class="{{ set_active('supplier/add') }}">
                             <a href="{{ url('/supplier/add') }}">Tambah Supplier</a>
                         </li>
+                        @endcan
+                        @can('supplier.read')
                         <li class="{{ set_active('supplier') }}">
                             <a href="{{ url('/supplier') }}">Daftar Supplier</a>
                         </li>
+                        @endcan
                     </ul>
                 </li>
+                @endcan
+                @can('tax.read')
                 <li class="{{ set_active('tax*') }}">
                     <a class="active" href="javascript:;">
                         <i class="icon-credit-card"></i>
@@ -618,14 +726,20 @@
                         <span class="arrow "></span>
                     </a>
                     <ul class="sub-menu">
+                        @can('tax.create')
                         <li class="{{ set_active('tax/add') }}">
                             <a href="{{ url('/tax/add') }}">Tambah Type Pajak</a>
                         </li>
+                        @endcan
+                        @can('tax.read')
                         <li class="{{ set_active('tax') }}">
                             <a href="{{ url('/tax') }}">Daftar Type Pajak</a>
                         </li>
+                        @endcan
                     </ul>
                 </li>
+                @endcan
+                @can('pembelian.read')
                 <li class="{{ set_active('pembelian*') }}">
                     <a class="active" href="javascript:;">
                         <i class="icon-gift"></i>
@@ -633,14 +747,20 @@
                         <span class="arrow "></span>
                     </a>
                     <ul class="sub-menu">
+                        @can('pembelian.create')
                         <li class="{{ set_active('pembelian/add') }}">
                             <a href="{{ url('/pembelian/add') }}">Tambah Pembelian</a>
                         </li>
+                        @endcan
+                        @can('pembelian.read')
                         <li class="{{ set_active('pembelian') }}">
                             <a href="{{ url('/pembelian') }}">Daftar Pembelian</a>
                         </li>
+                        @endcan
                     </ul>
                 </li>
+                @endcan
+                @can('adjustment.read')
                 <li class="{{ set_active('adjustment*') }}">
                     <a href="javascript:;">
                         <i class="icon-fire"></i>
@@ -648,14 +768,19 @@
                         <span class="arrow "></span>
                     </a>
                     <ul class="sub-menu">
+                        @can('adjustment.create')
                         <li class="{{ set_active('adjustment/add') }}">
                             <a href="{{ url('/adjustment/add') }}">Tambah Adjustment</a>
                         </li>
+                        @endcan
+                        @can('adjustment.read')
                         <li class="{{ set_active('adjustment') }}">
                             <a href="{{ url('/adjustment') }}">Daftar Adjustment</a>
                         </li>
+                        @endcan
                     </ul>
                 </li>
+                @endcan
                 @can('user.read')
                 <li class="{{ set_active('user*') }}">
                     <a class="active" href="javascript:;">
@@ -671,12 +796,16 @@
                                 <span class="arrow "></span>
                             </a>
                             <ul class="sub-menu">
+                                @can('permission.create')
                                 <li class="{{ set_active('user/permission/add') }}">
                                     <a href="{{ url('/user/permission/add') }}">Tambah Permission</a>
                                 </li>
+                                @endcan
+                                @can('permission.read')
                                 <li class="{{ set_active('user/permission') }}">
                                     <a href="{{ url('/user/permission') }}">Daftar Permission</a>
                                 </li>
+                                @endcan
                             </ul>
                         </li>
                         @endcan
@@ -687,30 +816,40 @@
                                 <span class="arrow "></span>
                             </a>
                             <ul class="sub-menu">
+                                @can('userrole.create')
                                 <li class="{{ set_active('user/role/add') }}">
                                     <a href="{{ url('/user/role/add') }}">Tambah Role</a>
                                 </li>
+                                @endcan
+                                @can('userrole.read')
                                 <li class="{{ set_active('user/role') }}">
                                     <a href="{{ url('/user/role') }}">Daftar Role</a>
                                 </li>
+                                @endcan
                             </ul>
                         </li>
                         @endcan
+                        @can('user.create')
                         <li class="{{ set_active('user/add') }}">
                             <a href="{{ url('/user/add') }}">Tambah User</a>
                         </li>
+                        @endcan
+                        @can('user.read')
                         <li class="{{ set_active('user') }}">
                             <a href="{{ url('/user') }}">Daftar User</a>
                         </li>
+                        @endcan
                     </ul>
                 </li>
                 @endcan
+                @can('setting.update')
                 <li class="{{ set_active('setting*') }}">
                     <a href="{{ url('/setting') }}">
                         <i class="icon-cogs"></i>
                         <span class="title">Setting</span>
                     </a>
                 </li>
+                @endcan
             </ul>
             <!-- END SIDEBAR MENU -->
         </div>

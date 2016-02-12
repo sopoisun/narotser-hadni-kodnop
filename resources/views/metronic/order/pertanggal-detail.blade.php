@@ -151,7 +151,13 @@
                                         <div class="form-group @if($errors->has('diskon')) has-error @endif">
                                             <label for="diskon" class="col-md-3 control-label">Diskon</label>
                                             <div class="col-md-8">
-                                                {{ Form::text('diskon', $order->bayar->diskon, ['class' => 'form-control number_f', 'id' => 'diskon']) }}
+                                                {{--*/
+                                                    $opt = ['class' => 'form-control number_f', 'id' => 'diskon'];
+                                                    if( Gate::denies('order.update') ){
+                                                        $opt['readonly'] = 'readonly';
+                                                    }
+                                                /*--}}
+                                                {{ Form::text('diskon', $order->bayar->diskon, $opt) }}
                                                 @if($errors->has('diskon'))<span class="help-block">{{ $errors->first('diskon') }}</span>@endif
                                             </div>
                                         </div>
@@ -219,7 +225,9 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="col-md-offset-3 col-md-9">
+                                            @can('order.update')
                                             <button type="submit" class="btn red" id="btnSaveitem">Simpan Pembayaran</button>
+                                            @endcan
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -275,10 +283,12 @@
                                         <td>{{ $od->qty }}</td>
                                         <td style="text-align:right;">{{ number_format($od->subtotal, 0, ',', '.') }}</td>
                                         <td>
+                                            @can('order.update')
                                             <a href="{{ url('/ajax/order/detail/return?id='.$od->id) }}" data-toggle="modal"
                                                 data-target="#ajax" class="btn btn-sm blue">
                                                     <i class="icon-search"></i>
                                             </a>
+                                            @endcan
                                         </td>
                                     </tr>
                                     @endforeach

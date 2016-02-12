@@ -110,11 +110,13 @@
                                 <td>{{ $order['state'] }}</td>
                                 <td>{{ $order['karyawan']['nama'] }}</td>
                                 <td>
+                                    @can('order.list.detail')
                                     {{--*/ $disabled = ( $order['state'] != 'Closed' ) ? 'disabled' : '' /*--}}
                                     <a href="{{ url('/order/pertanggal/detail?id='.$order['id']) }}"
                                         class="btn btn-sm blue {{ $disabled }}">
                                             <i class="icon-search"></i>
                                     </a>
+                                    @endcan
                                 </td>
                             </tr>
                             @endforeach

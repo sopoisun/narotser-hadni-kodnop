@@ -122,18 +122,28 @@
                                 </td>
                                 <td>
                                     @if( $place->state == 'On Going' )
+                                        @can('order.change')
                                         <a href="{{ url('/order/'.$place->order_id.'/change') }}" class="btn btn-sm yellow"><i class="icon-cog"></i> Change</a>
+                                        @endcan
+                                        @can('order.merge')
                                         <!--<a href="{{ url('/ajax/order/'.$place->order_id.'/merge?tanggal='.$tgl) }}" data-toggle="modal"
                                             data-target="#ajax" class="btn btn-sm blue" data-id="{{ $place->id }}">
                                             <i class="icon-sitemap"></i> Gabung
                                         </a>-->
+                                        @endcan
+                                        @can('order.close')
                                         <a href="{{ url('/order/'.$place->order_id.'/close') }}" class="btn btn-sm green"><i class="icon-ok"></i> Close</a>
+                                        @endcan
+                                        @can('order.cancel')
                                         <!--<a href="{{ url('/ajax/order/'.$place->order_id.'/cancel') }}" data-toggle="modal"
                                             data-target="#ajax" class="btn btn-sm red" data-id="{{ $place->id }}">
                                             <i class="icon-remove"></i> Cancel
                                         </a>-->
+                                        @endcan
                                     @else
+                                        @can('order.open')
                                         <a href="{{ url('/order/'.$place->id.'/open') }}" class="btn btn-sm blue"><i class="icon-pencil"></i> Open</a>
+                                        @endcan
                                     @endif
                                 </td>
                             </tr>
