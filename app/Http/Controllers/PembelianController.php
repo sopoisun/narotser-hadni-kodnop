@@ -182,7 +182,7 @@ class PembelianController extends Controller
         }
 
         // Pembelian Detail
-        $details  = $beliBahan + $beliProduk;
+        $details  = array_merge($beliBahan, $beliProduk);
         $temp = [];
         foreach( $details as $detail ){
             array_push($temp, ($detail + ['pembelian_id' => $pembelian->id]));

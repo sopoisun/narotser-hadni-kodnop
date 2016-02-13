@@ -66,7 +66,7 @@
                                 <div class="form-group @if($errors->has('karyawan')) has-error @endif">
                                     <label for="karyawan" class="col-md-3 control-label">Karyawan</label>
                                     <div class="col-md-8">
-                                    {{--*/ $karyawan = Auth::check() ? Auth::user()->nama : 'Administrator'; /*--}}
+                                    {{--*/ $karyawan = Auth::check() ? Auth::user()->karyawan->nama : 'Administrator'; /*--}}
                                     {{ Form::text('karyawan', $karyawan, ['class' => 'form-control', 'id' => 'karyawan', 'readonly' => 'readonly']) }}
                                     @if($errors->has('karyawan'))<span class="help-block">{{ $errors->first('karyawan') }}</span>@endif
                                     </div>

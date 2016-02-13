@@ -40,6 +40,6 @@ class AuthServiceProvider extends ServiceProvider
 
     private function getPermissions()
     {
-        return Permission::all();
+        return Permission::with('roles')->get();
     }
 }

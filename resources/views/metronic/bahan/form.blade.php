@@ -9,11 +9,11 @@
         {{ Form::text('satuan', null, ['class' => 'form-control', 'id' => 'satuan']) }}
         @if($errors->has('satuan'))<span class="help-block">{{ $errors->first('satuan') }}</span>@endif
     </div>
-    <div class="form-group @if($errors->has('harga')) has-error @endif">
+    <!--<div class="form-group @if($errors->has('harga')) has-error @endif">
         <label for="harga" class="control-label">Harga</label>
         {{ Form::text('harga', null, ['class' => 'form-control', 'id' => 'harga']) }}
         @if($errors->has('harga'))<span class="help-block">{{ $errors->first('harga') }}</span>@endif
-    </div>
+    </div>-->
 </div>
 <div class="form-actions">
     <button type="submit" class="btn yellow">Simpan</button>

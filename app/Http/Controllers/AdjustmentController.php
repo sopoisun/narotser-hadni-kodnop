@@ -171,8 +171,10 @@ class AdjustmentController extends Controller
         }
 
         // Adjustment Detail
-        $data_adjustment = $data_adjustment_reduction_bahan + $data_adjustment_reduction_produk
-                            + $data_adjustment_increase_bahan + $data_adjustment_increase_produk;
+        $data_adjustment = array_merge($data_adjustment_reduction_bahan, $data_adjustment_reduction_produk);
+        $data_adjustment = array_merge($data_adjustment_increase_bahan, $data_adjustment);
+        $data_adjustment = array_merge($data_adjustment_increase_produk, $data_adjustment);
+
         $details = [];
         foreach($data_adjustment as $da){
             $temp = $da;

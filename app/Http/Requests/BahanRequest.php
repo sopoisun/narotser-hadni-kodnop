@@ -24,20 +24,19 @@ class BahanRequest extends Request
     public function rules()
     {
         return [
-            'nama'      => 'required|min:3',
+            'nama'      => 'required',
             'satuan'    => 'required',
-            'harga'     => 'required|numeric',
+            //'harga'     => 'required|numeric',
         ];
     }
 
     public function messages()
     {
         return [
-            'nama.required'         => 'Nama karyawan tidak boleh kosong.',
-            'nama.min'              => 'Nama karyawan harus lebih dari 3 karakter.',
+            'nama.required'         => 'Nama Bahan tidak boleh kosong.',
             'satuan.required'       => 'Satuan tidak boleh kosong.',
-            'harga.required'        => 'Harga tidak boleh kosong.',
-            'harga.numeric'         => 'Harga harus angka.',
+            //'harga.required'        => 'Harga tidak boleh kosong.',
+            //'harga.numeric'         => 'Harga harus angka.',
         ];
     }
 }

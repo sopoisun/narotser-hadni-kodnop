@@ -530,7 +530,10 @@
         if( $("#harga").val() != "" && $("#hpp").val() != "" ){
             var laba = $("#harga").val() - $("#hpp").val();
             $("#laba").val(laba);
-            var laba_procentage = (( $("#harga").val() - $("#hpp").val() )/$("#hpp").val())*100;
+            var laba_procentage = 0;
+            if( $("#hpp").val() > 0 ){
+                laba_procentage = (( $("#harga").val() - $("#hpp").val() )/$("#hpp").val())*100;
+            }
             $("#laba_procentage").val(laba_procentage);
         }else{
             $("#laba").val("");
