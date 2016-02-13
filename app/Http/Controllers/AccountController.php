@@ -493,6 +493,34 @@ class AccountController extends Controller
                 // Account Saldo
                 if( isset($accountSaldos[$date->format('Y-m-d')]) ){
                     $acs = $accountSaldos[$date->format('Y-m-d')];
+
+                    #New Algorithm
+                    $acsGroupType = $acs->groupBy('type');
+
+                    foreach($acsGroupType as $key => $val){
+                        $agtTotal = $val->sum('nominal');
+                        if($key == 'debet'){
+                            $saldo -= $agtTotal;
+                            array_push($tableTemp, [
+                                'tanggal'       => $date->format('Y-m-d'),
+                                'keterangan'    => 'Ambil Di Bank',
+                                'debet'         => '',
+                                'kredit'        => $agtTotal,
+                                'saldo'         => $saldo,
+                            ]);
+                        }else{ // kredit
+                            $saldo += $agtTotal;
+                            array_push($tableTemp, [
+                                'tanggal'       => $date->format('Y-m-d'),
+                                'keterangan'    => 'Simpan Di Bank',
+                                'debet'         => $agtTotal,
+                                'kredit'        => '',
+                                'saldo'         => $saldo,
+                            ]);
+                        }
+                    }
+
+                    /*#Old Algorithm
                     foreach($acs as $as){
                         if( $as['type'] == 'debet' ){
                             $saldo -= $as['nominal'];
@@ -513,7 +541,7 @@ class AccountController extends Controller
                                 'saldo'         => $saldo,
                             ]);
                         }
-                    }
+                    }*/
                 }
             }
 
