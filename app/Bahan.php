@@ -32,7 +32,14 @@ class Bahan extends Model
 
     public static function stok()
     {
-        return self::leftJoin('pembelian_details', 'bahans.id', '=', 'pembelian_details.relation_id')
+        return self::leftJoin(DB::raw("(SELECT pembelian_details.`relation_id`, SUM(pembelian_details.`stok`)stok
+                    FROM pembelian_details WHERE pembelian_details.`type` = 'bahan'
+                    GROUP BY pembelian_details.`relation_id`)temp_pembelian"),
+                    function($join){
+                        $join->on('bahans.id', '=', 'temp_pembelian.relation_id');
+                    }
+            )
+            //->leftJoin('pembelian_details', 'bahans.id', '=', 'pembelian_details.relation_id')
             ->leftJoin(DB::raw("(SELECT adjustment_details.`relation_id`, SUM(adjustment_details.`qty`)AS qty
                     FROM adjustment_details WHERE adjustment_details.`state`= 'increase'
                     AND adjustment_details.`type` = 'bahan'
@@ -62,11 +69,11 @@ class Bahan extends Model
             )
             ->select([
                 'bahans.*',
-                DB::raw('SUM(ifnull(pembelian_details.stok, 0))as stok_pembelian'),
+                DB::raw('ifnull(temp_pembelian.stok, 0)as stok_pembelian'),
                 DB::raw('ifnull(penjualan.qty, 0)as penjualan_stok'),
                 DB::raw('ifnull(adjustment_increase.qty, 0)as adjustment_increase_stok'),
                 DB::raw('ifnull(adjustment_reduction.qty, 0)as adjustment_reduction_stok'),
-                DB::raw('(( SUM(ifnull(pembelian_details.stok, 0)) + ifnull(adjustment_increase.qty, 0) ) - ( ifnull(penjualan.qty, 0) + ifnull(adjustment_reduction.qty, 0) ))sisa_stok'),
+                DB::raw('(( ifnull(temp_pembelian.stok, 0) + ifnull(adjustment_increase.qty, 0) ) - ( ifnull(penjualan.qty, 0) + ifnull(adjustment_reduction.qty, 0) ))sisa_stok'),
             ])
             ->groupBy('bahans.id');
             /*->orderBy('bahans.id')
