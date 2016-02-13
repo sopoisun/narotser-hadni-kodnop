@@ -658,17 +658,48 @@ class OrderController extends Controller
     public function saveProduk(Request $request)
     {
         $session = $request->session();
-        $saveSession = $request->only(['id', 'qty', 'harga', 'note']); // id as produk_id
-        $session->put('data_order.'.$request->get('id'), $saveSession);
-        return [
-            'num'       => $request->get('num'),
-            'nama'      => $request->get('nama'),
-            'harga'     => number_format($request->get('harga'), 0, ',', '.'),
-            'qty'       => $request->get('qty'),
-            'subtotal'  => number_format($request->get('harga') * $request->get('qty'), 0, ',', '.'),
-            'note'      => $request->get('note'),
-            'action'    => $request->get('action'),
-        ];
+        // Check Stok
+        $produkId   = $request->get('id');
+        $qty        = $request->get('qty');
+        $produk = Produk::with('detail')->find($produkId);
+
+        $denied = false;
+        if( $produk->detail->count() ){
+            $tempBahan = [];
+            foreach( $produk->detail as $pd ){
+                $bId = $pd['bahan_id'];
+                $tempBahan[$bId] =( $pd['qty'] * $qty );
+            }
+
+            $bahans = \App\Bahan::stok()->whereIn('bahans.id', array_keys($tempBahan))->get();
+            foreach($bahans as $bahan){
+                $bId = $bahan->id;
+                if( $bahan->sisa_stok < $tempBahan[$bId] ){
+                    $denied = true;
+                }
+            }
+        }else{
+            $produk = Produk::stok()->find($produkId);
+            if( $produk->sisa_stok < $qty ){
+                $denied = true;
+            }
+        }
+
+        if( !$denied ){
+            $saveSession = $request->only(['id', 'qty', 'harga', 'note']); // id as produk_id
+            $session->put('data_order.'.$request->get('id'), $saveSession);
+            return [
+                'num'       => $request->get('num'),
+                'nama'      => $request->get('nama'),
+                'harga'     => number_format($request->get('harga'), 0, ',', '.'),
+                'qty'       => $request->get('qty'),
+                'subtotal'  => number_format($request->get('harga') * $request->get('qty'), 0, ',', '.'),
+                'note'      => $request->get('note'),
+                'action'    => $request->get('action'),
+            ];
+        }else{
+            return 0;
+        }
     }
 
     public function removeProduk(Request $request)

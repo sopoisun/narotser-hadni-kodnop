@@ -390,7 +390,9 @@
                 async:  false,
                 data:   _data,
                 success: function(res){
-                    success = res;
+                    if(typeof jQuery.parseJSON(res) =='object'){
+                      success = res;
+                    }
                 }
             })
 
@@ -433,7 +435,7 @@
                     $("#nama_produk_order").focus();
                 }, 1000);
             }else{
-                toastr.error('Errorsss....');
+                toastr.error('Stok tidak cukup !!');
             }
         }else{
             toastr.warning('Mohon lengkapi input dulu');
