@@ -45,11 +45,12 @@ class OrderController extends Controller
                 FROM order_places INNER JOIN orders ON order_places.`order_id` = orders.`id`
                 WHERE SUBSTRING(orders.tanggal, 1, 10) = '".$tgl."' AND orders.`state` = 'On Going' )as order_place_temp"), function($query){
                     $query->on('places.id', '=', 'order_place_temp.place_id');
-            })->where('kategori_id', $type)->get();
+            })->where('kategori_id', $type)
+            ->orderBy('places.id')->get();
 
             $data = [
                 'type'      => $type,
-                'tgl'       => $tgl,
+                'tgl'       => Carbon::createFromFormat('Y-m-d', $tgl),
                 'types'     => $types,
                 'places'    => $places
             ];
@@ -69,7 +70,9 @@ class OrderController extends Controller
             $request->session()->forget('data_order');
         }
 
-        $data = ['current_place' => $id];
+        $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
+
+        $data = ['current_place' => $id, 'tgl' => Carbon::createFromFormat('Y-m-d', $tanggal)];
         return view(config('app.template').'.order.open', $data);
     }
 
@@ -119,7 +122,7 @@ class OrderController extends Controller
         $places     = Place::whereIn('id', $places)->get();
         $orderPlaces = [];
         foreach($places as $place){
-            $placeType      = $place->type; // For Redirect
+            $placeType      = $place->kategori_id; // For Redirect
             array_push($orderPlaces, [
                 'order_id'  => $order->id,
                 'place_id'  => $place->id,
@@ -165,7 +168,7 @@ class OrderController extends Controller
 
         $request->session()->forget('data_order');
 
-        return redirect('/order?type='.$placeType)->with('succcess', 'Sukses simpan data order.');
+        return redirect('/order?tgl='.$tanggal.'&type='.$placeType)->with('succcess', 'Sukses simpan data order.');
     }
 
     public function cancelOrder($id)
@@ -494,7 +497,7 @@ class OrderController extends Controller
                 }
 
                 if( Order::find($id)->update($order) ){
-                    return redirect('/order')
+                    return redirect('/order/pertanggal/detail?id='.$id)
                         ->with('succcess', 'Sukses Tutup Order');
                 }
             }

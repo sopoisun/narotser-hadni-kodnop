@@ -54,7 +54,7 @@
                                 <div class="form-group @if($errors->has('tanggal')) has-error @endif">
                                     <label for="tanggal" class="col-md-3 control-label">Tanggal</label>
                                     <div class="col-md-8">
-                                        {{--*/ $tanggal = old('tanggal')  ? old('tanggal') : date('Y-m-d'); /*--}}
+                                        {{--*/ $tanggal = old('tanggal')  ? old('tanggal') : $tgl->format('Y-m-d'); /*--}}
                                         {{ Form::text('tanggal', $tanggal, ['class' => 'form-control tanggalan', 'id' => 'tanggal', 'data-date-format' => 'yyyy-mm-dd']) }}
                                         @if($errors->has('tanggal'))<span class="help-block">{{ $errors->first('tanggal') }}</span>@endif
                                     </div>
@@ -230,10 +230,13 @@
     var produkSources = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('nama'),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
-        prefetch: "{{ url('/ajax/order/produk') }}",
+        prefetch: {
+            url: "{{ url('/ajax/order/produk') }}",
+            cache: false,
+        },
         remote: {
             url: "{{ url('/ajax/order/produk') }}?q=%QUERY",
-            wildcard: '%QUERY'
+            wildcard: '%QUERY',
         }
     });
 
@@ -269,7 +272,10 @@
     var karyawanSources = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('nama'),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
-        prefetch: "{{ url('/ajax/karyawan') }}",
+        prefetch: {
+            url: "{{ url('/ajax/karyawan') }}",
+            cache: false,
+        },
         remote: {
             url: "{{ url('/ajax/karyawan') }}?q=%QUERY",
             wildcard: '%QUERY'
@@ -369,6 +375,7 @@
 
     /* Input produk Save */
     $("#formInputProduk").submit(function(e){
+        e.preventDefault();
         var submit = false;
         if( $("#qty_order").val() != "" && $("#produk_id_order").val() != "" ){
             var num = $("#tblProduk tbody tr").length == 0 ? 1 : $("#tblProduk tbody tr").length;
@@ -389,9 +396,10 @@
                 type:   "POST",
                 async:  false,
                 data:   _data,
-                success: function(res){
-                    if(typeof jQuery.parseJSON(res) =='object'){
-                      success = res;
+                success: function(res, status, xhr){
+                    var ct = xhr.getResponseHeader("content-type") || "";
+                    if (ct.indexOf('json') > -1) {
+                        success = res;
                     }
                 }
             })

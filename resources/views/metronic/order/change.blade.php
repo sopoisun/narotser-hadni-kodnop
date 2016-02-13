@@ -343,7 +343,10 @@
     var produkSources = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('nama'),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
-        prefetch: "{{ url('/ajax/order/produk') }}",
+        prefetch: {
+            url: "{{ url('/ajax/order/produk') }}",
+            cache: false,
+        },
         remote: {
             url: "{{ url('/ajax/order/produk') }}?q=%QUERY",
             wildcard: '%QUERY'

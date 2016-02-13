@@ -32,9 +32,9 @@ class Account extends Model
         $query = "SELECT orders.`id`, orders.`tanggal`, ifnull(SUM(
             	((temp_order_details.total+temp_order_places.total) +
             	ROUND((temp_order_details.total+temp_order_places.total) * (order_taxes.`procentage`/ 100)) +
-            	ROUND(((temp_order_details.total+temp_order_places.total) +
+            	IFNULL(ROUND(((temp_order_details.total+temp_order_places.total) +
             		ROUND((temp_order_details.total+temp_order_places.total) * (order_taxes.`procentage`/ 100))) *
-            		(order_bayar_banks.`tax_procentage` / 100)))
+            		(order_bayar_banks.`tax_procentage` / 100)),0))
             	- order_bayars.`diskon`
             ), 0)total
             FROM orders INNER JOIN order_taxes ON orders.`id` = order_taxes.`order_id`

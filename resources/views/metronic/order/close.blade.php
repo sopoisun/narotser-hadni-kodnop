@@ -330,7 +330,10 @@
     var customerSources = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('nama'),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
-        prefetch: "{{ url('/ajax/customer') }}",
+        prefetch: {
+            url: "{{ url('/ajax/customer') }}",
+            cache: false,
+        },
         remote: {
             url: "{{ url('/ajax/customer') }}?q=%QUERY",
             wildcard: '%QUERY'

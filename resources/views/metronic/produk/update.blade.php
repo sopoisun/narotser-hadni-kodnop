@@ -215,7 +215,10 @@
     var supplierSources = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('nama_perusahaan'),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
-        prefetch: "{{ url('/ajax/supplier') }}",
+        prefetch: {
+            url: "{{ url('/ajax/supplier') }}",
+            cache: false,
+        },
         remote: {
             url: "{{ url('/ajax/supplier') }}?q=%QUERY",
             wildcard: '%QUERY'

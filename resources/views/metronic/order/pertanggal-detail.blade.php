@@ -188,7 +188,7 @@
                                         <div class="form-group">
                                             <label for="customer_id" class="col-md-3 control-label">ID Customer</label>
                                             <div class="col-md-8">
-                                                {{ Form::text('customer_kode', $order->customer->kode, ['class' => 'form-control', 'id' => 'customer_kode', 'readonly' => 'readonly']) }}
+                                                {{ Form::text('customer_kode', ( $order->customer != null ? $order->customer->kode : ''), ['class' => 'form-control', 'id' => 'customer_kode', 'readonly' => 'readonly']) }}
                                             </div>
                                         </div>
                                     </div>
@@ -207,7 +207,7 @@
                                         <div class="form-group">
                                             <label for="nama_customer" class="col-md-3 control-label">Nama Cstmr</label>
                                             <div class="col-md-8">
-                                                {{ Form::text('nama_customer', $order->customer->nama, ['class' => 'form-control', 'id' => 'nama_customer', 'readonly' => 'readonly']) }}
+                                                {{ Form::text('nama_customer', ( $order->customer != null ? $order->customer->nama : ''), ['class' => 'form-control', 'id' => 'nama_customer', 'readonly' => 'readonly']) }}
                                             </div>
                                         </div>
                                     </div>
@@ -297,8 +297,8 @@
                                     {{--*/ $i++; /*--}}
                                     <tr>
                                         <td>{{ $i }}</td>
-                                        <td colspan="5">{{ $place->place->nama }}</td>
-                                        <td style="text-align:right;">{{ number_format($place->harga, 0, ',', '.') }}</td>
+                                        <td colspan="5">{{ $place['nama'] }}</td>
+                                        <td style="text-align:right;">{{ number_format($place['harga'], 0, ',', '.') }}</td>
                                         <td></td>
                                     </tr>
                                     @endforeach

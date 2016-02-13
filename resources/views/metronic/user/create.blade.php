@@ -125,7 +125,10 @@
 var karyawanSources = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('nama'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
-    prefetch: "{{ url('/ajax/karyawan?foruser=Ya') }}",
+    prefetch: {
+        url: "{{ url('/ajax/karyawan?foruser=Ya') }}",
+        cache: false,        
+    },
     remote: {
         url: "{{ url('/ajax/karyawan?foruser=Ya&') }}?q=%QUERY",
         wildcard: '%QUERY'

@@ -53,7 +53,7 @@
                                 <div class="form-group">
                                     <label for="tgl" class="col-md-3 control-label">Tanggal</label>
                                     <div class="col-md-8">
-                                    {{ Form::text('tgl', $tgl, ['class' => 'form-control tanggalan', 'id' => 'tgl', 'data-date-format' => 'yyyy-mm-dd']) }}
+                                    {{ Form::text('tgl', $tgl->format('Y-m-d'), ['class' => 'form-control tanggalan', 'id' => 'tgl', 'data-date-format' => 'yyyy-mm-dd']) }}
                                     </div>
                                 </div>
                             </div>
@@ -87,7 +87,7 @@
         <!-- BEGIN SAMPLE TABLE PORTLET-->
         <div class="portlet box blue">
             <div class="portlet-title">
-                <div class="caption"><i class="icon-tasks"></i>Daftar Tempat Pelanggan</div>
+                <div class="caption"><i class="icon-tasks"></i>Daftar Tempat Pelanggan {{ $tgl->format('d M Y') }}</div>
                 <div class="tools">
                     <a href="javascript:;" class="collapse"></a>
                     <a href="#portlet-config" data-toggle="modal" class="config"></a>
@@ -142,7 +142,7 @@
                                         @endcan
                                     @else
                                         @can('order.open')
-                                        <a href="{{ url('/order/'.$place->id.'/open') }}" class="btn btn-sm blue"><i class="icon-pencil"></i> Open</a>
+                                        <a href="{{ url('/order/'.$place->id.'/open?tanggal='.$tgl->format('Y-m-d')) }}" class="btn btn-sm blue"><i class="icon-pencil"></i> Open</a>
                                         @endcan
                                     @endif
                                 </td>
