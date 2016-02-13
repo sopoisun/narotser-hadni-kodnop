@@ -41,24 +41,39 @@
             </div>
             <div class="portlet-body">
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover">
+                    <table class="table table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>#</th>
                                 <th>Nama Produk</th>
                                 <th>Stok</th>
+                                <th>HPP</th>
+                                <th>Subtotal</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {{--*/ $no = 0; /*--}}
+                            {{--*/
+                                $no = 0;
+                                $total = 0;
+                            /*--}}
                             @foreach($produks as $produk)
-                            {{--*/ $no++; /*--}}
+                            {{--*/
+                                $no++;
+                                $total += $produk->hpp*$produk->sisa_stok;
+                            /*--}}
                             <tr>
                                 <td>{{ $no }}</td>
                                 <td>{{ $produk->nama }}</td>
                                 <td>{{ $produk->sisa_stok.' '.$produk->satuan }}</td>
+                                <td style="text-align:right;">{{ number_format($produk->hpp, 0, ",", ".") }}</td>
+                                <td style="text-align:right;">{{ number_format($produk->hpp*$produk->sisa_stok, 0, ",", ".") }}</td>
                             </tr>
                             @endforeach
+                            <tr style="font-weight:bold;">
+                                <td></td>
+                                <td colspan="3">Total</td>
+                                <td style="text-align:right;">{{ number_format($total, 0, ",", ".") }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

@@ -51,14 +51,25 @@
             </div>
             <div class="portlet-body">
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover">
+                    <table class="table table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>#</th>
                                 <th>Nama Produk</th>
+                                @can('produk.stok')
+                                <th>Use Mark Up</th>
+                                <th>Use Bahan</th>
+                                @endcan
                                 <th>Kategori</th>
+                                @can('produk.stok')
+                                <th>HPP</th>
+                                @endcan
                                 <th>Harga</th>
+                                @can('produk.stok')
+                                <th>Pros. Laba</th>
+                                <th>Stok</th>
                                 <th>Action</th>
+                                @endcan
                             </tr>
                         </thead>
                         <tbody>
@@ -68,8 +79,18 @@
                             <tr>
                                 <td>{{ $no }}</td>
                                 <td>{{ $produk->nama }}</td>
-                                <td>{{ $produk->kategori->nama }}</td>
-                                <td>{{ number_format(CountPrice($produk), 0, ",", ".") }}</td>
+                                @can('produk.stok')
+                                <td>{{ $produk->use_mark_up }}</td>
+                                <td>{{ $produk->use_bahan }}</td>
+                                @endcan
+                                <td>{{ $produk->nama_kategori }}</td>
+                                @can('produk.stok')
+                                <td style="text-align:right;">{{ number_format($produk->hpp, 0, ",", ".") }}</td>
+                                @endcan
+                                <td style="text-align:right;">{{ number_format($produk->harga_jual, 0, ",", ".") }}</td>
+                                @can('produk.stok')
+                                <td>{{ $produk->laba_procentage.' %' }}</td>
+                                <td>{{ $produk->sisa_stok }}</td>                                
                                 <td>
                                     @can('produk.update')
                                     <a href="{{ url('/produk/edit/'.$produk->id) }}" class="btn btn-sm yellow"><i class="icon-edit"></i></a>
@@ -78,6 +99,7 @@
                                     <a href="{{ url('/produk/delete/'.$produk->id) }}" onclick="return confirm('Yakin hapus {{ $produk->nama }} ??')" class="btn btn-sm red"><i class="icon-trash"></i></a>
                                     @endcan
                                 </td>
+                                @endcan
                             </tr>
                             @endforeach
                         </tbody>

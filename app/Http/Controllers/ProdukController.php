@@ -27,9 +27,7 @@ class ProdukController extends Controller
         }
 
         $data = [
-            'produks' => Produk::with(['kategori', 'detail' => function($query){
-                $query->join('bahans', 'produk_details.bahan_id', '=', 'bahans.id');
-            }])->get()
+            'produks' => Produk::allWithStokAndPrice()->get(),
         ];
 
         return view(config('app.template').".produk.table", $data);
