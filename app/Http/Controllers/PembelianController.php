@@ -112,19 +112,21 @@ class PembelianController extends Controller
                 $inHarga    = $beliBahan[$bId]['harga'] / $beliBahan[$bId]['stok'];
 
                 if( $bahan->harga != $inHarga ){
-                    $sum = [];
-
+                    /*$sum = [];
                     for($i=0; $i<$bahan->sisa_stok; $i++){
                         array_push($sum, $bahan->harga);
                     }
-
                     for($i=0; $i<$beliBahan[$bId]['stok']; $i++){
                         array_push($sum, $inHarga);
                     }
+                    $harga = Pembulatan(collect($sum)->avg());*/
 
-                    //echo "<pre>", print_r($sum), "</pre>";
+                    $oldPrice   = $bahan->harga;
+                    $oldStok    = $bahan->sisa_stok;
+                    $inputPrice = $inHarga;
+                    $inputStok  = $beliBahan[$bId]['stok'];
+                    $harga      = Pembulatan((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));
 
-                    $harga = Pembulatan(collect($sum)->avg());
                     if( $harga != $bahan->harga ){
                         //echo "<pre>", print_r(['id' => $bId, 'nama' => $bahan->nama, 'harga' => $harga]), "</pre>";
                         \App\Bahan::find($bId)->update(['harga' => $harga]);
@@ -132,7 +134,9 @@ class PembelianController extends Controller
                             'type'              => 'bahan',
                             'relation_id'       => $bId,
                             'old_price'         => $bahan->harga,
+                            'old_stok'          => $oldStok,
                             'input_price'       => $inHarga,
+                            'input_stok'        => $inputStok,
                             'average_with_round'=> $harga,
                             'action'            => "Pembelian #".$pembelian->id,
                         ]);
@@ -152,19 +156,21 @@ class PembelianController extends Controller
                 $inHarga    = $beliProduk[$pId]['harga'] / $beliProduk[$pId]['stok'];
 
                 if( $produk->hpp != $inHarga ){
-                    $sum = [];
-
+                    /*$sum = [];
                     for($i=0; $i<$produk->sisa_stok; $i++){
                         array_push($sum, $produk->hpp);
                     }
-
                     for($i=0; $i<$beliProduk[$pId]['stok']; $i++){
                         array_push($sum, $inHarga);
                     }
+                    $harga = Pembulatan(collect($sum)->avg()); // HPP*/
 
-                    //echo "<pre>", print_r($sum), "</pre>";
+                    $oldPrice   = $produk->hpp;
+                    $oldStok    = $produk->sisa_stok;
+                    $inputPrice = $inHarga;
+                    $inputStok  = $beliProduk[$pId]['stok'];
+                    $harga      = Pembulatan((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));
 
-                    $harga = Pembulatan(collect($sum)->avg()); // HPP
                     if( $harga != $produk->hpp  ){
                         //echo "<pre>", print_r(['id' => $pId, 'nama' => $produk->nama, 'harga' => $harga]), "</pre>";
                         \App\Produk::find($pId)->update(['hpp' => $harga]);
@@ -172,7 +178,9 @@ class PembelianController extends Controller
                             'type'              => 'produk',
                             'relation_id'       => $pId,
                             'old_price'         => $produk->hpp,
+                            'old_stok'          => $oldStok,
                             'input_price'       => $inHarga,
+                            'input_stok'        => $inputStok,
                             'average_with_round'=> $harga,
                             'action'            => "Pembelian #".$pembelian->id,
                         ]);

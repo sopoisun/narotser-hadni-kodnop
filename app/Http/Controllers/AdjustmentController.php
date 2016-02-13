@@ -108,24 +108,30 @@ class AdjustmentController extends Controller
                 $bId = $bahan->id;
 
                 if( $bahan->harga != $data_adjustment_increase_bahan[$bId]['harga'] ){
-                    $sum = [];
-
+                    /*$sum = [];
                     for($i=0; $i<$bahan->sisa_stok; $i++){
                         array_push($sum, $bahan->harga);
                     }
-
                     for($i=0; $i<$data_adjustment_increase_bahan[$bId]['qty']; $i++){
                         array_push($sum, $data_adjustment_increase_bahan[$bId]['harga']);
                     }
+                    $harga = Pembulatan(collect($sum)->avg());*/
 
-                    $harga = Pembulatan(collect($sum)->avg());
+                    $oldPrice   = $bahan->harga;
+                    $oldStok    = $bahan->sisa_stok;
+                    $inputPrice = $data_adjustment_increase_bahan[$bId]['harga'];
+                    $inputStok  = $data_adjustment_increase_bahan[$bId]['qty'];
+                    $harga      = Pembulatan((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));
+
                     if( $harga != $bahan->harga ){
                         \App\Bahan::find($bId)->update(['harga' => $harga]);
                         \App\AveragePriceAction::create([
                             'type'              => 'bahan',
                             'relation_id'       => $bId,
                             'old_price'         => $bahan->harga,
+                            'old_stok'          => $oldStok,
                             'input_price'       => $data_adjustment_increase_bahan[$bId]['harga'],
+                            'input_stok'        => $inputStok,
                             'average_with_round'=> $harga,
                             'action'            => "Adjustment Increase #".$adjustment->id,
                         ]);
@@ -144,24 +150,30 @@ class AdjustmentController extends Controller
                 $pId = $produk->id;
 
                 if( $produk->hpp != $data_adjustment_increase_produk[$pId]['harga'] ){
-                    $sum = [];
-
+                    /*$sum = [];
                     for($i=0; $i<$produk->sisa_stok; $i++){
                         array_push($sum, $produk->hpp);
                     }
-
                     for($i=0; $i<$data_adjustment_increase_produk[$pId]['qty']; $i++){
                         array_push($sum, $data_adjustment_increase_produk[$pId]['harga']);
                     }
+                    $harga = Pembulatan(collect($sum)->avg()); // HPP*/
 
-                    $harga = Pembulatan(collect($sum)->avg()); // HPP
+                    $oldPrice   = $produk->hpp;
+                    $oldStok    = $produk->sisa_stok;
+                    $inputPrice = $data_adjustment_increase_produk[$pId]['harga'];
+                    $inputStok  = $data_adjustment_increase_produk[$pId]['qty'];
+                    $harga      = Pembulatan((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));
+
                     if( $harga != $produk->hpp  ){
                         \App\Produk::find($pId)->update(['hpp' => $harga]);
                         \App\AveragePriceAction::create([
                             'type'              => 'produk',
                             'relation_id'       => $pId,
                             'old_price'         => $produk->hpp,
+                            'old_stok'          => $oldStok,
                             'input_price'       => $data_adjustment_increase_produk[$pId]['harga'],
+                            'input_stok'        => $inputStok,
                             'average_with_round'=> $harga,
                             'action'            => "Adjustment Increase #".$adjustment->id,
                         ]);

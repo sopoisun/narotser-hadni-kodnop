@@ -17,7 +17,9 @@ class CreateAveragePriceActionsTable extends Migration
             $table->enum('type', ['bahan', 'produk']);
             $table->string('relation_id');
             $table->integer('old_price');
+            $table->integer('old_stok');
             $table->integer('input_price');
+            $table->integer('input_stok');
             $table->integer('average_with_round'); // average dengan pembulatan
             $table->string('action');
             $table->timestamps();
