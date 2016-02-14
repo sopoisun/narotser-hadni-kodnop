@@ -227,6 +227,7 @@
                                         <div class="col-md-offset-3 col-md-9">
                                             @can('order.update')
                                             <button type="submit" class="btn red" id="btnSaveitem">Simpan Pembayaran</button>
+                                            <a href="{{ url('/order/'.$id.'/rechange') }}" class="btn yellow" onclick="return confirm('Atur Ulang Order ??')">Rechange Order</a>
                                             @endcan
                                         </div>
                                     </div>
@@ -267,7 +268,9 @@
                                         <th>Qty Return</th>
                                         <th>Qty Sisa</th>
                                         <th>Subtotal</th>
+                                        @can('order.update')
                                         <th>Act</th>
+                                        @endcan
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -282,14 +285,14 @@
                                         <td>{{ $od->qty_return }}</td>
                                         <td>{{ $od->qty }}</td>
                                         <td style="text-align:right;">{{ number_format($od->subtotal, 0, ',', '.') }}</td>
+                                        @can('order.update')
                                         <td>
-                                            @can('order.update')
                                             <a href="{{ url('/ajax/order/detail/return?id='.$od->id) }}" data-toggle="modal"
-                                                data-target="#ajax" class="btn btn-sm blue">
-                                                    <i class="icon-search"></i>
+                                                data-target="#ajax" class="btn btn-sm yellow">
+                                                    <i class="icon-refresh"></i>
                                             </a>
-                                            @endcan
                                         </td>
+                                        @endcan
                                     </tr>
                                     @endforeach
 
@@ -299,7 +302,9 @@
                                         <td>{{ $i }}</td>
                                         <td colspan="5">{{ $place['nama'] }}</td>
                                         <td style="text-align:right;">{{ number_format($place['harga'], 0, ',', '.') }}</td>
+                                        @can('order.update')
                                         <td></td>
+                                        @endcan
                                     </tr>
                                     @endforeach
 
@@ -307,7 +312,9 @@
                                         <td></td>
                                         <td colspan="5">Total</td>
                                         <td id="totalDetail" style="text-align:right;">{{ number_format((collect($orderDetail)->sum('subtotal') + collect($orderPlaces)->sum('harga')), 0, ',', '.') }}</td>
+                                        @can('order.update')
                                         <td></td>
+                                        @endcan
                                     </tr>
                                 </tbody>
                             </table>

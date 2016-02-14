@@ -159,6 +159,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('/order/open/save', 'OrderController@saveOpenOrder');
         Route::get('/order/{id}/open', 'OrderController@openOrder'); // place place_id
         # Change Order
+        Route::get('/order/{id}/rechange', 'OrderController@reChangeOrder');
         Route::get('/order/{id}/change', 'OrderController@changeOrder'); // by order_id
         Route::post('/order/{id}/change', 'OrderController@saveChangeOrder'); // by order_id
         # Close Order

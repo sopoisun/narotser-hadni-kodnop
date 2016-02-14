@@ -198,6 +198,15 @@ class OrderController extends Controller
         return 0;
     }
 
+    public function reChangeOrder(Request $request, $id)
+    {
+        OrderTax::where('order_id', $id)->delete();
+        OrderBayar::where('order_id', $id)->delete();
+        OrderBayarBank::where('order_id', $id)->delete();
+        Order::find($id)->update(['state' => 'On Going']);
+        return redirect("/order/$id/change");
+    }
+
     public function changeOrder(Request $request, $id)
     {
         if( Gate::denies('order.change') ){
@@ -209,7 +218,7 @@ class OrderController extends Controller
             $request->session()->forget('data_order');
         }
 
-        $order = Order::with(['karyawan', 'detail.produk', 'place'])->find($id);
+        $order = Order::with(['karyawan', 'detail.produk', 'detail.detailReturn', 'place'])->find($id);
 
         if( !$order ){
             return view(config('app.template').'.error.404');
@@ -220,7 +229,12 @@ class OrderController extends Controller
         // Detail Order
         $orderDetail = [];
         foreach($order->detail->toArray() as $od){
-            $in = array_only($od, ['harga_jual', 'qty', 'satuan']) + ['nama' => $od['produk']['nama'], 'subtotal' => ($od['harga_jual'] * $od['qty'])];
+            $odQty = $od['qty'] - (($od['detail_return'] != null) ? $od['detail_return']['qty'] : 0);
+            $in = array_only($od, ['harga_jual', 'satuan']) + [
+                'nama'  => $od['produk']['nama'],
+                'qty'   => $odQty,
+                'subtotal' => ($od['harga_jual'] * $odQty),
+            ];
             array_push($orderDetail, $in);
         }
 
@@ -275,6 +289,8 @@ class OrderController extends Controller
 
         $data_order_detail = $request->session()->has('data_order') ?
                         $request->session()->get('data_order') : [];
+
+        $order = Order::with('place.place')->find($id);
 
         if( count($data_order_detail) ){
             // Order Detail
@@ -331,7 +347,10 @@ class OrderController extends Controller
             $request->session()->forget('data_order');
         }
 
-        return redirect('/order')->with('succcess', 'Sukses ubah data order.');
+        $tglRedirect    = $order->tanggal->format('Y-m-d');
+        $typeRedirect   = $order->place[0]->place->kategori_id;
+
+        return redirect('/order?tgl='.$tglRedirect.'&type='.$typeRedirect)->with('succcess', 'Sukses ubah data order.');
     }
 
     public function mergeOrder(Request $request, $id)
@@ -407,7 +426,7 @@ class OrderController extends Controller
             return view(config('app.template').'.error.403');
         }
 
-        $order = Order::with(['karyawan', 'detail.produk', 'place.place'])->find($id);
+        $order = Order::with(['karyawan', 'detail.produk', 'detail.detailReturn', 'place.place'])->find($id);
 
         if( !$order ){
             return view(config('app.template').'.error.404');
@@ -416,7 +435,12 @@ class OrderController extends Controller
         // Detail Order
         $orderDetail = [];
         foreach($order->detail->toArray() as $od){
-            $in = array_only($od, ['harga_jual', 'qty', 'satuan']) + ['nama' => $od['produk']['nama'], 'subtotal' => ($od['harga_jual'] * $od['qty'])];
+            $odQty = $od['qty'] - (($od['detail_return'] != null) ? $od['detail_return']['qty'] : 0);
+            $in = array_only($od, ['harga_jual', 'satuan']) + [
+                'nama'  => $od['produk']['nama'],
+                'qty'   => $odQty,
+                'subtotal' => ($od['harga_jual'] * $odQty),
+            ];
             array_push($orderDetail, $in);
         }
 
