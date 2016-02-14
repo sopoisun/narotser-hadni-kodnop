@@ -119,6 +119,22 @@ class ReportController extends Controller
         return view(config('app.template').'.report.pertanggal-solditem', $data);
     }
 
+    public function soldItemBahan(Request $request)
+    {
+        if( Gate::denies('report.pertanggal.solditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
+
+        $bahans = \App\Bahan::soldItem("orders.`tanggal` = '$tanggal' AND");
+        $data = [
+            'tanggal'   => Carbon::parse($tanggal),
+            'bahans'   => $bahans
+        ];
+        return view(config('app.template').'.report.pertanggal-solditembahan', $data);
+    }
+
     public function karyawan(Request $request)
     {
         if( Gate::denies('report.pertanggal.karyawan') ){
@@ -265,6 +281,24 @@ class ReportController extends Controller
         return view(config('app.template').'.report.periode-solditem', $data);
     }
 
+    public function soldItemBahanPeriode(Request $request)
+    {
+        if( Gate::denies('report.periode.solditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $tanggal    = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
+        $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : $tanggal;
+
+        $bahans = \App\Bahan::soldItem("( orders.`tanggal` BETWEEN '$tanggal' AND '$to_tanggal' ) AND");
+        $data = [
+            'tanggal'   => Carbon::createFromFormat('Y-m-d', $tanggal),
+            'to_tanggal'=> Carbon::createFromFormat('Y-m-d', $to_tanggal),
+            'bahans'   => $bahans
+        ];
+        return view(config('app.template').'.report.periode-solditembahan', $data);
+    }
+
     public function karyawanPeriode(Request $request)
     {
         if( Gate::denies('report.periode.karyawan') ){
@@ -396,6 +430,23 @@ class ReportController extends Controller
         return view(config('app.template').'.report.perbulan-solditem', $data);
     }
 
+    public function soldItemBahanPerbulan(Request $request)
+    {
+        if( Gate::denies('report.perbulan.solditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $bulan = $request->get('bulan') ? $request->get('bulan') : date('Y-m');
+
+        $bahans = \App\Bahan::soldItem("SUBSTRING(orders.`tanggal`, 1, 7) = '$bulan' AND");
+
+        $data = [
+            'tanggal'   => Carbon::parse($bulan),
+            'bahans'   => $bahans
+        ];
+        return view(config('app.template').'.report.perbulan-solditembahan', $data);
+    }
+
     public function karyawanPerbulan(Request $request)
     {
         if( Gate::denies('report.perbulan.karyawan') ){
@@ -518,6 +569,23 @@ class ReportController extends Controller
             'produks'   => $produk
         ];
         return view(config('app.template').'.report.pertahun-solditem', $data);
+    }
+
+    public function soldItemBahanPertahun(Request $request)
+    {
+        if( Gate::denies('report.pertahun.solditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $tahun = $request->get('tahun') ? $request->get('tahun') : date('Y');
+
+        $bahans = \App\Bahan::soldItem("SUBSTRING(orders.`tanggal`, 1, 4) = '$tahun' AND");
+
+        $data = [
+            'tanggal'   => Carbon::createFromFormat('Y', $tahun),
+            'bahans'   => $bahans
+        ];
+        return view(config('app.template').'.report.pertahun-solditembahan', $data);
     }
 
     public function karyawanPertahun(Request $request)

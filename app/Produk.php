@@ -69,8 +69,9 @@ class Produk extends Model
                 }
             )
             ->leftJoin(
-                DB::raw("(SELECT order_details.`produk_id`, SUM(order_details.`qty`)qty
+                DB::raw("(SELECT order_details.`produk_id`,SUM(order_details.`qty` - IFNULL(order_detail_returns.`qty`, 0))qty
                     FROM order_details
+                    LEFT JOIN order_detail_returns ON order_details.`id` = order_detail_returns.`order_detail_id`
                     LEFT JOIN order_detail_bahans ON order_details.`id` = order_detail_bahans.`order_detail_id`
                     INNER JOIN orders ON order_details.`order_id` = orders.`id`
                     WHERE order_detail_bahans.`id` IS NULL

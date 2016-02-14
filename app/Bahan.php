@@ -57,9 +57,10 @@ class Bahan extends Model
                 }
             )
             ->leftJoin(
-                DB::raw("(SELECT order_detail_bahans.`bahan_id`, SUM(order_detail_bahans.`qty`*order_details.`qty`)qty
+                DB::raw("(SELECT order_detail_bahans.`bahan_id`, SUM(order_detail_bahans.`qty`* (order_details.`qty` - IFNULL(order_detail_returns.`qty`, 0)))qty
                     FROM order_detail_bahans
                     INNER JOIN order_details ON order_detail_bahans.`order_detail_id` = order_details.`id`
+                    LEFT JOIN order_detail_returns ON order_details.`id` = order_detail_returns.`order_detail_id`
                     INNER JOIN orders ON order_details.`order_id` = orders.`id`
                     WHERE orders.`state` = 'Closed'
                     GROUP BY order_detail_bahans.`bahan_id`) penjualan"),
@@ -78,5 +79,28 @@ class Bahan extends Model
             ->groupBy('bahans.id');
             /*->orderBy('bahans.id')
             ->get();*/
+    }
+
+    public static function soldItem($where="")
+    {
+        return self::leftJoin(DB::raw("(SELECT order_detail_bahans.`bahan_id`,
+                    ROUND(SUM(order_detail_bahans.`harga`)/COUNT(order_detail_bahans.`bahan_id`))harga,
+                    SUM(order_detail_bahans.`qty`* (order_details.`qty` - IFNULL(order_detail_returns.`qty`, 0)))qty
+                    FROM order_detail_bahans
+                    INNER JOIN order_details ON order_detail_bahans.`order_detail_id` = order_details.`id`
+                    LEFT JOIN order_detail_returns ON order_details.`id` = order_detail_returns.`order_detail_id`
+                    INNER JOIN orders ON order_details.`order_id` = orders.`id`
+                    WHERE $where orders.`state` = 'Closed'
+                    GROUP BY order_detail_bahans.`bahan_id`)penjualan"),
+                function($join){
+                    $join->on('bahans.id', '=', 'penjualan.bahan_id');
+                }
+            )
+            ->select([
+                'bahans.nama', DB::raw('ifnull(penjualan.harga, 0)harga'),
+                DB::raw('ifnull(penjualan.qty, 0)terjual'),
+                DB::raw('ifnull((penjualan.harga*penjualan.qty), 0)subtotal'),
+            ])
+            ->get();
     }
 }

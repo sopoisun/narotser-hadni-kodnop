@@ -170,22 +170,26 @@ Route::group(['middleware' => ['web']], function () {
         # Pertanggal
         Route::get('/report/pertanggal', 'ReportController@pertanggal');
         Route::get('/report/pertanggal/solditem', 'ReportController@soldItem');
+        Route::get('/report/pertanggal/solditembahan', 'ReportController@soldItemBahan');
         Route::get('/report/pertanggal/karyawan', 'ReportController@karyawan');
         Route::get('/report/pertanggal/karyawan/detail', 'ReportController@karyawanDetail');
         Route::get('/report/pertanggal/detail/{id}', 'ReportController@detail');
         Route::get('/report/pertanggal/labarugi', 'ReportController@labaRugi');
         # Periode
         Route::get('/report/periode/solditem', 'ReportController@soldItemPeriode');
+        Route::get('/report/periode/solditembahan', 'ReportController@soldItemBahanPeriode');
         Route::get('/report/periode/karyawan', 'ReportController@karyawanPeriode');
         Route::get('/report/periode/labarugi', 'ReportController@labaRugiPeriode');
         # Perbulan
         Route::get('/report/perbulan', 'ReportController@perbulan');
         Route::get('/report/perbulan/solditem', 'ReportController@soldItemPerbulan');
+        Route::get('/report/perbulan/solditembahan', 'ReportController@soldItemBahanPerbulan');
         Route::get('/report/perbulan/karyawan', 'ReportController@karyawanPerbulan');
         Route::get('/report/perbulan/labarugi', 'ReportController@labaRugiPerbulan');
         # Pertahun
         Route::get('/report/pertahun', 'ReportController@pertahun');
         Route::get('/report/pertahun/solditem', 'ReportController@soldItemPertahun');
+        Route::get('/report/pertahun/solditembahan', 'ReportController@soldItemBahanPertahun');
         Route::get('/report/pertahun/karyawan', 'ReportController@karyawanPertahun');
         Route::get('/report/pertahun/labarugi', 'ReportController@labaRugiPertahun');
 
