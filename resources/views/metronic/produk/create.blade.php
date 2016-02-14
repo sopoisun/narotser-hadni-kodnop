@@ -63,6 +63,13 @@
                             @if($errors->has('satuan'))<span class="help-block">{{ $errors->first('satuan') }}</span>@endif
                             </div>
                         </div>
+                        <div class="form-group @if($errors->has('qty_warning')) has-error @endif">
+                            <label for="qty_warning" class="col-md-3 control-label">Qty Warning</label>
+                            <div class="col-md-8">
+                            {{ Form::text('qty_warning', null, ['class' => 'form-control', 'id' => 'qty_warning']) }}
+                            @if($errors->has('qty_warning'))<span class="help-block">{{ $errors->first('qty_warning') }}</span>@endif
+                            </div>
+                        </div>
                         <div class="form-group @if($errors->has('produk_kategori_id')) has-error @endif">
                             <label for="produk_kategori_id" class="col-md-3 control-label">Kategori</label>
                             <div class="col-md-8">
@@ -217,7 +224,7 @@
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         prefetch: {
             url: "{{ url('/ajax/supplier') }}",
-            cache: false,            
+            cache: false,
         },
         remote: {
             url: "{{ url('/ajax/supplier') }}?q=%QUERY",
@@ -249,6 +256,12 @@
         //alert('active');
     });
     //$(".twitter-typeahead").css("width", "100%");
+
+    $("#qty_warning").inputmask("integer", {
+        onUnMask: function(maskedValue, unmaskedValue) {
+            return unmaskedValue;
+        },
+    }).css('text-align', 'left');
 
     $("#harga").inputmask("integer", {
         onUnMask: function(maskedValue, unmaskedValue) {

@@ -26,6 +26,7 @@ class ProdukRequest extends Request
         $rules = [
             'nama'  => 'required',
             'satuan' => 'required',
+            'qty_warning' => 'required|numeric',
         ];
 
         if( $this->get('konsinyasi') ){
@@ -53,6 +54,8 @@ class ProdukRequest extends Request
             'mark_up.required'      => 'Mark up tidak boleh kosong.',
             'mark_up.numeric'       => 'Mark up harus angka.',
             'mark_up.between'       => 'Mark up harus angka decimal ( 0.01 - 0.99).',
+            'qty_warning.required'   => 'Qty Warning tidak boleh kosong.',
+            'qty_warning.numeric'   => 'Qty Warning harus angka.',
         ];
     }
 }

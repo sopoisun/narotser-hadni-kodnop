@@ -14,6 +14,11 @@
         {{ Form::text('harga', null, ['class' => 'form-control', 'id' => 'harga']) }}
         @if($errors->has('harga'))<span class="help-block">{{ $errors->first('harga') }}</span>@endif
     </div>-->
+    <div class="form-group @if($errors->has('qty_warning')) has-error @endif">
+        <label for="qty_warning" class="control-label">Qty Warning</label>
+        {{ Form::text('qty_warning', null, ['class' => 'form-control', 'id' => 'qty_warning']) }}
+        @if($errors->has('qty_warning'))<span class="help-block">{{ $errors->first('qty_warning') }}</span>@endif
+    </div>
 </div>
 <div class="form-actions">
     <button type="submit" class="btn yellow">Simpan</button>

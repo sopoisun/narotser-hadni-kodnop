@@ -27,6 +27,7 @@ class BahanRequest extends Request
             'nama'      => 'required',
             'satuan'    => 'required',
             //'harga'     => 'required|numeric',
+            'qty_warning' => 'required|numeric',
         ];
     }
 
@@ -37,6 +38,8 @@ class BahanRequest extends Request
             'satuan.required'       => 'Satuan tidak boleh kosong.',
             //'harga.required'        => 'Harga tidak boleh kosong.',
             //'harga.numeric'         => 'Harga harus angka.',
+            'qty_warning.required'   => 'Qty Warning tidak boleh kosong.',
+            'qty_warning.numeric'   => 'Qty Warning harus angka.',
         ];
     }
 }

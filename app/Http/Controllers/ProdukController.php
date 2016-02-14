@@ -69,7 +69,7 @@ class ProdukController extends Controller
     {
         //return json_decode($request->get('produk_details'));
         $produkData = $request->only([
-            'nama', 'satuan', 'supplier_id', 'harga', 'use_mark_up', 'mark_up', 'produk_kategori_id',
+            'nama', 'satuan', 'supplier_id', 'harga', 'use_mark_up', 'mark_up', 'produk_kategori_id', 'qty_warning',
         ]);
 
         $produkData['hpp']          = ( $request->get('use_mark_up') == 'Tidak' ) ? $request->get('hpp') : 0;
@@ -143,7 +143,7 @@ class ProdukController extends Controller
         $produkDetail   = $produk->detail->toArray();
 
         $produkData     = $request->only([
-            'nama', 'satuan', 'supplier_id', 'harga', 'use_mark_up', 'mark_up', 'produk_kategori_id',
+            'nama', 'satuan', 'supplier_id', 'harga', 'use_mark_up', 'mark_up', 'produk_kategori_id', 'qty_warning',
         ]);
 
         $produkData['hpp']          = ( $request->get('use_mark_up') == 'Tidak' ) ? $request->get('hpp') : 0;

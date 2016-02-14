@@ -23,6 +23,7 @@ class CreateProduksTable extends Migration
             $table->enum('use_mark_up', ['Ya', 'Tidak']);
             $table->integer('mark_up')->default(0);
             $table->string('produk_kategori_id');
+            $table->integer('qty_warning')->default(0);
             $table->timestamps();
         });
     }

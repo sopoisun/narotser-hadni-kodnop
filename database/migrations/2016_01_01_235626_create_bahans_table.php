@@ -17,6 +17,7 @@ class CreateBahansTable extends Migration
             $table->string('nama');
             $table->string('satuan');
             $table->integer('harga');
+            $table->integer('qty_warning')->default(0);
             $table->timestamps();
         });
     }
