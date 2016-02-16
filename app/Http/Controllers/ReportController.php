@@ -869,7 +869,7 @@ class ReportController extends Controller
 
         $karyawans  = \App\Karyawan::join('orders', 'karyawans.id', '=', 'orders.karyawan_id')
             ->join('order_details', 'orders.id', '=', 'order_details.order_id')
-            ->join('order_detail_returns', 'order_details.id', '=', 'order_detail_returns.order_detail_id')
+            ->leftJoin('order_detail_returns', 'order_details.id', '=', 'order_detail_returns.order_detail_id')
             ->where(DB::raw('SUBSTRING(orders.tanggal, 1, 4)'), $tahun)
             ->where('state', 'Closed')
             ->select(['karyawans.id', 'karyawans.nama',
