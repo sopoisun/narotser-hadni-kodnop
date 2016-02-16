@@ -61,7 +61,7 @@ class Order extends Model
         $query = "SELECT orders.`id`, orders.`nota`, orders.`state`,
             taxes.`type`, IF(orders.`state` = 'Closed', CONCAT(taxes.`type`, '(', order_taxes.`procentage`,'%)'),'--')type_tax,
             IF(order_bayars.`type_bayar` IS NOT NULL, IF(order_bayars.`type_bayar` != 'tunai',
-            CONCAT(REPLACE(order_bayars.`type_bayar`, '_', ' '), ' ',banks.`nama_bank`, '(', `order_bayar_banks`.`tax_procentage`, '%)') ,'Bayar Tunai'),'--')type_bayar,
+            CONCAT(REPLACE(order_bayars.`type_bayar`, '_', ' '), ' ',banks.`nama_bank`, '(', ROUND(`order_bayar_banks`.`tax_procentage`), '%)') ,'Bayar Tunai'),'--')type_bayar,
             IFNULL(order_taxes.`procentage`, 0)AS tax_procentage,
             IFNULL(order_bayar_banks.`tax_procentage`, 0)AS tax_bayar_procentage,
             IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0)total_penjualan,

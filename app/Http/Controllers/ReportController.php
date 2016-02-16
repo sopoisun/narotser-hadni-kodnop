@@ -27,17 +27,38 @@ class ReportController extends Controller
             return view(config('app.template').'.error.403');
         }
 
+        $data = $this->_pertanggal($request);
+
+        return view(config('app.template').'.report.pertanggal', $data);
+    }
+
+    public function pertanggalPrint(Request $request)
+    {
+        if( Gate::denies('report.pertanggal.penjualan') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $data = $this->_pertanggal($request);
+
+        $print = new \App\Libraries\Penjualan([
+            'header' => 'Laporan Penjualan '.$data['tanggal']->format('d M Y'),
+            'data' => $data['reports'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _pertanggal(Request $request)
+    {
         $tanggal    = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
 
         $reports    = Order::ReportByDate($tanggal);
         $reports    = ConvertRawQueryToArray($reports);
 
-        $data = [
+        return [
             'tanggal'   => Carbon::parse($tanggal),
             'reports'   => $reports,
         ];
-
-        return view(config('app.template').'.report.pertanggal', $data);
     }
 
     public function detail($id)
@@ -560,6 +581,34 @@ class ReportController extends Controller
             return view(config('app.template').'.error.403');
         }
 
+        $data = $this->_perbulan($request);
+
+        return view(config('app.template').'.report.perbulan', $data);
+    }
+
+    public function perbulanPrint(Request $request)
+    {
+        if( Gate::denies('report.perbulan.penjualan') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $data = $this->_perbulan($request);
+
+        $print = new \App\Libraries\PenjualanGroup([
+            'header'    => 'Laporan Penjualan Bulan '.$data['tanggal']->format('M Y'),
+            'data'      => $data['reports'],
+            'dates'     => $data['dates'],
+            'first_column' => 'Tanggal',
+            'format_first_column' => 'd M Y',
+            'search_column' => 'tanggal',
+            'format_search' => 'Y-m-d',
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _perbulan(Request $request)
+    {
         $bulan      = $request->get('bulan') ? $request->get('bulan') : date('Y-m');
         $start      = Carbon::parse($bulan)->startOfMonth();
         $end        = Carbon::parse($bulan)->endOfMonth();
@@ -573,13 +622,11 @@ class ReportController extends Controller
         $reports = Order::ReportGroup("SUBSTRING(orders.`tanggal`, 1, 7) = '$bulan'", "GROUP BY tanggal");
         $reports = ConvertRawQueryToArray($reports);
 
-        $data = [
+        return [
             'tanggal'   => Carbon::parse($bulan),
             'dates'     => $dates,
             'reports'   => $reports,
         ];
-
-        return view(config('app.template').'.report.perbulan', $data);
     }
 
     public function soldItemPerbulan(Request $request)
@@ -798,6 +845,34 @@ class ReportController extends Controller
             return view(config('app.template').'.error.403');
         }
 
+        $data = $this->_pertahun($request);
+
+        return view(config('app.template').'.report.pertahun', $data);
+    }
+
+    public function pertahunPrint(Request $request)
+    {
+        if( Gate::denies('report.pertahun.penjualan') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $data = $this->_pertahun($request);
+
+        $print = new \App\Libraries\PenjualanGroup([
+            'header'    => 'Laporan Penjualan Tahun '.$data['tanggal']->format('Y'),
+            'data'      => $data['reports'],
+            'dates'     => $data['months'],
+            'first_column' => 'Bulan',
+            'format_first_column' => 'M Y',
+            'search_column' => 'bulan',
+            'format_search' => 'Y-m',
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _pertahun(Request $request)
+    {
         $tahun      = $request->get('tahun') ? $request->get('tahun') : date('Y');
         $start      = Carbon::createFromFormat('Y', $tahun)->startOfYear();
         $end        = Carbon::createFromFormat('Y', $tahun)->endOfYear();
@@ -811,13 +886,11 @@ class ReportController extends Controller
         $reports = Order::ReportGroup("SUBSTRING(orders.`tanggal`, 1, 4) = '$tahun'", "GROUP BY SUBSTRING(tanggal, 1, 7)", "SUBSTRING(tanggal, 1, 7)as bulan");
         $reports = ConvertRawQueryToArray($reports);
 
-        $data = [
+        return [
             'tanggal'   => Carbon::createFromFormat('Y', $tahun),
             'months'    => $months,
             'reports'   => $reports,
         ];
-
-        return view(config('app.template').'.report.pertahun', $data);
     }
 
     public function soldItemPertahun(Request $request)
