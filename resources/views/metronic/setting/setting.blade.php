@@ -63,6 +63,11 @@
                             {{ Form::text('init_kode', null, ['class' => 'form-control', 'id' => 'init_kode']) }}
                             @if($errors->has('init_kode'))<span class="help-block">{{ $errors->first('init_kode') }}</span>@endif
                         </div>
+                        <div class="form-group @if($errors->has('laba_procentage_warning')) has-error @endif">
+                            <label for="laba_procentage_warning" class="control-label">Ambang Batas Prosentase Laba (%)</label>
+                            {{ Form::text('laba_procentage_warning', null, ['class' => 'form-control', 'id' => 'laba_procentage_warning']) }}
+                            @if($errors->has('laba_procentage_warning'))<span class="help-block">{{ $errors->first('laba_procentage_warning') }}</span>@endif
+                        </div>
                     </div>
                     <div class="form-actions">
                         <button type="submit" class="btn yellow">Simpan</button>

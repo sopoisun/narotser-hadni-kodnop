@@ -18,6 +18,7 @@ class CreateSettingsTable extends Migration
             $table->string('alamat_faktur');
             $table->string('telp_faktur');
             $table->string('init_kode');
+            $table->integer('laba_procentage_warning');
             $table->timestamps();
         });
     }
