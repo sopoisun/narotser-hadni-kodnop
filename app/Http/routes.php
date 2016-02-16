@@ -48,7 +48,9 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('/karyawan/edit/{id}', 'KaryawanController@update');
         Route::get('/karyawan/delete/{id}', 'KaryawanController@destroy');
         Route::get('/karyawan/report/perbulan', 'KaryawanController@reportPerbulan');
+        Route::get('/karyawan/report/perbulan-print', 'KaryawanController@reportPerbulanPrint');
         Route::get('/karyawan/report/pertahun', 'KaryawanController@reportPertahun');
+        Route::get('/karyawan/report/pertahun-print', 'KaryawanController@reportPertahunPrint');
 
         // Place Kategori
         Route::get('/place/kategori', 'PlaceKategoriController@index');

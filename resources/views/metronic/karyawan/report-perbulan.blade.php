@@ -65,6 +65,10 @@
                                 <div class="col-md-offset-3 col-md-9">
                                     <input type="hidden" name="karyawan_id" value="{{ $karyawan->id }}" />
                                     <button type="submit" class="btn red">Tampilkan</button>
+                                    <a href="{{ url('/karyawan/report/perbulan-print?bulan='.$tanggal->format('Y-m').'&karyawan_id='.$karyawan->id) }}"
+                                        target="_blank" class="btn blue">
+                                        Print
+                                    </a>
                                 </div>
                             </div>
                             <div class="col-md-6"></div>
