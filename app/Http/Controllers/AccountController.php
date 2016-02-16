@@ -316,6 +316,32 @@ class AccountController extends Controller
             return view(config('app.template').'.error.403');
         }
 
+        $data = $this->_jurnal($request);
+
+        return view(config('app.template').'.account.saldo.jurnal', $data);
+    }
+
+    public function jurnalPrint(Request $request)
+    {
+
+        if( Gate::denies('account.saldo.cash') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $data = $this->_jurnal($request);
+
+        $type = $data['types'][$data['type']];
+
+        $print = new \App\Libraries\Jurnal([
+            'header' => ("Jurnal ".$type." ".$data['tanggal']->format('d M Y')." s/d ".$data['to_tanggal']->format('d M Y')),
+            'data'  => $data['table'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _jurnal(Request $request)
+    {
         $type       = $request->get('type') ? $request->get('type') : 'cash';
         $tanggal    = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
         $CTanggal   = Carbon::createFromFormat('Y-m-d', $tanggal);
@@ -587,44 +613,19 @@ class AccountController extends Controller
                             ]);
                         }
                     }
-
-                    /*#Old Algorithm
-                    foreach($acs as $as){
-                        if( $as['type'] == 'debet' ){
-                            $saldo -= $as['nominal'];
-                            array_push($tableTemp, [
-                                'tanggal'       => $date->format('Y-m-d'),
-                                'keterangan'    => $as['account']['nama_akun'].' '.$as['bank']['nama_bank'],
-                                'debet'         => '',
-                                'kredit'        => $as['nominal'],
-                                'saldo'         => $saldo,
-                            ]);
-                        }else{ // kredit
-                            $saldo += $as['nominal'];
-                            array_push($tableTemp, [
-                                'tanggal'       => $date->format('Y-m-d'),
-                                'keterangan'    => $as['account']['nama_akun'].' '.$as['bank']['nama_bank'],
-                                'debet'         => $as['nominal'],
-                                'kredit'        => '',
-                                'saldo'         => $saldo,
-                            ]);
-                        }
-                    }*/
                 }
             }
 
             $tableTemp = collect($tableTemp)->groupBy('tanggal');
         }
 
-        $data = [
+        return [
             'tanggal'   => $CTanggal,
             'to_tanggal'=> $CToTanggal,
             'type'      => $type,
             'types'     => ['cash' => 'Kas', 'bank' => 'Bank'],
             'table'     => $tableTemp,
         ];
-
-        return view(config('app.template').'.account.saldo.jurnal', $data);
     }
 
     public function jurnalBank(Request $request)
@@ -633,6 +634,31 @@ class AccountController extends Controller
             return view(config('app.template').'.error.403');
         }
 
+        $data = $this->_jurnalBank($request);
+
+        return view(config('app.template').'.account.saldo.jurnal-bank', $data);
+    }
+
+    public function jurnalBankPrint(Request $request)
+    {
+        if( Gate::denies('account.saldo.bank') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $data = $this->_jurnalBank($request);
+
+        $type = $data['banks'][$data['bank']];
+
+        $print = new \App\Libraries\Jurnal([
+            'header' => ("Jurnal Bank ".$type." ".$data['tanggal']->format('d M Y')." s/d ".$data['to_tanggal']->format('d M Y')),
+            'data'  => $data['table'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _jurnalBank($request)
+    {
         $bank       = $request->get('bank') ? $request->get('bank') : Bank::first()->id;
         $tanggal    = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
         $CTanggal   = Carbon::createFromFormat('Y-m-d', $tanggal);
@@ -767,14 +793,12 @@ class AccountController extends Controller
 
         $tableTemp = collect($tableTemp)->groupBy('tanggal');
 
-        $data = [
+        return [
             'tanggal'   => $CTanggal,
             'to_tanggal'=> $CToTanggal,
             'bank'      => $bank,
             'banks'     => $banks,
             'table'     => $tableTemp,
         ];
-
-        return view(config('app.template').'.account.saldo.jurnal-bank', $data);
     }
 }

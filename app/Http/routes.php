@@ -171,28 +171,40 @@ Route::group(['middleware' => ['web']], function () {
         # Pertanggal
         Route::get('/report/pertanggal', 'ReportController@pertanggal');
         Route::get('/report/pertanggal/solditem', 'ReportController@soldItem');
+        Route::get('/report/pertanggal/solditem-print', 'ReportController@soldItemPrint');
         Route::get('/report/pertanggal/solditembahan', 'ReportController@soldItemBahan');
         Route::get('/report/pertanggal/karyawan', 'ReportController@karyawan');
+        Route::get('/report/pertanggal/karyawan-print', 'ReportController@karyawanPrint');
         Route::get('/report/pertanggal/karyawan/detail', 'ReportController@karyawanDetail');
         Route::get('/report/pertanggal/detail/{id}', 'ReportController@detail');
         Route::get('/report/pertanggal/labarugi', 'ReportController@labaRugi');
+        Route::get('/report/pertanggal/labarugi-print', 'ReportController@labaRugiPrint');
         # Periode
         Route::get('/report/periode/solditem', 'ReportController@soldItemPeriode');
+        Route::get('/report/periode/solditem-print', 'ReportController@soldItemPeriodePrint');
         Route::get('/report/periode/solditembahan', 'ReportController@soldItemBahanPeriode');
         Route::get('/report/periode/karyawan', 'ReportController@karyawanPeriode');
+        Route::get('/report/periode/karyawan-print', 'ReportController@karyawanPeriodePrint');
         Route::get('/report/periode/labarugi', 'ReportController@labaRugiPeriode');
+        Route::get('/report/periode/labarugi-print', 'ReportController@labaRugiPeriodePrint');
         # Perbulan
         Route::get('/report/perbulan', 'ReportController@perbulan');
         Route::get('/report/perbulan/solditem', 'ReportController@soldItemPerbulan');
+        Route::get('/report/perbulan/solditem-print', 'ReportController@soldItemPerbulanPrint');
         Route::get('/report/perbulan/solditembahan', 'ReportController@soldItemBahanPerbulan');
         Route::get('/report/perbulan/karyawan', 'ReportController@karyawanPerbulan');
+        Route::get('/report/perbulan/karyawan-print', 'ReportController@karyawanPerbulanPrint');
         Route::get('/report/perbulan/labarugi', 'ReportController@labaRugiPerbulan');
+        Route::get('/report/perbulan/labarugi-print', 'ReportController@labaRugiPerbulanPrint');
         # Pertahun
         Route::get('/report/pertahun', 'ReportController@pertahun');
         Route::get('/report/pertahun/solditem', 'ReportController@soldItemPertahun');
+        Route::get('/report/pertahun/solditem-print', 'ReportController@soldItemPertahunPrint');
         Route::get('/report/pertahun/solditembahan', 'ReportController@soldItemBahanPertahun');
         Route::get('/report/pertahun/karyawan', 'ReportController@karyawanPertahun');
+        Route::get('/report/pertahun/karyawan-print', 'ReportController@karyawanPertahunPrint');
         Route::get('/report/pertahun/labarugi', 'ReportController@labaRugiPertahun');
+        Route::get('/report/pertahun/labarugi-print', 'ReportController@labaRugiPertahunPrint');
 
         // Account
         Route::get('/account', 'AccountController@index');
@@ -209,7 +221,9 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('/account/saldo/edit/{id}', 'AccountController@saveEditInputManual');
         # Jurnal Harian
         Route::get('/account/saldo/jurnal', 'AccountController@jurnal');
+        Route::get('/account/saldo/jurnal-print', 'AccountController@jurnalPrint');
         Route::get('/account/saldo/jurnal/bank', 'AccountController@jurnalBank');
+        Route::get('/account/saldo/jurnal/bank-print', 'AccountController@jurnalBankPrint');
 
         // User
         Route::get('/user', 'UserController@index');

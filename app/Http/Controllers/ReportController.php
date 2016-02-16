@@ -82,6 +82,29 @@ class ReportController extends Controller
             return view(config('app.template').'.error.403');
         }
 
+        $data = $this->_soldItem($request);
+
+        return view(config('app.template').'.report.pertanggal-solditem', $data);
+    }
+
+    public function soldItemPrint(Request $request)
+    {
+        if( Gate::denies('report.pertanggal.solditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $data = $this->_soldItem($request);
+
+        $print = new \App\Libraries\SoldItem([
+            'header' => 'Laporan Sold Item '.$data['tanggal']->format('d M Y'),
+            'data' => $data['produks'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _soldItem(Request $request)
+    {
         $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
 
         $produk = Produk::leftJoin(DB::raw("(SELECT order_details.id, order_details.`order_id`, order_details.`produk_id`,
@@ -112,11 +135,10 @@ class ReportController extends Controller
             ])
             ->get();
 
-        $data = [
+        return [
             'tanggal'   => Carbon::parse($tanggal),
             'produks'   => $produk
         ];
-        return view(config('app.template').'.report.pertanggal-solditem', $data);
     }
 
     public function soldItemBahan(Request $request)
@@ -141,6 +163,29 @@ class ReportController extends Controller
             return view(config('app.template').'.error.403');
         }
 
+        $data = $this->_karyawan($request);
+
+        return view(config('app.template').'.report.pertanggal-karyawan', $data);
+    }
+
+    public function karyawanPrint(Request $request)
+    {
+        if( Gate::denies('report.pertanggal.karyawan') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $data = $this->_karyawan($request);
+
+        $print = new \App\Libraries\Karyawan([
+            'header' => 'Laporan Penjualan Karyawan '.$data['tanggal']->format('d M Y'),
+            'data' => $data['karyawans'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _karyawan(Request $request)
+    {
         $tanggal    = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
         $karyawans  = \App\Karyawan::join('orders', 'karyawans.id', '=', 'orders.karyawan_id')
             ->join('order_details', 'orders.id', '=', 'order_details.order_id')
@@ -153,12 +198,10 @@ class ReportController extends Controller
             ->groupBy('karyawans.id')
             ->get();
 
-        $data = [
+        return [
             'tanggal'   => Carbon::parse($tanggal),
             'karyawans' => $karyawans,
         ];
-
-        return view(config('app.template').'.report.pertanggal-karyawan', $data);
     }
 
     public function karyawanDetail(Request $request)
@@ -216,6 +259,29 @@ class ReportController extends Controller
             return view(config('app.template').'.error.403');
         }
 
+        $data = $this->_labaRugi($request);
+
+        return view(config('app.template').'.report.pertanggal-labarugi', $data);
+    }
+
+    public function labaRugiPrint(Request $request)
+    {
+        if( Gate::denies('report.pertanggal.labarugi') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $data = $this->_labaRugi($request);
+
+        $print = new \App\Libraries\LabaRugi([
+            'header' => 'Laporan Laba/Rugi '.$data['tanggal']->format('d M Y'),
+            'data' => $data['tableTemp'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _labaRugi(Request $request)
+    {
         $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
 
         $penjualans = Order::ReportGroup("orders.`tanggal` = '$tanggal'", "GROUP BY tanggal");
@@ -241,8 +307,7 @@ class ReportController extends Controller
 
         $tableTemp = $this->buildLabaRugiTable(['penjualans' => $penjualans, 'account_saldo' => $accountSaldo]);
 
-        $data = ['tanggal' => Carbon::createFromFormat('Y-m-d', $tanggal), 'tableTemp' => $tableTemp];
-        return view(config('app.template').'.report.pertanggal-labarugi', $data);
+        return ['tanggal' => Carbon::createFromFormat('Y-m-d', $tanggal), 'tableTemp' => $tableTemp];
     }
     /* End Pertanggal */
 
@@ -253,6 +318,29 @@ class ReportController extends Controller
             return view(config('app.template').'.error.403');
         }
 
+        $data = $this->_soldItemPeriode($request);
+
+        return view(config('app.template').'.report.periode-solditem', $data);
+    }
+
+    public function soldItemPeriodePrint(Request $request)
+    {
+        if( Gate::denies('report.periode.solditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $data = $this->_soldItemPeriode($request);
+
+        $print = new \App\Libraries\SoldItem([
+            'header' => 'Laporan Sold Item '.$data['tanggal']->format('d M Y').' s/d '.$data['to_tanggal']->format('d M Y'),
+            'data' => $data['produks'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _soldItemPeriode(Request $request)
+    {
         $tanggal    = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
         $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : $tanggal;
 
@@ -284,12 +372,11 @@ class ReportController extends Controller
             ])
             ->get();
 
-        $data = [
+        return [
             'tanggal'   => Carbon::createFromFormat('Y-m-d', $tanggal),
             'to_tanggal'=> Carbon::createFromFormat('Y-m-d', $to_tanggal),
             'produks'   => $produk
         ];
-        return view(config('app.template').'.report.periode-solditem', $data);
     }
 
     public function soldItemBahanPeriode(Request $request)
@@ -316,6 +403,29 @@ class ReportController extends Controller
             return view(config('app.template').'.error.403');
         }
 
+        $data = $this->_karyawanPeriode($request);
+
+        return view(config('app.template').'.report.periode-karyawan', $data);
+    }
+
+    protected function karyawanPeriodePrint(Request $request)
+    {
+        if( Gate::denies('report.periode.karyawan') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $data = $this->_karyawanPeriode($request);
+
+        $print = new \App\Libraries\Karyawan([
+            'header' => 'Laporan Penjualan Karyawan '.$data['tanggal']->format('d M Y').' s/d '.$data['to_tanggal']->format('d M Y'),
+            'data' => $data['karyawans'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    public function _karyawanPeriode(Request $request)
+    {
         $tanggal    = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
         $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : $tanggal;
 
@@ -330,13 +440,11 @@ class ReportController extends Controller
             ->groupBy('karyawans.id')
             ->get();
 
-        $data = [
+        return [
             'tanggal'   => Carbon::createFromFormat('Y-m-d', $tanggal),
             'to_tanggal'=> Carbon::createFromFormat('Y-m-d', $to_tanggal),
             'karyawans' => $karyawans,
         ];
-
-        return view(config('app.template').'.report.periode-karyawan', $data);
     }
 
     public function labaRugiPeriode(Request $request)
@@ -345,6 +453,29 @@ class ReportController extends Controller
             return view(config('app.template').'.error.403');
         }
 
+        $data = $this->_labaRugiPeriode($request);
+
+        return view(config('app.template').'.report.periode-labarugi', $data);
+    }
+
+    public function labaRugiPeriodePrint(Request $request)
+    {
+        if( Gate::denies('report.periode.labarugi') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $data = $this->_labaRugiPeriode($request);
+
+        $print = new \App\Libraries\LabaRugi([
+            'header' => 'Laporan Laba/Rugi '.$data['tanggal']->format('d M Y').' s/d '.$data['to_tanggal']->format('d M Y'),
+            'data' => $data['tableTemp'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _labaRugiPeriode(Request $request)
+    {
         $tanggal    = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
         $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : $tanggal;
 
@@ -370,12 +501,11 @@ class ReportController extends Controller
 
         $tableTemp = $this->buildLabaRugiTable(['penjualans' => $penjualans, 'account_saldo' => $accountSaldo]);
 
-        $data = [
+        return [
             'tanggal'       => Carbon::createFromFormat('Y-m-d', $tanggal),
             'to_tanggal'    => Carbon::createFromFormat('Y-m-d', $to_tanggal),
             'tableTemp'     => $tableTemp
         ];
-        return view(config('app.template').'.report.periode-labarugi', $data);
     }
     /* End Periode */
 
@@ -414,6 +544,29 @@ class ReportController extends Controller
             return view(config('app.template').'.error.403');
         }
 
+        $data = $this->_soldItemPerbulan($request);
+
+        return view(config('app.template').'.report.perbulan-solditem', $data);
+    }
+
+    public function soldItemPerbulanPrint(Request $request)
+    {
+        if( Gate::denies('report.perbulan.solditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $data = $this->_soldItemPerbulan($request);
+
+        $print = new \App\Libraries\SoldItem([
+            'header' => 'Laporan Sold Item Bulan '.$data['tanggal']->format('M Y'),
+            'data' => $data['produks'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _soldItemPerbulan(Request $request)
+    {
         $bulan = $request->get('bulan') ? $request->get('bulan') : date('Y-m');
 
         $produk = Produk::leftJoin(DB::raw("(SELECT order_details.id, order_details.`order_id`, order_details.`produk_id`,
@@ -444,11 +597,10 @@ class ReportController extends Controller
             ])
             ->get();
 
-        $data = [
+        return [
             'tanggal'   => Carbon::parse($bulan),
             'produks'   => $produk
         ];
-        return view(config('app.template').'.report.perbulan-solditem', $data);
     }
 
     public function soldItemBahanPerbulan(Request $request)
@@ -474,6 +626,29 @@ class ReportController extends Controller
             return view(config('app.template').'.error.403');
         }
 
+        $data = $this->_karyawanPerbulan($request);
+
+        return view(config('app.template').'.report.perbulan-karyawan', $data);
+    }
+
+    public function karyawanPerbulanPrint(Request $request)
+    {
+        if( Gate::denies('report.perbulan.karyawan') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $data = $this->_karyawanPerbulan($request);
+
+        $print = new \App\Libraries\Karyawan([
+            'header' => 'Laporan Penjualan Karyawan Bulan '.$data['tanggal']->format('M Y'),
+            'data' => $data['karyawans'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _karyawanPerbulan(Request $request)
+    {
         $bulan      = $request->get('bulan') ? $request->get('bulan') : date('Y-m');
 
         $karyawans  = \App\Karyawan::join('orders', 'karyawans.id', '=', 'orders.karyawan_id')
@@ -487,12 +662,10 @@ class ReportController extends Controller
             ->groupBy('karyawans.id')
             ->get();
 
-        $data = [
+        return [
             'tanggal'   => Carbon::parse($bulan),
             'karyawans' => $karyawans,
         ];
-
-        return view(config('app.template').'.report.perbulan-karyawan', $data);
     }
 
     public function labaRugiPerbulan(Request $request)
@@ -501,6 +674,29 @@ class ReportController extends Controller
             return view(config('app.template').'.error.403');
         }
 
+        $data = $this->_labaRugiPerbulan($request);
+
+        return view(config('app.template').'.report.perbulan-labarugi', $data);
+    }
+
+    public function labaRugiPerbulanPrint(Request $request)
+    {
+        if( Gate::denies('report.perbulan.labarugi') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $data = $this->_labaRugiPerbulan($request);
+
+        $print = new \App\Libraries\LabaRugi([
+            'header' => 'Laporan Laba/Rugi Bulan '.$data['tanggal']->format('M Y'),
+            'data' => $data['tableTemp'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _labaRugiPerbulan(Request $request)
+    {
         $bulan = $request->get('bulan') ? $request->get('bulan') : date('Y-m');
 
         $penjualans = Order::ReportGroup("SUBSTRING(orders.`tanggal`, 1, 7) = '$bulan'", "GROUP BY SUBSTRING(tanggal, 1, 7)");
@@ -525,8 +721,7 @@ class ReportController extends Controller
 
         $tableTemp = $this->buildLabaRugiTable(['penjualans' => $penjualans, 'account_saldo' => $accountSaldo]);
 
-        $data = ['tanggal' => Carbon::createFromFormat('Y-m', $bulan), 'tableTemp' => $tableTemp];
-        return view(config('app.template').'.report.perbulan-labarugi', $data);
+        return ['tanggal' => Carbon::createFromFormat('Y-m', $bulan), 'tableTemp' => $tableTemp];
     }
     /* End Perbulan */
 
@@ -565,6 +760,29 @@ class ReportController extends Controller
             return view(config('app.template').'.error.403');
         }
 
+        $data = $this->_soldItemPertahun($request);
+
+        return view(config('app.template').'.report.pertahun-solditem', $data);
+    }
+
+    public function soldItemPertahunPrint(Request $request)
+    {
+        if( Gate::denies('report.pertahun.solditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $data = $this->_soldItemPertahun($request);
+
+        $print = new \App\Libraries\SoldItem([
+            'header' => 'Laporan Sold Item Tahun '.$data['tanggal']->format('Y'),
+            'data' => $data['produks'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _soldItemPertahun(Request $request)
+    {
         $tahun = $request->get('tahun') ? $request->get('tahun') : date('Y');
 
         $produk = Produk::leftJoin(DB::raw("(SELECT order_details.id, order_details.`order_id`, order_details.`produk_id`,
@@ -595,11 +813,10 @@ class ReportController extends Controller
             ])
             ->get();
 
-        $data = [
+        return [
             'tanggal'   => Carbon::createFromFormat('Y', $tahun),
             'produks'   => $produk
         ];
-        return view(config('app.template').'.report.pertahun-solditem', $data);
     }
 
     public function soldItemBahanPertahun(Request $request)
@@ -625,6 +842,29 @@ class ReportController extends Controller
             return view(config('app.template').'.error.403');
         }
 
+        $data = $this->_karyawanPertahun($request);
+
+        return view(config('app.template').'.report.pertahun-karyawan', $data);
+    }
+
+    public function karyawanPertahunPrint(Request $request)
+    {
+        if( Gate::denies('report.pertahun.karyawan') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $data = $this->_karyawanPertahun($request);
+
+        $print = new \App\Libraries\Karyawan([
+            'header' => 'Laporan Penjualan Karyawan Tahun '.$data['tanggal']->format('Y'),
+            'data' => $data['karyawans'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _karyawanPertahun(Request $request)
+    {
         $tahun      = $request->get('tahun') ? $request->get('tahun') : date('Y');
 
         $karyawans  = \App\Karyawan::join('orders', 'karyawans.id', '=', 'orders.karyawan_id')
@@ -638,12 +878,10 @@ class ReportController extends Controller
             ->groupBy('karyawans.id')
             ->get();
 
-        $data = [
+        return [
             'tanggal'   => Carbon::createFromFormat('Y', $tahun),
             'karyawans' => $karyawans,
         ];
-
-        return view(config('app.template').'.report.pertahun-karyawan', $data);
     }
 
     public function labaRugiPertahun(Request $request)
@@ -652,6 +890,29 @@ class ReportController extends Controller
             return view(config('app.template').'.error.403');
         }
 
+        $data = $this->_labaRugiPertahun($request);
+
+        return view(config('app.template').'.report.pertahun-labarugi', $data);
+    }
+
+    public function labaRugiPertahunPrint(Request $request)
+    {
+        if( Gate::denies('report.pertahun.labarugi') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $data = $this->_labaRugiPertahun($request);
+
+        $print = new \App\Libraries\LabaRugi([
+            'header' => 'Laporan Laba/Rugi Tahun '.$data['tanggal']->format('Y'),
+            'data' => $data['tableTemp'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _labaRugiPertahun(Request $request)
+    {
         $tahun = $request->get('tahun') ? $request->get('tahun') : date('Y');
 
         $penjualans = Order::ReportGroup("SUBSTRING(orders.`tanggal`, 1, 4) = '$tahun'", "GROUP BY SUBSTRING(tanggal, 1, 4)");
@@ -676,8 +937,7 @@ class ReportController extends Controller
 
         $tableTemp = $this->buildLabaRugiTable(['penjualans' => $penjualans, 'account_saldo' => $accountSaldo]);
 
-        $data = ['tanggal' => Carbon::createFromFormat('Y', $tahun), 'tableTemp' => $tableTemp];
-        return view(config('app.template').'.report.pertahun-labarugi', $data);
+        return ['tanggal' => Carbon::createFromFormat('Y', $tahun), 'tableTemp' => $tableTemp];
     }
     /* End Pertahun */
 

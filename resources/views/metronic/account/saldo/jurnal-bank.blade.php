@@ -85,6 +85,9 @@
                             <div class="col-md-6">
                                 <div class="col-md-offset-3 col-md-9">
                                     <button type="submit" class="btn red">Tampilkan</button>
+                                    <a href="{{ url('/account/saldo/jurnal/bank-print?tanggal='.$tanggal->format('Y-m-d').'&to_tanggal='.$to_tanggal->format('Y-m-d').'&bank='.$bank) }}"
+                                        class="btn blue" target="_blank">Print
+                                    </a>
                                 </div>
                             </div>
                             <div class="col-md-6"></div>

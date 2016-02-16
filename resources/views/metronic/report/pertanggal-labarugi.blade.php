@@ -68,6 +68,10 @@
                             <div class="col-md-6">
                                 <div class="col-md-offset-3 col-md-9">
                                     <button type="submit" class="btn red">Tampilkan</button>
+                                    <a href="{{ url('/report/pertanggal/labarugi-print?tanggal='.$tanggal->format('Y-m-d')) }}"
+                                        target="_blank" class="btn blue">
+                                        Print
+                                    </a>
                                 </div>
                             </div>
                             <div class="col-md-6"></div>
