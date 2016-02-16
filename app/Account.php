@@ -27,6 +27,11 @@ class Account extends Model
         return $this->hasMany('App\AccountSaldo', 'account_id', 'id');
     }
 
+    public function reports()
+    {
+        return $this->belongsToMany(Report::class);
+    }
+
     public static function TotalPenjualan($where="", $groupBy="")
     {
         $query = "SELECT orders.`id`, orders.`tanggal`, ifnull(SUM(
@@ -68,9 +73,19 @@ class Account extends Model
         return DB::select($query);
     }
 
-    public static function TotalAccountSaldo($columnCondition, $where="")
+    public static function TotalAccountSaldo($columnCondition, $where="", $typeReport='jurnal')
     {
-        $query = "SELECT ifnull(SUM($columnCondition), 0)total FROM account_saldos WHERE $where";
+        $query = "SELECT ifnull(SUM($columnCondition), 0)total
+            FROM account_saldos
+            INNER JOIN accounts ON account_saldos.`account_id` = accounts.`id`
+            LEFT JOIN (
+                SELECT accounts.`id` AS account_id, accounts.`nama_akun`, reports.display
+                FROM accounts
+                INNER JOIN account_report ON accounts.`id` = account_report.`account_id`
+                INNER JOIN reports ON account_report.`report_id` = reports.id
+                WHERE reports.key = '$typeReport'
+            )AS temp_report ON accounts.`id` = temp_report.account_id
+            WHERE $where temp_report.account_id IS NOT NULL";
         return DB::select($query);
     }
 }

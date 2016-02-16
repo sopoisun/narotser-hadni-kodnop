@@ -16,7 +16,7 @@
                 <i class="icon-angle-right"></i>
             </li>
             <li>
-                <a href="{{ url('/place') }}">Akuntansi</a>
+                <a href="{{ url('/account') }}">Akuntansi</a>
                 <i class="icon-angle-right"></i>
             </li>
             <li><a href="javascript:void(0)">Tambah Akun</a></li>
