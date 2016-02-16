@@ -32,6 +32,22 @@ class Account extends Model
         return $this->belongsToMany(Report::class);
     }
 
+    public function assignReport($report)
+    {
+        if (is_string($report)) {
+            $report = Role::where('key', $report)->first();
+        }
+        return $this->reports()->attach($report);
+    }
+
+    public function revokeReport($report)
+    {
+        if (is_string($report)) {
+            $report = Role::where('key', $report)->first();
+        }
+        return $this->reports()->detach($report);
+    }
+
     public static function TotalPenjualan($where="", $groupBy="")
     {
         $query = "SELECT orders.`id`, orders.`tanggal`, ifnull(SUM(

@@ -81,7 +81,11 @@ class AccountController extends Controller
 
         $input = $request->all() + ['data_state' => 'input'];
 
-        if( Account::create($input) ){
+        $account = Account::create($input);
+        if( $account ){
+            $reports = $request->get('reports') != "" ? $request->get('reports') : [];
+            $account->assignReport($reports);
+
             return redirect('/account')->with('succcess', 'Sukses simpan data akun.');
         }
 
@@ -146,7 +150,23 @@ class AccountController extends Controller
                 ->withInput();
         }
 
-        if( Account::find($id)->update($request->all()) ){
+        $account    =  Account::with('reports')->find($id);
+
+        $inReports  = $request->get('reports') != "" ? $request->get('reports') : [];
+        $accountReports = array_column($account->reports->toArray(), 'id');
+
+        if( $account->update($request->all()) ){
+            // for new reports
+            $newReports = array_diff($inReports, $accountReports);
+            if( count($newReports) ){
+                $account->assignReport($newReports);
+            }
+            // for delete reports
+            $deleteReports = array_diff($accountReports, $inReports);
+            if( count($deleteReports) ){
+                $account->revokeReport($deleteReports);
+            }
+
             return redirect('/account')->with('succcess', 'Sukses ubah data akun.');
         }
 

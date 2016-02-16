@@ -222,11 +222,22 @@ class ReportController extends Controller
         $penjualans = ConvertRawQueryToArray($penjualans);
 
         $accountSaldo = \App\AccountSaldo::join('accounts', 'account_saldos.account_id', '=', 'accounts.id')
+            ->leftJoin(DB::raw("(SELECT accounts.`id` AS account_id, accounts.`nama_akun`, reports.display
+                    FROM accounts
+                    INNER JOIN account_report ON accounts.`id` = account_report.`account_id`
+                    INNER JOIN reports ON account_report.`report_id` = reports.id
+                    WHERE reports.key = 'labarugi')temp_report"),
+                function($join){
+                    $join->on('accounts.id', '=', 'temp_report.account_id');
+                }
+            )
             ->where('account_saldos.tanggal', $tanggal)
             ->whereNull('account_saldos.relation_id')
-            ->groupBy('account_id')->select([
+            ->whereNotNull('temp_report.account_id')
+            ->groupBy('accounts.id')
+            ->select([
                 'accounts.nama_akun', DB::raw('SUM(account_saldos.nominal)total'), 'account_saldos.type'
-                ])->get()->groupBy('type');
+            ])->get()->groupBy('type');
 
         $tableTemp = $this->buildLabaRugiTable(['penjualans' => $penjualans, 'account_saldo' => $accountSaldo]);
 
@@ -341,9 +352,19 @@ class ReportController extends Controller
         $penjualans = ConvertRawQueryToArray($penjualans);
 
         $accountSaldo = \App\AccountSaldo::join('accounts', 'account_saldos.account_id', '=', 'accounts.id')
+            ->leftJoin(DB::raw("(SELECT accounts.`id` AS account_id, accounts.`nama_akun`, reports.display
+                    FROM accounts
+                    INNER JOIN account_report ON accounts.`id` = account_report.`account_id`
+                    INNER JOIN reports ON account_report.`report_id` = reports.id
+                    WHERE reports.key = 'labarugi')temp_report"),
+                function($join){
+                    $join->on('accounts.id', '=', 'temp_report.account_id');
+                }
+            )
             ->whereBetween('account_saldos.tanggal', [$tanggal, $to_tanggal])
             ->whereNull('account_saldos.relation_id')
-            ->groupBy('account_id')->select([
+            ->whereNotNull('temp_report.account_id')
+            ->groupBy('accounts.id')->select([
                 'accounts.nama_akun', DB::raw('SUM(account_saldos.nominal)total'), 'account_saldos.type'
                 ])->get()->groupBy('type');
 
@@ -486,9 +507,19 @@ class ReportController extends Controller
         $penjualans = ConvertRawQueryToArray($penjualans);
 
         $accountSaldo = \App\AccountSaldo::join('accounts', 'account_saldos.account_id', '=', 'accounts.id')
+            ->leftJoin(DB::raw("(SELECT accounts.`id` AS account_id, accounts.`nama_akun`, reports.display
+                    FROM accounts
+                    INNER JOIN account_report ON accounts.`id` = account_report.`account_id`
+                    INNER JOIN reports ON account_report.`report_id` = reports.id
+                    WHERE reports.key = 'labarugi')temp_report"),
+                function($join){
+                    $join->on('accounts.id', '=', 'temp_report.account_id');
+                }
+            )
             ->where(DB::raw('SUBSTRING(account_saldos.tanggal, 1, 7)'), $bulan)
             ->whereNull('account_saldos.relation_id')
-            ->groupBy('account_id')->select([
+            ->whereNotNull('temp_report.account_id')
+            ->groupBy('accounts.id')->select([
                 'accounts.nama_akun', DB::raw('SUM(account_saldos.nominal)total'), 'account_saldos.type'
                 ])->get()->groupBy('type');
 
@@ -627,9 +658,19 @@ class ReportController extends Controller
         $penjualans = ConvertRawQueryToArray($penjualans);
 
         $accountSaldo = \App\AccountSaldo::join('accounts', 'account_saldos.account_id', '=', 'accounts.id')
+            ->leftJoin(DB::raw("(SELECT accounts.`id` AS account_id, accounts.`nama_akun`, reports.display
+                    FROM accounts
+                    INNER JOIN account_report ON accounts.`id` = account_report.`account_id`
+                    INNER JOIN reports ON account_report.`report_id` = reports.id
+                    WHERE reports.key = 'labarugi')temp_report"),
+                function($join){
+                    $join->on('accounts.id', '=', 'temp_report.account_id');
+                }
+            )
             ->where(DB::raw('SUBSTRING(account_saldos.tanggal, 1, 4)'), $tahun)
             ->whereNull('account_saldos.relation_id')
-            ->groupBy('account_id')->select([
+            ->whereNotNull('temp_report.account_id')
+            ->groupBy('accounts.id')->select([
                 'accounts.nama_akun', DB::raw('SUM(account_saldos.nominal)total'), 'account_saldos.type'
                 ])->get()->groupBy('type');
 
