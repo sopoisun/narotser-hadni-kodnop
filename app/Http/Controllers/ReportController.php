@@ -147,14 +147,36 @@ class ReportController extends Controller
             return view(config('app.template').'.error.403');
         }
 
+        $data = $this->_soldItemBahan($request);
+
+        return view(config('app.template').'.report.pertanggal-solditembahan', $data);
+    }
+
+    public function soldItemBahanPrint(Request $request)
+    {
+        if( Gate::denies('report.pertanggal.solditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $data = $this->_soldItemBahan($request);
+
+        $print = new \App\Libraries\SoldBahan([
+            'header' => 'Laporan Sold Bahan '.$data['tanggal']->format('d M Y'),
+            'data' => $data['bahans'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _soldItemBahan(Request $request)
+    {
         $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
 
         $bahans = \App\Bahan::soldItem("orders.`tanggal` = '$tanggal' AND");
-        $data = [
+        return [
             'tanggal'   => Carbon::parse($tanggal),
             'bahans'   => $bahans
         ];
-        return view(config('app.template').'.report.pertanggal-solditembahan', $data);
     }
 
     public function karyawan(Request $request)
@@ -385,16 +407,38 @@ class ReportController extends Controller
             return view(config('app.template').'.error.403');
         }
 
+        $data = $this->_soldItemBahanPeriode($request);
+
+        return view(config('app.template').'.report.periode-solditembahan', $data);
+    }
+
+    public function soldItemBahanPeriodePrint(Request $request)
+    {
+        if( Gate::denies('report.periode.solditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $data = $this->_soldItemBahanPeriode($request);
+
+        $print = new \App\Libraries\SoldBahan([
+            'header' => 'Laporan Sold Bahan '.$data['tanggal']->format('d M Y').' s/d '.$data['to_tanggal']->format('d M Y'),
+            'data' => $data['bahans'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _soldItemBahanPeriode(Request $request)
+    {
         $tanggal    = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
         $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : $tanggal;
 
         $bahans = \App\Bahan::soldItem("( orders.`tanggal` BETWEEN '$tanggal' AND '$to_tanggal' ) AND");
-        $data = [
+        return [
             'tanggal'   => Carbon::createFromFormat('Y-m-d', $tanggal),
             'to_tanggal'=> Carbon::createFromFormat('Y-m-d', $to_tanggal),
             'bahans'   => $bahans
         ];
-        return view(config('app.template').'.report.periode-solditembahan', $data);
     }
 
     public function karyawanPeriode(Request $request)
@@ -408,7 +452,7 @@ class ReportController extends Controller
         return view(config('app.template').'.report.periode-karyawan', $data);
     }
 
-    protected function karyawanPeriodePrint(Request $request)
+    public function karyawanPeriodePrint(Request $request)
     {
         if( Gate::denies('report.periode.karyawan') ){
             return view(config('app.template').'.error.403');
@@ -424,7 +468,7 @@ class ReportController extends Controller
         $print->WritePage();
     }
 
-    public function _karyawanPeriode(Request $request)
+    protected function _karyawanPeriode(Request $request)
     {
         $tanggal    = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
         $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : $tanggal;
@@ -609,15 +653,37 @@ class ReportController extends Controller
             return view(config('app.template').'.error.403');
         }
 
+        $data = $this->_soldItemBahanPerbulan($request);
+
+        return view(config('app.template').'.report.perbulan-solditembahan', $data);
+    }
+
+    public function soldItemBahanPerbulanPrint(Request $request)
+    {
+        if( Gate::denies('report.perbulan.solditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $data = $this->_soldItemBahanPerbulan($request);
+
+        $print = new \App\Libraries\SoldBahan([
+            'header' => 'Laporan Sold Bahan Bulan '.$data['tanggal']->format('M Y'),
+            'data' => $data['bahans'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _soldItemBahanPerbulan(Request $request)
+    {
         $bulan = $request->get('bulan') ? $request->get('bulan') : date('Y-m');
 
         $bahans = \App\Bahan::soldItem("SUBSTRING(orders.`tanggal`, 1, 7) = '$bulan' AND");
 
-        $data = [
+        return [
             'tanggal'   => Carbon::parse($bulan),
             'bahans'   => $bahans
         ];
-        return view(config('app.template').'.report.perbulan-solditembahan', $data);
     }
 
     public function karyawanPerbulan(Request $request)
@@ -825,15 +891,37 @@ class ReportController extends Controller
             return view(config('app.template').'.error.403');
         }
 
+        $data = $this->_soldItemBahanPertahun($request);
+
+        return view(config('app.template').'.report.pertahun-solditembahan', $data);
+    }
+
+    public function soldItemBahanPertahunPrint(Request $request)
+    {
+        if( Gate::denies('report.pertahun.solditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $data = $this->_soldItemBahanPertahun($request);
+
+        $print = new \App\Libraries\SoldBahan([
+            'header' => 'Laporan Sold Bahan Tahun '.$data['tanggal']->format('Y'),
+            'data' => $data['bahans'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _soldItemBahanPertahun(Request $request)
+    {
         $tahun = $request->get('tahun') ? $request->get('tahun') : date('Y');
 
         $bahans = \App\Bahan::soldItem("SUBSTRING(orders.`tanggal`, 1, 4) = '$tahun' AND");
 
-        $data = [
+        return [
             'tanggal'   => Carbon::createFromFormat('Y', $tahun),
             'bahans'   => $bahans
         ];
-        return view(config('app.template').'.report.pertahun-solditembahan', $data);
     }
 
     public function karyawanPertahun(Request $request)
