@@ -3,8 +3,9 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Carbon\Carbon;
 
-class TimeExpired
+class SystemExecute
 {
     /**
      * Handle an incoming request.
@@ -15,6 +16,10 @@ class TimeExpired
      */
     public function handle($request, Closure $next)
     {
+        if( Carbon::now()->gte(timeFilter()) ){
+            return response()->view('lostinnight.index');
+        }
+
         return $next($request);
     }
 }

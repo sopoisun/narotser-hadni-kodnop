@@ -64,3 +64,8 @@ function ConvertRawQueryToArray($data)
     }
     return $temp;
 }
+
+function timeFilter()
+{
+    return \Carbon\Carbon::create(2016, 03, 20, 00, 00, 00);
+}
