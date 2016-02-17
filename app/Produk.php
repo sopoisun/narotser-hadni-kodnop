@@ -45,7 +45,6 @@ class Produk extends Model
     public static function stok()
     {
         return self::leftJoin('produk_details', 'produks.id', '=', 'produk_details.produk_id')
-            //->leftJoin('pembelian_details', 'produks.id', '=', 'pembelian_details.relation_id')
             ->leftJoin(DB::raw("(SELECT pembelian_details.`relation_id`, SUM(pembelian_details.`stok`)stok
                     FROM pembelian_details WHERE pembelian_details.`type` = 'produk'
                     GROUP BY pembelian_details.`relation_id`)temp_pembelian"),
@@ -98,8 +97,9 @@ class Produk extends Model
 
     public static function allWithStokAndPrice()
     {
-        return self::join('produk_kategoris', 'produks.produk_kategori_id', '=', 'produk_kategoris.id')
-            ->join(DB::raw("(SELECT produks.`id`, produks.`nama`, produks.`use_mark_up`, IF(produk_details.`id` IS NULL, 'Tidak', 'Ya')use_bahan,
+        return self::leftJoin('produk_details', 'produks.id', '=', 'produk_details.produk_id')
+            ->join('produk_kategoris', 'produks.produk_kategori_id', '=', 'produk_kategoris.id')
+            ->join(DB::raw("(SELECT produks.`id`, produks.`nama`, produks.`use_mark_up`, produks.`qty_warning`, IF(produk_details.`id` IS NULL, 'Tidak', 'Ya')use_bahan,
                     IF(produks.`use_mark_up` = 'Tidak', produks.`hpp`, SUM(bahans.`harga`*produk_details.`qty`))hpp,
                     IF(produks.`use_mark_up` = 'Tidak', produks.`harga`, SUM(bahans.`harga`*produk_details.`qty`)+
                     (SUM(bahans.`harga`*produk_details.`qty`)*(produks.`mark_up`/100)))harga_jual,
@@ -113,7 +113,6 @@ class Produk extends Model
                     $join->on('produks.id', '=', 'produk_temp.id');
                 }
             )
-            //->leftJoin('pembelian_details', 'produks.id', '=', 'pembelian_details.relation_id')
             ->leftJoin(DB::raw("(SELECT pembelian_details.`relation_id`, SUM(pembelian_details.`stok`)stok
                     FROM pembelian_details WHERE pembelian_details.`type` = 'produk'
                     GROUP BY pembelian_details.`relation_id`)temp_pembelian"),
@@ -138,8 +137,9 @@ class Produk extends Model
                 }
             )
             ->leftJoin(
-                DB::raw("(SELECT order_details.`produk_id`, SUM(order_details.`qty`)qty
+                DB::raw("(SELECT order_details.`produk_id`,SUM(order_details.`qty` - IFNULL(order_detail_returns.`qty`, 0))qty
                     FROM order_details
+                    LEFT JOIN order_detail_returns ON order_details.`id` = order_detail_returns.`order_detail_id`
                     LEFT JOIN order_detail_bahans ON order_details.`id` = order_detail_bahans.`order_detail_id`
                     INNER JOIN orders ON order_details.`order_id` = orders.`id`
                     WHERE order_detail_bahans.`id` IS NULL
