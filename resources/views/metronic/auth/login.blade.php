@@ -34,7 +34,7 @@
 <body class="login">
 	<!-- BEGIN LOGO -->
 	<div class="logo">
-		<img src="assets/img/logo-big.png" alt="" />
+		<img src="{{ url('/') }}/assets/logo.png" alt="" />
 	</div>
 	<!-- END LOGO -->
 	<!-- BEGIN LOGIN -->
@@ -77,7 +77,7 @@
 	<!-- END LOGIN -->
 	<!-- BEGIN COPYRIGHT -->
 	<div class="copyright">
-		2013 &copy; Metronic. Admin Dashboard Template.
+		2016 &copy; Pondok Indah. Resto Application by <a href="https://www.facebook.com/Ahmad.Rizal.Afani">Ahmad Rizal Afani</a>.
 	</div>
 	<!-- END COPYRIGHT -->
 	<!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
