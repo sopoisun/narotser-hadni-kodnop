@@ -306,13 +306,11 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('/account/check', 'AccountController@check');
         });
     });
+});
 
-    // PDF
-    Route::get('/pdf', function(){
-        FPDF::AddPage();
-        FPDF::SetFont('Arial','B',16);
-        FPDF::Cell(40,10,'Hello World!');
-        FPDF::Output();
-        exit;
-    });
+Route::group(['prefix' => 'api'], function(){
+    Route::get('/setting', 'ApiController@setting');
+    Route::get('/transaksi', 'ApiController@transaksi');
+    Route::get('/transaksi/detail', 'ApiController@detail');
+    Route::get('/transaksi/bayar', 'ApiController@bayar');
 });
