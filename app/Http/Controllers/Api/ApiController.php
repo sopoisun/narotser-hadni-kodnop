@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 
@@ -9,10 +9,90 @@ use App\Http\Controllers\Controller;
 use App\Order;
 use App\OrderDetail;
 use App\Setting;
+use App\User;
+use App\Produk;
 use DB;
+use Hash;
+use Auth;
 
 class ApiController extends Controller
 {
+    public function index(Request $request) // as Login
+    {
+        \Debugbar::disable();
+
+        $credentials = [
+            'username' => $request->get('username'),
+            'password'  => $request->get('password'),
+        ];
+
+        if( Auth::once($credentials) ){
+            $user = User::where('username', $request->get('username'))->first();
+            return $user->api_token;
+        }
+
+        return 0;
+    }
+
+    public function produk()
+    {
+        $produks = Produk::allWithStokAndPrice()->get();
+
+        $data = [];
+        $no = 0;
+        foreach($produks as $produk)
+        {
+            $no++;
+            array_push($data, [
+                'no' => $no,
+                'produk_id' => $produk->id,
+                'nama_produk' => $produk->nama,
+                'harga' => $produk->harga_jual,
+                'harga_f' => number_format($produk->harga_jual, 0, ",", "."),
+                'kategori' => $produk->nama_kategori,
+            ]);
+        }
+
+        $display['produk'] = $data;
+
+        return $display;
+    }
+
+    public function checkStok(Request $request)
+    {
+        $produkId   = $request->get('id');
+        $qty        = $request->get('qty') ? $request->get('qty') : 1;
+        $produk     = Produk::with('detail')->find($produkId);
+
+        $denied = false;
+        if( $produk->detail->count() ){
+            $tempBahan = [];
+            foreach( $produk->detail as $pd ){
+                $bId = $pd['bahan_id'];
+                $tempBahan[$bId] =( $pd['qty'] * $qty );
+            }
+
+            $bahans = \App\Bahan::stok()->whereIn('bahans.id', array_keys($tempBahan))->get();
+            foreach($bahans as $bahan){
+                $bId = $bahan->id;
+                if( $bahan->sisa_stok < $tempBahan[$bId] ){
+                    $denied = true;
+                }
+            }
+        }else{
+            $produk = Produk::stok()->find($produkId);
+            if( $produk->sisa_stok < $qty ){
+                $denied = true;
+            }
+        }
+
+        if( !$denied ){
+            return 1;
+        }
+
+        return 0;
+    }
+
     public function transaksi(Request $request)
     {
         $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');

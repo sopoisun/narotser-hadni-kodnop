@@ -308,9 +308,14 @@ Route::group(['middleware' => ['web']], function () {
     });
 });
 
-Route::group(['prefix' => 'api'], function(){
-    Route::get('/setting', 'ApiController@setting');
-    Route::get('/transaksi', 'ApiController@transaksi');
-    Route::get('/transaksi/detail', 'ApiController@detail');
-    Route::get('/transaksi/bayar', 'ApiController@bayar');
+Route::group(['prefix' => 'api', 'namespace' => 'Api'], function(){
+    Route::post('/login', 'ApiController@index');
+
+    Route::group(['middleware' => ['auth.api']], function(){
+        Route::get('/produk', 'ApiController@produk');
+        Route::get('/setting', 'ApiController@setting');
+        Route::get('/transaksi', 'ApiController@transaksi');
+        Route::get('/transaksi/detail', 'ApiController@detail');
+        Route::get('/transaksi/bayar', 'ApiController@bayar');
+    });
 });

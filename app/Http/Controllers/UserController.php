@@ -13,6 +13,7 @@ use Validator;
 use Hash;
 use DB;
 use Gate;
+use Uuid;
 
 class UserController extends Controller
 {
@@ -82,6 +83,7 @@ class UserController extends Controller
         $user = User::create([
             'username' => $request->get('username'),
             'password' => Hash::make($request->get('password')),
+            'api_token' => Uuid::generate(),
         ]);
 
         if( $user ){

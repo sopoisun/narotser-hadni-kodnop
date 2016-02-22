@@ -28,7 +28,7 @@
     <link href="{{ url('/') }}/assets/metronic/css/pages/login.css" rel="stylesheet" type="text/css"/>
     <link href="{{ url('/') }}/assets/metronic/css/custom.css" rel="stylesheet" type="text/css" />
 	<!-- END THEME STYLES -->
-	<link rel="shortcut icon" href="favicon.ico" />
+	<link rel="shortcut icon" href="{{ url('/') }}/assets/logo.png" />
 </head>
 <!-- BEGIN BODY -->
 <body class="login">

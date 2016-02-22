@@ -33,7 +33,7 @@
 
     @yield('css_section')
 
-    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="shortcut icon" href="{{ url('/') }}/assets/logo.ico" />
 </head>
 <!-- END HEAD -->
 <!-- BEGIN BODY -->
