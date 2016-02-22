@@ -313,6 +313,8 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function(){
 
     Route::group(['middleware' => ['auth.api']], function(){
         Route::get('/produk', 'ApiController@produk');
+        Route::get('/produk/stok', 'ApiController@checkStok');
+        Route::get('/place', 'ApiController@place');
         Route::get('/setting', 'ApiController@setting');
         Route::get('/transaksi', 'ApiController@transaksi');
         Route::get('/transaksi/detail', 'ApiController@detail');

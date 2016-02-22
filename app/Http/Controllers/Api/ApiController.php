@@ -58,8 +58,30 @@ class ApiController extends Controller
         return $display;
     }
 
+    public function place()
+    {
+        $places = \App\Place::with('kategori')->get();
+
+        $data = [];
+        foreach($places as $place)
+        {
+            array_push($data, [
+                'place_id'    => $place->id,
+                'nama'  => $place->nama,
+                'kategori' => $place->kategori->nama,
+                'harga' => $place->harga,
+            ]);
+        }
+
+        $display['place'] = $data;
+
+        return $display;
+    }
+
     public function checkStok(Request $request)
     {
+        \Debugbar::disable();
+        
         $produkId   = $request->get('id');
         $qty        = $request->get('qty') ? $request->get('qty') : 1;
         $produk     = Produk::with('detail')->find($produkId);
