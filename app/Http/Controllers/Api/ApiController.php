@@ -34,6 +34,19 @@ class ApiController extends Controller
         return 0;
     }
 
+    public function user(Request $request)
+    {
+        $user = auth()->guard('api')->user();
+
+        return [
+            'user_id'       => $user->id,
+            'username'      => $user->username,
+            'nama_karyawan' => $user->karyawan->nama,
+            'karyawan_id'   => $user->karyawan->id,
+            'api_token'     => $request->get('api_token'),
+        ];
+    }
+
     public function produk()
     {
         $produks = Produk::allWithStokAndPrice()->get();
@@ -47,8 +60,8 @@ class ApiController extends Controller
                 'no' => $no,
                 'produk_id' => $produk->id,
                 'nama_produk' => $produk->nama,
-                'harga' => $produk->harga_jual,
-                'harga_f' => number_format($produk->harga_jual, 0, ",", "."),
+                'harga' => Pembulatan($produk->harga_jual),
+                'harga_f' => number_format(Pembulatan($produk->harga_jual), 0, ",", "."),
                 'kategori' => $produk->nama_kategori,
             ]);
         }
@@ -81,7 +94,7 @@ class ApiController extends Controller
     public function checkStok(Request $request)
     {
         \Debugbar::disable();
-        
+
         $produkId   = $request->get('id');
         $qty        = $request->get('qty') ? $request->get('qty') : 1;
         $produk     = Produk::with('detail')->find($produkId);
