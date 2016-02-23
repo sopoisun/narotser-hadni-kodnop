@@ -24,12 +24,12 @@ class ApiController extends Controller
 
         $credentials = [
             'username' => $request->get('username'),
-            'password'  => $request->get('password'),
-            'active'    => 1,
+            'password' => $request->get('password'),
+            'active' => 1,
         ];
 
         if( Auth::once($credentials) ){
-            $user = User::where('active', 1)->where('username', $request->get('username'))->first();
+            $user = User::where('users.active', 1)->where('username', $request->get('username'))->first();
             return $user->api_token;
         }
 

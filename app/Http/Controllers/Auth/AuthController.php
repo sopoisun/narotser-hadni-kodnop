@@ -47,10 +47,21 @@ class AuthController extends Controller
         return redirect('/auth/login');
     }
 
+    protected function getCredentials(Request $request)
+    {
+        $credentials = $request->only($this->loginUsername(), 'password');
+
+        $credentials += ['active' => 1];
+
+        return $credentials;
+    }
+
     public function showLoginForm()
     {
         return view(config('app.template').'.auth.login');
     }
+
+
     /**
      * Get a validator for an incoming registration request.
      *

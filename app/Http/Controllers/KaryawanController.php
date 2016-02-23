@@ -126,6 +126,11 @@ class KaryawanController extends Controller
         $karyawan = Karyawan::find($id);
 
         if( $karyawan && $karyawan->update(['active', 0]) ){
+
+            if( $karyawan->user_id != null ){
+                \App\User::find($karyawan->user_id)->update(['active', 0]);
+            }
+
             return redirect()->back()->with('succcess', 'Sukses hapus data '.$karyawan->nama.'.');
         }
 
