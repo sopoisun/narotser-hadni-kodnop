@@ -364,7 +364,7 @@ class AccountController extends Controller
             $totalPenjualan = 0;
             $firstPenjualan = Order::where('state', 'Closed')->orderBy('tanggal')->limit(1)->first();
             if( $firstPenjualan ){
-                if( $firstPenjualan->tanggal->gt($CYesterday) ){
+                if( $firstPenjualan->tanggal->lt($CYesterday) ){
                     $firstDate  = $firstPenjualan->tanggal->format('Y-m-d');
                     $where      = "(orders.tanggal between '$firstDate' AND '$yesterday') AND order_bayars.type_bayar = 'tunai' AND";
                     $totalPenjualan = ConvertRawQueryToArray(Account::TotalPenjualan($where))[0]['total'];
@@ -375,7 +375,7 @@ class AccountController extends Controller
             $totalPembelian = 0;
             $firstPembelian = PembelianBayar::orderBy('tanggal')->limit(1)->first();
             if( $firstPembelian ){
-                if( $firstPembelian->tanggal->gt($CYesterday) ){
+                if( $firstPembelian->tanggal->lt($CYesterday) ){
                     $firstDate  = $firstPembelian->tanggal->format('Y-m-d');
                     $where      = "(pembelian_bayars.`tanggal` BETWEEN '$firstDate' AND '$yesterday')";
                     $totalPembelian = ConvertRawQueryToArray(Account::TotalPembelian($where))[0]['total'];
@@ -386,7 +386,7 @@ class AccountController extends Controller
             $totalAccountSaldo = 0;
             $firstAccountSaldo = AccountSaldo::orderBy('tanggal')->limit(1)->first();
             if( $firstAccountSaldo ){
-                if( $firstAccountSaldo->tanggal->gt($CYesterday) ){
+                if( $firstAccountSaldo->tanggal->lt($CYesterday) ){
                     $firstDate  = $firstAccountSaldo->tanggal->format('Y-m-d');
                     $where      = "(account_saldos.`tanggal` BETWEEN '$firstDate' AND '$yesterday') AND";
                     $column     = "IF(account_saldos.`type` = 'debet', account_saldos.`nominal`, -ABS(account_saldos.`nominal`))";
@@ -506,7 +506,7 @@ class AccountController extends Controller
             $totalPenjualan = 0;
             $firstPenjualan = Order::where('state', 'Closed')->orderBy('tanggal')->limit(1)->first();
             if( $firstPenjualan ){
-                if( $firstPenjualan->tanggal->gt($CYesterday) ){
+                if( $firstPenjualan->tanggal->lt($CYesterday) ){
                     $firstDate  = $firstPenjualan->tanggal->format('Y-m-d');
                     $where      = "(orders.tanggal between '$firstDate' AND '$yesterday') AND order_bayars.type_bayar != 'tunai' AND";
                     $totalPenjualan = ConvertRawQueryToArray(Account::TotalPenjualan($where))[0]['total'];
@@ -517,7 +517,7 @@ class AccountController extends Controller
             $totalAccountSaldo = 0;
             $firstAccountSaldo = AccountSaldo::orderBy('tanggal')->limit(1)->first();
             if( $firstAccountSaldo ){
-                if( $firstAccountSaldo->tanggal->gt($CYesterday) ){
+                if( $firstAccountSaldo->tanggal->lt($CYesterday) ){
                     $firstDate  = $firstAccountSaldo->tanggal->format('Y-m-d');
                     $where      = "(account_saldos.`tanggal` BETWEEN '$firstDate' AND '$yesterday') and relation_id is not null AND";
                     $column     = "IF(account_saldos.`type` = 'kredit', account_saldos.`nominal`, -ABS(account_saldos.`nominal`))";
@@ -682,7 +682,7 @@ class AccountController extends Controller
         $totalPenjualan = 0;
         $firstPenjualan = Order::where('state', 'Closed')->orderBy('tanggal')->limit(1)->first();
         if( $firstPenjualan ){
-            if( $firstPenjualan->tanggal->gt($CYesterday) ){
+            if( $firstPenjualan->tanggal->lt($CYesterday) ){
                 $firstDate  = $firstPenjualan->tanggal->format('Y-m-d');
                 $where      = "(orders.tanggal between '$firstDate' AND '$yesterday') AND order_bayars.type_bayar != 'tunai'
                                 AND order_bayar_banks.bank_id = '$bank' AND";
@@ -694,7 +694,7 @@ class AccountController extends Controller
         $totalAccountSaldo = 0;
         $firstAccountSaldo = AccountSaldo::orderBy('tanggal')->limit(1)->first();
         if( $firstAccountSaldo ){
-            if( $firstAccountSaldo->tanggal->gt($CYesterday) ){
+            if( $firstAccountSaldo->tanggal->lt($CYesterday) ){
                 $firstDate  = $firstAccountSaldo->tanggal->format('Y-m-d');
                 $where      = "(account_saldos.`tanggal` BETWEEN '$firstDate' AND '$yesterday') and relation_id = '$bank' AND";
                 $column     = "IF(account_saldos.`type` = 'kredit', account_saldos.`nominal`, -ABS(account_saldos.`nominal`))";

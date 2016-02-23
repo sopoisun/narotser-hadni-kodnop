@@ -107,9 +107,10 @@
                                 <th>Type Bayar</th>
                                 <th>Ttl Sale</th>
                                 <th>Ttl Rsv</th>
+                                <th>Srv Cost</th>
                                 <th>Pajak</th>
                                 <th>Pjk Byr</th>
-                                <th>Total</th>
+                                <!--<th>Total</th>-->
                                 <th>Diskon</th>
                                 <th>Jumlah</th>
                                 <th>Ttl HPP</th>
@@ -129,9 +130,10 @@
                                 <td>{{ ucwords($report['type_bayar']) }}</td>
                                 <td style="text-align:right;">{{ number_format($report['total_penjualan'], 0, ',', '.') }}</td>
                                 <td style="text-align:right;">{{ number_format($report['total_reservasi'], 0, ',', '.') }}</td>
+                                <td style="text-align:right;">{{ number_format($report['total_service'], 0, ',', '.') }}</td>
                                 <td style="text-align:right;">{{ number_format($report['pajak'], 0, ',', '.') }}</td>
                                 <td style="text-align:right;">{{ number_format($report['pajak_pembayaran'], 0, ',', '.') }}</td>
-                                <td style="text-align:right;">{{ number_format($report['total_akhir'], 0, ',', '.') }}</td>
+                                <!--<td style="text-align:right;">{{ number_format($report['total_akhir'], 0, ',', '.') }}</td>-->
                                 <td style="text-align:right;">{{ number_format($report['diskon'], 0, ',', '.') }}</td>
                                 <td style="text-align:right;">{{ number_format($report['jumlah'], 0, ',', '.') }}</td>
                                 <td style="text-align:right;">{{ number_format($report['total_hpp'], 0, ',', '.') }}</td>
@@ -150,9 +152,10 @@
                                 <td colspan="4">Total</td>
                                 <td style="text-align:right;">{{ number_format(collect($reports)->sum('total_penjualan'), 0, ',', '.') }}</td>
                                 <td style="text-align:right;">{{ number_format(collect($reports)->sum('total_reservasi'), 0, ',', '.') }}</td>
+                                <td style="text-align:right;">{{ number_format(collect($reports)->sum('total_service'), 0, ',', '.') }}</td>
                                 <td style="text-align:right;">{{ number_format(collect($reports)->sum('pajak'), 0, ',', '.') }}</td>
                                 <td style="text-align:right;">{{ number_format(collect($reports)->sum('pajak_pembayaran'), 0, ',', '.') }}</td>
-                                <td style="text-align:right;">{{ number_format(collect($reports)->sum('total_akhir'), 0, ',', '.') }}</td>
+                                <!--<td style="text-align:right;">{{ number_format(collect($reports)->sum('total_akhir'), 0, ',', '.') }}</td>-->
                                 <td style="text-align:right;">{{ number_format(collect($reports)->sum('diskon'), 0, ',', '.') }}</td>
                                 <td style="text-align:right;">{{ number_format(collect($reports)->sum('jumlah'), 0, ',', '.') }}</td>
                                 <td style="text-align:right;">{{ number_format(collect($reports)->sum('total_hpp'), 0, ',', '.') }}</td>

@@ -1128,18 +1128,25 @@ class ReportController extends Controller
             ]);
 
             array_push($tableTemp, [
+                'keterangan'    => 'Total Service',
+                'nominal'       => $penjualans['total_service'],
+                'sum'           => $penjualans['total_service'],
+                'type'          => 'pendapatan',
+            ]);
+
+            array_push($tableTemp, [
                 'keterangan'    => 'Total Pajak',
                 'nominal'       => $penjualans['pajak'],
                 'sum'           => $penjualans['pajak'],
                 'type'          => 'pendapatan',
             ]);
 
-            array_push($tableTemp, [
+            /*array_push($tableTemp, [
                 'keterangan'    => 'Total Pajak Pembayaran',
                 'nominal'       => $penjualans['pajak_pembayaran'],
                 'sum'           => $penjualans['pajak_pembayaran'],
                 'type'          => 'pendapatan',
-            ]);
+            ]);*/
 
         }
 

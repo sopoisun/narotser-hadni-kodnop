@@ -66,30 +66,31 @@ class Order extends Model
             IFNULL(order_bayar_banks.`tax_procentage`, 0)AS tax_bayar_procentage,
             IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0)total_penjualan,
             IFNULL(temp_order_places.reservasi, 0) AS total_reservasi,
-            ROUND((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0)) *
+            IFNULL(order_bayars.service_cost, 0) AS total_service,
+            ROUND((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0) + IFNULL(order_bayars.service_cost, 0)) *
             (IFNULL(order_taxes.`procentage`, 0)/100))pajak,
             ROUND(
-            ((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0)) +
-            ROUND((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0)) *
+            ((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0) + IFNULL(order_bayars.service_cost, 0)) +
+            ROUND((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0) + IFNULL(order_bayars.service_cost, 0)) *
             (IFNULL(order_taxes.`procentage`, 0)/100))) *
             (IFNULL(order_bayar_banks.`tax_procentage`, 0)/100)
             )pajak_pembayaran,
-            (((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0)) +
-            ROUND((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0)) *
+            (((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0) + IFNULL(order_bayars.service_cost, 0)) +
+            ROUND((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0) + IFNULL(order_bayars.service_cost, 0)) *
             (IFNULL(order_taxes.`procentage`, 0)/100))) +
             ROUND(
-            ((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0)) +
-            ROUND((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0)) *
+            ((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0) + IFNULL(order_bayars.service_cost, 0)) +
+            ROUND((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0) + IFNULL(order_bayars.service_cost, 0)) *
             (IFNULL(order_taxes.`procentage`, 0)/100))) *
             (IFNULL(order_bayar_banks.`tax_procentage`, 0)/100)
             ))total_akhir,
             IFNULL(order_bayars.`diskon`, 0)diskon,
-            ((((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0)) +
-            ROUND((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0)) *
+            ((((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0) + IFNULL(order_bayars.service_cost, 0)) +
+            ROUND((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0) + IFNULL(order_bayars.service_cost, 0)) *
             (IFNULL(order_taxes.`procentage`, 0)/100))) +
             ROUND(
-            ((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0)) +
-            ROUND((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0)) *
+            ((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0) + IFNULL(order_bayars.service_cost, 0)) +
+            ROUND((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0) + IFNULL(order_bayars.service_cost, 0)) *
             (IFNULL(order_taxes.`procentage`, 0)/100))) *
             (IFNULL(order_bayar_banks.`tax_procentage`, 0)/100)
             )) - IFNULL(order_bayars.`diskon`, 0))jumlah,
@@ -131,7 +132,7 @@ class Order extends Model
     // $groupBy ex : "GROUP BY tanggal"
     public static function ReportGroup($condition, $groupBy, $key = 'tanggal')
     {
-        $query = "SELECT $key, SUM(total_penjualan)total_penjualan, SUM(total_reservasi)total_reservasi,
+        $query = "SELECT $key, SUM(total_penjualan)total_penjualan, SUM(total_reservasi)total_reservasi, SUM(total_service)total_service,
             SUM(pajak)pajak, SUM(pajak_pembayaran)pajak_pembayaran, SUM(total_akhir)total_akhir, SUM(diskon)diskon,
             SUM(jumlah)jumlah, SUM(total_hpp)total_hpp
             FROM
@@ -144,30 +145,31 @@ class Order extends Model
             IFNULL(order_bayar_banks.`tax_procentage`, 0)AS tax_bayar_procentage,
             IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0)total_penjualan,
             IFNULL(temp_order_places.reservasi, 0) AS total_reservasi,
-            ROUND((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0)) *
+            IFNULL(order_bayars.service_cost, 0) AS total_service,
+            ROUND((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0) + IFNULL(order_bayars.service_cost, 0)) *
             (IFNULL(order_taxes.`procentage`, 0)/100))pajak,
             ROUND(
-            ((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0)) +
-            ROUND((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0)) *
+            ((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0) + IFNULL(order_bayars.service_cost, 0)) +
+            ROUND((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0) + IFNULL(order_bayars.service_cost, 0)) *
             (IFNULL(order_taxes.`procentage`, 0)/100))) *
             (IFNULL(order_bayar_banks.`tax_procentage`, 0)/100)
             )pajak_pembayaran,
-            (((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0)) +
-            ROUND((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0)) *
+            (((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0) + IFNULL(order_bayars.service_cost, 0)) +
+            ROUND((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0) + IFNULL(order_bayars.service_cost, 0)) *
             (IFNULL(order_taxes.`procentage`, 0)/100))) +
             ROUND(
-            ((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0)) +
-            ROUND((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0)) *
+            ((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0) + IFNULL(order_bayars.service_cost, 0)) +
+            ROUND((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0) + IFNULL(order_bayars.service_cost, 0)) *
             (IFNULL(order_taxes.`procentage`, 0)/100))) *
             (IFNULL(order_bayar_banks.`tax_procentage`, 0)/100)
             ))total_akhir,
             IFNULL(order_bayars.`diskon`, 0)diskon,
-            ((((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0)) +
-            ROUND((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0)) *
+            ((((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0) + IFNULL(order_bayars.service_cost, 0)) +
+            ROUND((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0) + IFNULL(order_bayars.service_cost, 0)) *
             (IFNULL(order_taxes.`procentage`, 0)/100))) +
             ROUND(
-            ((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0)) +
-            ROUND((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0)) *
+            ((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0) + IFNULL(order_bayars.service_cost, 0)) +
+            ROUND((IFNULL(SUM(temp_order_details.harga_jual * temp_order_details.qty), 0) + IFNULL(temp_order_places.reservasi, 0) + IFNULL(order_bayars.service_cost, 0)) *
             (IFNULL(order_taxes.`procentage`, 0)/100))) *
             (IFNULL(order_bayar_banks.`tax_procentage`, 0)/100)
             )) - IFNULL(order_bayars.`diskon`, 0))jumlah,

@@ -42,9 +42,10 @@ class Penjualan extends Fpdf{
 		$this->SetX($left += 20); $this->Cell(25, $h, 'Type Bayar', 1, 0, 'L',true);
         $this->SetX($left += 25); $this->Cell(23, $h, 'Ttl Sale', 1, 0, 'L',true);
         $this->SetX($left += 23); $this->Cell(23, $h, 'Ttl Rsv', 1, 0, 'L',true);
+        $this->SetX($left += 23); $this->Cell(23, $h, 'Srv Cost', 1, 0, 'L',true);
         $this->SetX($left += 23); $this->Cell(23, $h, 'Pajak', 1, 0, 'L',true);
         $this->SetX($left += 23); $this->Cell(23, $h, 'Pjk Byr', 1, 0, 'L',true);
-        $this->SetX($left += 23); $this->Cell(23, $h, 'Total', 1, 0, 'L',true);
+        //$this->SetX($left += 23); $this->Cell(23, $h, 'Total', 1, 0, 'L',true);
         $this->SetX($left += 23); $this->Cell(15, $h, 'Diskon', 1, 0, 'L',true);
         $this->SetX($left += 15); $this->Cell(23, $h, 'Jumlah', 1, 0, 'L',true);
         $this->SetX($left += 23); $this->Cell(23, $h, 'Ttl HPP', 1, 1, 'L',true);
@@ -63,9 +64,10 @@ class Penjualan extends Fpdf{
 				ucwords($baris['type_bayar']),
 				number_format($baris['total_penjualan'], 0, ',', '.'),
                 number_format($baris['total_reservasi'], 0, ',', '.'),
+                number_format($baris['total_service'], 0, ',', '.'),
                 number_format($baris['pajak'], 0, ',', '.'),
                 number_format($baris['pajak_pembayaran'], 0, ',', '.'),
-                number_format($baris['total_akhir'], 0, ',', '.'),
+                //number_format($baris['total_akhir'], 0, ',', '.'),
                 number_format($baris['diskon'], 0, ',', '.'),
                 number_format($baris['jumlah'], 0, ',', '.'),
                 number_format($baris['total_hpp'], 0, ',', '.'),
@@ -79,9 +81,10 @@ class Penjualan extends Fpdf{
             array("", "Total",
             number_format(collect($this->data)->sum('total_penjualan'), 0, ',', '.'),
             number_format(collect($this->data)->sum('total_reservasi'), 0, ',', '.'),
+            number_format(collect($this->data)->sum('total_service'), 0, ',', '.'),
             number_format(collect($this->data)->sum('pajak'), 0, ',', '.'),
             number_format(collect($this->data)->sum('pajak_pembayaran'), 0, ',', '.'),
-            number_format(collect($this->data)->sum('total_akhir'), 0, ',', '.'),
+            //number_format(collect($this->data)->sum('total_akhir'), 0, ',', '.'),
             number_format(collect($this->data)->sum('diskon'), 0, ',', '.'),
             number_format(collect($this->data)->sum('jumlah'), 0, ',', '.'),
             number_format(collect($this->data)->sum('total_hpp'), 0, ',', '.'),

@@ -41,9 +41,10 @@ class PenjualanGroup extends Fpdf{
         $this->Cell(32, 8, $this->first_column, 1, 0);
         $this->Cell(30, 8, "Ttl Sale", 1, 0);
         $this->Cell(30, 8, "Ttl Rsv", 1, 0);
+        $this->Cell(30, 8, "Ttl Srv", 1, 0);
         $this->Cell(30, 8, "Ttl Tax", 1, 0);
         $this->Cell(30, 8, "Ttl Tax Byr", 1, 0);
-        $this->Cell(30, 8, "Ttl", 1, 0);
+        //$this->Cell(30, 8, "Ttl", 1, 0);
         $this->Cell(25, 8, "Ttl Diskon", 1, 0);
         $this->Cell(30, 8, "Jml", 1, 0);
         $this->Cell(30, 8, "Ttl HPP", 1, 1);
@@ -65,9 +66,10 @@ class PenjualanGroup extends Fpdf{
 
                 $this->Cell(30, 8, number_format($d['total_penjualan'], 0, ',', '.'), 1, 0, "R");
                 $this->Cell(30, 8, number_format($d['total_reservasi'], 0, ',', '.'), 1, 0, "R");
+                $this->Cell(30, 8, number_format($d['total_service'], 0, ',', '.'), 1, 0, "R");
                 $this->Cell(30, 8, number_format($d['pajak'], 0, ',', '.'), 1, 0, "R");
                 $this->Cell(30, 8, number_format($d['pajak_pembayaran'], 0, ',', '.'), 1, 0, "R");
-                $this->Cell(30, 8, number_format($d['total_akhir'], 0, ',', '.'), 1, 0, "R");
+                //$this->Cell(30, 8, number_format($d['total_akhir'], 0, ',', '.'), 1, 0, "R");
                 $this->Cell(25, 8, number_format($d['diskon'], 0, ',', '.'), 1, 0, "R");
                 $this->Cell(30, 8, number_format($d['jumlah'], 0, ',', '.'), 1, 0, "R");
                 $this->Cell(30, 8, number_format($d['total_hpp'], 0, ',', '.'), 1, 1, "R");
@@ -88,9 +90,10 @@ class PenjualanGroup extends Fpdf{
         $this->Cell(32, 8, "Total", 1, 0);
         $this->Cell(30, 8, number_format(collect($this->data)->sum('total_penjualan'), 0, ',', '.'), 1, 0, "R");
         $this->Cell(30, 8, number_format(collect($this->data)->sum('total_reservasi'), 0, ',', '.'), 1, 0, "R");
+        $this->Cell(30, 8, number_format(collect($this->data)->sum('total_service'), 0, ',', '.'), 1, 0, "R");
         $this->Cell(30, 8, number_format(collect($this->data)->sum('pajak'), 0, ',', '.'), 1, 0, "R");
         $this->Cell(30, 8, number_format(collect($this->data)->sum('pajak_pembayaran'), 0, ',', '.'), 1, 0, "R");
-        $this->Cell(30, 8, number_format(collect($this->data)->sum('total_akhir'), 0, ',', '.'), 1, 0, "R");
+        //$this->Cell(30, 8, number_format(collect($this->data)->sum('total_akhir'), 0, ',', '.'), 1, 0, "R");
         $this->Cell(25, 8, number_format(collect($this->data)->sum('diskon'), 0, ',', '.'), 1, 0, "R");
         $this->Cell(30, 8, number_format(collect($this->data)->sum('jumlah'), 0, ',', '.'), 1, 0, "R");
         $this->Cell(30, 8, number_format(collect($this->data)->sum('total_hpp'), 0, ',', '.'), 1, 1, "R");
