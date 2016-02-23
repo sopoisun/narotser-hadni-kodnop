@@ -156,6 +156,7 @@ class ApiController extends Controller
         foreach($customers as $customer)
         {
             array_push($data, [
+                'customer_id'   => $customer->id,
                 'customer_code' => $customer->kode,
                 'nama_customer' => $customer->nama,
             ]);
@@ -356,6 +357,53 @@ class ApiController extends Controller
         }
 
         return 1;
+    }
+
+    public function closeTransaksi(Request $request)
+    {
+        \Debugbar::disable();
+
+        $id = $request->get('id');
+
+        $orderTax       = [
+            'order_id'  => $id,
+            'tax_id'    => $request->get('tax_id'),
+            'procentage'=> $request->get('tax_procentage'),
+        ];
+
+        if( \App\OrderTax::create($orderTax) ){
+            $orderBayar = [
+                'order_id'      => $id,
+                'karyawan_id'   => ( Auth::check() ? Auth::guard('api')->user()->karyawan->id : '1' ),
+                'diskon'        => ( $request->get('diskon') != '' ? $request->get('diskon') : 0 ),
+                'bayar'         => $request->get('bayar'),
+                'type_bayar'    => $request->get('type_bayar'),
+            ];
+
+            if( \App\OrderBayar::create($orderBayar) ){
+                if( $request->get('type_bayar') == 'debit' || $request->get('type_bayar') == 'credit_card' ){
+                    $orderBayarBank = [
+                        'order_id'  => $id,
+                        'bank_id'   => $request->get('bank_id'),
+                    ];
+
+                    $orderBayarBank['tax_procentage'] = ( $request->get('type_bayar') == 'credit_card' ) ?
+                                                            $request->get('tax_bayar_procentage') : 0;
+                    \App\OrderBayarBank::create($orderBayarBank);
+                }
+
+                $order = ['state' => 'Closed'];
+                if( $request->get('customer_id') != "" ){
+                    $order['customer_id'] = $request->get('customer_id');
+                }
+
+                if( \App\Order::find($id)->update($order) ){
+                    return 1;
+                }
+            }
+        }
+
+        return 0;
     }
 
     public function transaksi(Request $request)

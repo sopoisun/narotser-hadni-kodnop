@@ -324,6 +324,7 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function(){
         Route::get('/transaksi', 'ApiController@transaksi');
         Route::post('/transaksi/save', 'ApiController@OpenTransaksi');
         Route::post('/transaksi/change', 'ApiController@changeTransaksi');
+        Route::post('/transaksi/close', 'ApiController@closeTransaksi');
         Route::get('/transaksi/detail', 'ApiController@detail');
         Route::get('/transaksi/bayar', 'ApiController@bayar');
     });
