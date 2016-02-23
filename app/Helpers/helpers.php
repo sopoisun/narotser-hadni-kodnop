@@ -69,3 +69,8 @@ function timeFilter()
 {
     return \Carbon\Carbon::create(2016, 03, 20, 00, 00, 00);
 }
+
+function setting()
+{
+    return \App\Setting::first();
+}

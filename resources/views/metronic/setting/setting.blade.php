@@ -68,6 +68,11 @@
                             {{ Form::text('laba_procentage_warning', null, ['class' => 'form-control', 'id' => 'laba_procentage_warning']) }}
                             @if($errors->has('laba_procentage_warning'))<span class="help-block">{{ $errors->first('laba_procentage_warning') }}</span>@endif
                         </div>
+                        <div class="form-group @if($errors->has('service_cost')) has-error @endif">
+                            <label for="service_cost" class="control-label">Biaya Service</label>
+                            {{ Form::text('service_cost', null, ['class' => 'form-control', 'id' => 'service_cost']) }}
+                            @if($errors->has('service_cost'))<span class="help-block">{{ $errors->first('service_cost') }}</span>@endif
+                        </div>
                     </div>
                     <div class="form-actions">
                         <button type="submit" class="btn yellow">Simpan</button>

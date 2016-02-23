@@ -50,7 +50,7 @@
                     <div class="portlet-body form">
                         {!! Form::open(['role' => 'form', 'class' => 'form-horizontal', 'id' => 'formInputPembayaran']) !!}
                             <div class="form-body">
-                                {{--*/ $total = (collect($orderDetail)->sum('subtotal') + collect($orderPlaces)->sum('harga')); /*--}}
+                                {{--*/ $total = (collect($orderDetail)->sum('subtotal') + collect($orderPlaces)->sum('harga') + $order->bayar->service_cost); /*--}}
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -308,10 +308,20 @@
                                     </tr>
                                     @endforeach
 
+                                    {{--*/ $i++; /*--}}
+                                    <tr>
+                                        <td>{{ $i }}</td>
+                                        <td colspan="5">Service Waiters</td>
+                                        <td style="text-align:right;">{{ number_format($order->bayar->service_cost, 0, ',', '.') }}</td>
+                                        @can('order.update')
+                                        <td></td>
+                                        @endcan
+                                    </tr>
+
                                     <tr>
                                         <td></td>
                                         <td colspan="5">Total</td>
-                                        <td id="totalDetail" style="text-align:right;">{{ number_format((collect($orderDetail)->sum('subtotal') + collect($orderPlaces)->sum('harga')), 0, ',', '.') }}</td>
+                                        <td id="totalDetail" style="text-align:right;">{{ number_format((collect($orderDetail)->sum('subtotal') + collect($orderPlaces)->sum('harga') + $order->bayar->service_cost), 0, ',', '.') }}</td>
                                         @can('order.update')
                                         <td></td>
                                         @endcan

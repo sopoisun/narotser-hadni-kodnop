@@ -30,6 +30,7 @@ class SettingController extends Controller
             'alamat_faktur' => 'required',
             'init_kode'     => 'required',
             'laba_procentage_warning' => 'required|numeric',
+            'service_cost'  => 'required|numeric',
         ], [
             'title_faktur.required'     => 'Title faktur tidak boleh kosong.',
             'telp_faktur.required'      => 'Telp faktur tidak boleh kosong.',
@@ -37,6 +38,8 @@ class SettingController extends Controller
             'init_kode.required'        => 'Inisial Kode tidak boleh kosong.',
             'laba_procentage_warning.required'  => 'Input tidak boleh kosong.',
             'laba_procentage_warning.numeric'   => 'Input harus angka.',
+            'service_cost.required'     => 'Biaya service tidak boleh kosong.',
+            'service_cost.numeric'      => 'Input harus angka.',
         ]);
 
         if( $validator->fails() ){

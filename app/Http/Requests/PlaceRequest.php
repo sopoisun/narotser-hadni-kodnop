@@ -32,8 +32,8 @@ class PlaceRequest extends Request
     public function messages()
     {
         return [
-            'nama.required'         => 'Nama karyawan tidak boleh kosong.',
-            'nama.min'              => 'Nama karyawan harus lebih dari 3 karakter.',
+            'nama.required'         => 'Nama Tempat tidak boleh kosong.',
+            'nama.min'              => 'Nama Tempat harus lebih dari 3 karakter.',
             'harga.required'        => 'Harga tidak boleh kosong.',
             'harga.numeric'         => 'Harga harus angka.',
         ];

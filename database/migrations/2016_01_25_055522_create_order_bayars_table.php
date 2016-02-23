@@ -16,6 +16,7 @@ class CreateOrderBayarsTable extends Migration
             $table->increments('id');
             $table->string('order_id');
             $table->string('karyawan_id');
+            $table->integer('service_cost');
             $table->integer('diskon');
             $table->integer('bayar');
             $table->enum('type_bayar', ['tunai', 'debit', 'credit_card'])->default('tunai');

@@ -32,8 +32,8 @@ class SupplierRequest extends Request
     public function messages()
     {
         return [
-            'nama.required'         => 'Nama karyawan tidak boleh kosong.',
-            'nama.min'              => 'Nama karyawan harus lebih dari 3 karakter.',
+            'nama.required'         => 'Nama Supplier tidak boleh kosong.',
+            'nama.min'              => 'Nama Supplier harus lebih dari 3 karakter.',
             'no_hp.required'        => 'No HP tidak boleh kosong',
             'no_hp.numeric'         => 'Input harus Angka',
             'no_hp.digits_between'  => 'Input harus 11 sampai 12 digit.',

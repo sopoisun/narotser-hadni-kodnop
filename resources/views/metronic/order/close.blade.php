@@ -282,10 +282,17 @@
                                         <td style="text-align:right;">{{ number_format($op['harga'], 0, ',', '.') }}</td>
                                     </tr>
                                     @endforeach
+
+                                    {{--*/ $i++; /*--}}
+                                    <tr>
+                                        <td>{{ $i }}</td>
+                                        <td colspan="3">Service Waiters</td>
+                                        <td style="text-align:right;">{{ number_format(setting()->service_cost, 0, ',', '.') }}</td>
+                                    </tr>
                                     <tr>
                                         <td></td>
                                         <td colspan="3">Total</td>
-                                        <td id="totalDetail" style="text-align:right;">{{ number_format((collect($orderDetail)->sum('subtotal') + collect($orderPlaces)->sum('harga')), 0, ',', '.') }}</td>
+                                        <td id="totalDetail" style="text-align:right;">{{ number_format((collect($orderDetail)->sum('subtotal') + collect($orderPlaces)->sum('harga') + setting()->service_cost), 0, ',', '.') }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -366,7 +373,7 @@
     });
     /* End Search Karyawan */
 
-    $("#total").val("{{ (collect($orderDetail)->sum('subtotal') + collect($orderPlaces)->sum('harga')) }}");
+    $("#total").val("{{ (collect($orderDetail)->sum('subtotal') + collect($orderPlaces)->sum('harga') + setting()->service_cost) }}");
     $("#tax-label").html("Tax "+$("#tax_procentage").val()+" %");
     $("#tax-bayar-label").html("Tax "+$("#tax_bayar_procentage").val()+" %");
 
