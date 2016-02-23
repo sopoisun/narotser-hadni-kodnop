@@ -168,9 +168,10 @@ class BahanController extends Controller
     public function ajaxLoad(Request $request)
     {
         if( $request->get('id') ){
-            return Bahan::find($request->get('id'));
+            return Bahan::where('active', 1)->where('id', $request->get('id'))->first();
         }else{
             return Bahan::where('nama', 'like', '%'.$request->get('q').'%')
+                ->where('active', 1)
                 ->whereNotIn('id', explode('+', $request->get('except')))
                 ->limit($request->get('page'))->get();
         }

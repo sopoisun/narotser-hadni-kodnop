@@ -89,6 +89,7 @@ class Produk extends Model
                 DB::raw('ifnull(adjustment_reduction.qty, 0)as adjustment_reduction_stok'),
                 DB::raw('(( ifnull(temp_pembelian.stok, 0) + ifnull(adjustment_increase.qty, 0) ) - ( ifnull(penjualan.qty, 0) + ifnull(adjustment_reduction.qty, 0) ))sisa_stok'),
             ])
+            ->where('active', 1)
             ->whereNull('produk_details.id')
             ->groupBy('produks.id');
             /*->orderBy('produks.id')
@@ -158,6 +159,7 @@ class Produk extends Model
                 DB::raw('ifnull(adjustment_reduction.qty, 0)as adjustment_reduction_stok'),
                 DB::raw('(( ifnull(temp_pembelian.stok, 0) + ifnull(adjustment_increase.qty, 0) ) - ( ifnull(penjualan.qty, 0) + ifnull(adjustment_reduction.qty, 0) ))sisa_stok'),
             ])
+            ->where('active', 1)
             ->groupBy('produks.id');
     }
 }

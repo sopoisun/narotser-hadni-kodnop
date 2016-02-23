@@ -143,6 +143,7 @@ class ReportController extends Controller
                     $join->on('produks.id', '=', 'temp_order_produks.produk_id');
                 }
             )
+            ->where('active', 1)
             ->groupBy('produks.id')
             ->select(['produks.id', 'produks.nama',
                 DB::raw('ifnull((SUM(temp_order_produks.hpp)/COUNT(produks.id)), 0)hpp'),
@@ -235,6 +236,7 @@ class ReportController extends Controller
             ->leftJoin('order_detail_returns', 'order_details.id', '=', 'order_detail_returns.order_detail_id')
             ->where('orders.tanggal', $tanggal)
             ->where('state', 'Closed')
+            ->where('active', 1)
             ->select(['karyawans.id', 'karyawans.nama',
                 DB::raw('SUM( order_details.`harga_jual` * (order_details.`qty` - ifnull(order_detail_returns.qty, 0)) )total_penjualan')
             ])
@@ -402,6 +404,7 @@ class ReportController extends Controller
                     $join->on('produks.id', '=', 'temp_order_produks.produk_id');
                 }
             )
+            ->where('active', 1)
             ->groupBy('produks.id')
             ->select(['produks.id', 'produks.nama',
                 DB::raw('ifnull((SUM(temp_order_produks.hpp)/COUNT(produks.id)), 0)hpp'),
@@ -499,6 +502,7 @@ class ReportController extends Controller
             ->leftJoin('order_detail_returns', 'order_details.id', '=', 'order_detail_returns.order_detail_id')
             ->whereBetween('orders.tanggal', [$tanggal, $to_tanggal])
             ->where('state', 'Closed')
+            ->where('active', 1)
             ->select(['karyawans.id', 'karyawans.nama',
                 DB::raw('SUM( order_details.`harga_jual` * (order_details.`qty` - ifnull(order_detail_returns.qty, 0)) )total_penjualan')
             ])
@@ -675,6 +679,7 @@ class ReportController extends Controller
                     $join->on('produks.id', '=', 'temp_order_produks.produk_id');
                 }
             )
+            ->where('active', 1)
             ->groupBy('produks.id')
             ->select(['produks.id', 'produks.nama',
                 DB::raw('ifnull((SUM(temp_order_produks.hpp)/COUNT(produks.id)), 0)hpp'),
@@ -769,6 +774,7 @@ class ReportController extends Controller
             ->leftJoin('order_detail_returns', 'order_details.id', '=', 'order_detail_returns.order_detail_id')
             ->where(DB::raw('SUBSTRING(orders.tanggal, 1, 7)'), $bulan)
             ->where('state', 'Closed')
+            ->where('active', 1)
             ->select(['karyawans.id', 'karyawans.nama',
                 DB::raw('SUM( order_details.`harga_jual` * (order_details.`qty` - ifnull(order_detail_returns.qty, 0)) )total_penjualan')
             ])
@@ -939,6 +945,7 @@ class ReportController extends Controller
                     $join->on('produks.id', '=', 'temp_order_produks.produk_id');
                 }
             )
+            ->where('active', 1)
             ->groupBy('produks.id')
             ->select(['produks.id', 'produks.nama',
                 DB::raw('ifnull((SUM(temp_order_produks.hpp)/COUNT(produks.id)), 0)hpp'),
@@ -1033,6 +1040,7 @@ class ReportController extends Controller
             ->leftJoin('order_detail_returns', 'order_details.id', '=', 'order_detail_returns.order_detail_id')
             ->where(DB::raw('SUBSTRING(orders.tanggal, 1, 4)'), $tahun)
             ->where('state', 'Closed')
+            ->where('active', 1)
             ->select(['karyawans.id', 'karyawans.nama',
                 DB::raw('SUM( order_details.`harga_jual` * ( order_details.`qty` - ifnull(order_detail_returns.qty, 0) ) )total_penjualan')
             ])

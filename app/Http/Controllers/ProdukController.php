@@ -78,7 +78,7 @@ class ProdukController extends Controller
             return view(config('app.template').'.error.403');
         }
 
-        $data = ['kategoris' => ProdukKategori::lists('nama', 'id')];
+        $data = ['kategoris' => ProdukKategori::where('active', 1)->lists('nama', 'id')];
         return view(config('app.template').".produk.create", $data);
     }
 
@@ -149,7 +149,7 @@ class ProdukController extends Controller
         }
 
         $produk['konsinyasi'] = ($produk['konsinyasi'] == 'Ya') ? true : false;
-        $data = ['produk' => $produk, 'kategoris' => ProdukKategori::lists('nama', 'id')];
+        $data = ['produk' => $produk, 'kategoris' => ProdukKategori::where('active', 1)->lists('nama', 'id')];
         return view(config('app.template').'.produk.update', $data);
     }
 
@@ -250,7 +250,7 @@ class ProdukController extends Controller
 
         $produk = Produk::find($id);
 
-        if( $produk && $produk->delete() ){
+        if( $produk && $produk->update(['active', 0]) ){
             ProdukDetail::where('produk_id', $id)->delete();
             return redirect()->back()->with('succcess', 'Sukses hapus data produk "'.$produk->nama.'".');
         }
@@ -263,7 +263,7 @@ class ProdukController extends Controller
         if( $request->get('id') ){
             $produk = Produk::with(['detail' => function($query){
                 $query->join('bahans', 'produk_details.bahan_id', '=', 'bahans.id');
-            }])->find($request->get('id'));
+            }])->where('active', 1)->where('id', $request->get('id'))->first();
 
             return [
                 'id' => $produk->id,
@@ -274,6 +274,7 @@ class ProdukController extends Controller
         }else{
             $produk = Produk::leftJoin('produk_details', 'produks.id', '=', 'produk_details.produk_id')
                 ->where('nama', 'like', '%'.$request->get('q').'%')
+                ->where('active', 1)
                 ->whereNotIn('produks.id', explode('+', $request->get('except')))
                 ->select('produks.*')
                 ->groupBy('produks.id')

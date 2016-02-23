@@ -25,7 +25,7 @@ class SupplierController extends Controller
         }
 
         $data = [
-            'suppliers' => Supplier::all(),
+            'suppliers' => Supplier::where('active', 1)->get(),
         ];
 
         return view(config('app.template').'.supplier.table', $data);
@@ -126,7 +126,7 @@ class SupplierController extends Controller
 
         $supplier = Supplier::find($id);
 
-        if( $supplier && $supplier->delete() ){
+        if( $supplier && $supplier->update(['active', 0]) ){
             return redirect()->back()->with('succcess', 'Sukses hapus data Supplier '.$supplier->nama.'.');
         }
 
@@ -136,6 +136,7 @@ class SupplierController extends Controller
     public function ajaxLoad(Request $request)
     {
         return Supplier::where('nama_perusahaan', 'like', '%'.$request->get('q').'%')
+            ->where('active', 1)
             ->limit($request->get('page_limit'))
             ->get();
     }

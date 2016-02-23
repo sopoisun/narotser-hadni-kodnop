@@ -76,6 +76,7 @@ class Bahan extends Model
                 DB::raw('ifnull(adjustment_reduction.qty, 0)as adjustment_reduction_stok'),
                 DB::raw('(( ifnull(temp_pembelian.stok, 0) + ifnull(adjustment_increase.qty, 0) ) - ( ifnull(penjualan.qty, 0) + ifnull(adjustment_reduction.qty, 0) ))sisa_stok'),
             ])
+            ->where('active', 1)
             ->groupBy('bahans.id');
             /*->orderBy('bahans.id')
             ->get();*/
@@ -101,6 +102,7 @@ class Bahan extends Model
                 DB::raw('ifnull(penjualan.qty, 0)terjual'),
                 DB::raw('ifnull((penjualan.harga*penjualan.qty), 0)subtotal'),
             ])
+            ->where('active', 1)
             ->get();
     }
 }

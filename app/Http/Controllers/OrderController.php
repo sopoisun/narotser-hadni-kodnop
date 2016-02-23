@@ -36,8 +36,8 @@ class OrderController extends Controller
             return view(config('app.template').'.error.403');
         }
 
-        $types  = PlaceKategori::lists('nama', 'id');
-        $type   = $request->get('type') ? $request->get('type') : PlaceKategori::first()->id;
+        $types  = PlaceKategori::where('active', 1)->lists('nama', 'id');
+        $type   = $request->get('type') ? $request->get('type') : PlaceKategori::where('active', 1)->first()->id;
         $tgl    = $request->get('tgl') ? $request->get('tgl') : date('Y-m-d');
 
         if( in_array($type, array_keys($types->toArray())) ){
@@ -45,7 +45,7 @@ class OrderController extends Controller
                 FROM order_places INNER JOIN orders ON order_places.`order_id` = orders.`id`
                 WHERE SUBSTRING(orders.tanggal, 1, 10) = '".$tgl."' AND orders.`state` = 'On Going' )as order_place_temp"), function($query){
                     $query->on('places.id', '=', 'order_place_temp.place_id');
-            })->where('kategori_id', $type)
+            })->where('kategori_id', $type)->where('active', 1)
             ->orderBy('places.id')->get();
 
             $data = [
@@ -462,9 +462,9 @@ class OrderController extends Controller
             'orderPlaces'   => $orderPlaces,
             'tanggal'       => $order->tanggal->format('Y-m-d'),
             'current_place' => $current_place,
-            'init_tax'      => Tax::first(),
-            'taxes'         => Tax::lists('type', 'id'),
-            'banks'         => Bank::lists('nama_bank', 'id'),
+            'init_tax'      => Tax::where('active', 1)->first(),
+            'taxes'         => Tax::where('active', 1)->lists('type', 'id'),
+            'banks'         => Bank::where('active', 1)->lists('nama_bank', 'id'),
         ];
 
         return view(config('app.template').'.order.close', $data);
@@ -757,7 +757,7 @@ class OrderController extends Controller
     {
         $produks = Produk::with(['detail' => function($query){
             $query->join('bahans', 'produk_details.bahan_id', '=', 'bahans.id');
-        }])->where('nama', 'like', '%'.$request->get('q').'%')->get();
+        }])->where('active', 1)->where('nama', 'like', '%'.$request->get('q').'%')->get();
 
         $data = [];
         foreach($produks as $produk)
@@ -777,9 +777,9 @@ class OrderController extends Controller
     public function getPlace(Request $request)
     {
         if( $request->get('id') ){
-            return Place::find($request->get('id'));
+            return Place::where('active', 1)->where('id', $request->get('id'))->first();
         }elseif($request->get('ids')){
-            return Place::whereIn('id', explode('+', $request->get('ids')))->get();
+            return Place::where('active', 1)->whereIn('id', explode('+', $request->get('ids')))->get();
         }else{
             $tgl    = $request->get('date') ? $request->get('date') : date('Y-m-d');
             $tgl    = ( $tgl != "" ) ? $tgl : date('Y-m-d');
@@ -796,7 +796,7 @@ class OrderController extends Controller
                 $places = $places->whereNotNull('order_place_temp.order_id');
             }
 
-            $places = $places->where('nama', 'like', '%'.$request->get('q').'%')->get();
+            $places = $places->where('nama', 'like', '%'.$request->get('q').'%')->where('active', 1)->get();
 
             return $places;
         }

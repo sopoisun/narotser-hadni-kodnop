@@ -221,7 +221,7 @@ class AccountController extends Controller
         if( $account ){
             if( $account->relation == 'bank' ){
                 $data = [
-                    'banks'     => Bank::lists('nama_bank', 'id'),
+                    'banks'     => Bank::where('active', 1)->lists('nama_bank', 'id'),
                     'selected'  => ( $request->get('selected') ? $request->get('selected') : null )
                 ];
                 return view(config('app.template').'.account.saldo.bank-element', $data);
@@ -659,7 +659,7 @@ class AccountController extends Controller
 
     protected function _jurnalBank($request)
     {
-        $bank       = $request->get('bank') ? $request->get('bank') : Bank::first()->id;
+        $bank       = $request->get('bank') ? $request->get('bank') : Bank::where('active', 1)->first()->id;
         $tanggal    = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
         $CTanggal   = Carbon::createFromFormat('Y-m-d', $tanggal);
         $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : $tanggal;
@@ -667,7 +667,7 @@ class AccountController extends Controller
         $CYesterday = $CTanggal->copy()->addDays(-1);
         $yesterday  = $CYesterday->format('Y-m-d');
 
-        $banks = Bank::lists('nama_bank', 'id')->toArray();
+        $banks = Bank::where('active', 1)->lists('nama_bank', 'id')->toArray();
 
         $start  = $CTanggal->copy();
         $end    = $CToTanggal->copy();

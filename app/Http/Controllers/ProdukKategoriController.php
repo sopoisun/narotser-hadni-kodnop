@@ -24,7 +24,7 @@ class ProdukKategoriController extends Controller
         }
 
         $data = [
-            'kategoris' => ProdukKategori::all(),
+            'kategoris' => ProdukKategori::where('active', 1)->get(),
         ];
 
         return view(config('app.template').'.produk-kategori.table', $data);
@@ -122,7 +122,7 @@ class ProdukKategoriController extends Controller
 
         $kategori = ProdukKategori::find($id);
 
-        if( $kategori && $kategori->delete() ){
+        if( $kategori && $kategori->update(['active', 0]) ){
             return redirect()->back()->with('succcess', 'Sukses hapus data '.$kategori->nama.'.');
         }
 

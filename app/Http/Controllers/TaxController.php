@@ -24,7 +24,7 @@ class TaxController extends Controller
         }
 
         $data = [
-            'taxes' => Tax::all(),
+            'taxes' => Tax::where('active', 1)->get(),
         ];
 
         return view(config('app.template').'.tax.table', $data);
@@ -89,9 +89,9 @@ class TaxController extends Controller
     public function ajaxLoad(Request $request)
     {
         if( $request->get('id') ){
-            return Tax::find($request->get('id'));
+            return Tax::where('active', 1)->where('id', $request->get('id'))->first();
         }
 
-        return Tax::all();
+        return Tax::where('active', 1)->get();
     }
 }

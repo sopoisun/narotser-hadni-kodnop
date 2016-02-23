@@ -22,7 +22,7 @@ class DashboardController extends Controller
                         ->get();
 
         // Produk stok dibawah ambang batas stok
-        $produkStokWarning = Produk::Stok()->get()->filter(function($item){
+        $produkStokWarning = Produk::stok()->get()->filter(function($item){
             return $item->sisa_stok < $item->qty_warning;
         });
 

@@ -26,7 +26,7 @@ class KaryawanController extends Controller
         }
 
         $data = [
-            'karyawans' => Karyawan::with('user.roles')->get(),
+            'karyawans' => Karyawan::with('user.roles')->where('active', 1)->get(),
         ];
 
         return view(config('app.template').'.karyawan.table', $data);
@@ -125,7 +125,7 @@ class KaryawanController extends Controller
 
         $karyawan = Karyawan::find($id);
 
-        if( $karyawan && $karyawan->delete() ){
+        if( $karyawan && $karyawan->update(['active', 0]) ){
             return redirect()->back()->with('succcess', 'Sukses hapus data '.$karyawan->nama.'.');
         }
 
@@ -135,11 +135,11 @@ class KaryawanController extends Controller
     public function ajaxLoad(Request $request)
     {
         if( $request->get('id') ){
-            return Karyawan::find($request->get('id'));
+            return Karyawan::where('active', 1)->where('id', $request->get('id'))->first();
         }elseif($request->get('ids')){
-            return Karyawan::whereIn('id', explode('+', $request->get('ids')))->get();
+            return Karyawan::whereIn('id', explode('+', $request->get('ids')))->where('active', 1)->get();
         }else{
-            $karyawan = Karyawan::where('nama', 'like', '%'.$request->get('q').'%');
+            $karyawan = Karyawan::where('nama', 'like', '%'.$request->get('q').'%')->where('active', 1);
             if( $request->get('foruser') ){
                 $karyawan = $karyawan->whereNull('user_id');
             }

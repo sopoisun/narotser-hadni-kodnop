@@ -31,6 +31,7 @@ class UserController extends Controller
 
         $users  = User::join('karyawans', 'users.id', '=', 'karyawans.user_id')
                         ->with(['roles'])
+                        ->where('users.active', 1)
                         ->select(['users.*', 'karyawans.nama'])->get();
         $data   = ['users' => $users];
         return view(config('app.template').'.user.table', $data);
@@ -180,7 +181,7 @@ class UserController extends Controller
 
         $karyawan_id = $user->karyawan->id;
 
-        if( $user->delete() ){
+        if( $user->update(['active', 0]) ){
 
             DB::statement("UPDATE karyawans SET `user_id` = NULL where `id` = '$karyawan_id'");
 

@@ -29,7 +29,7 @@ class PlaceController extends Controller
             'places' => Place::with(['kategori', 'orderPlace' => function( $query ){
                             $query->join('orders', 'order_places.order_id', '=', 'orders.id')
                                 ->where('orders.state', '=', 'Closed');
-                        }])->get(),
+                        }])->where('active', 1)->get(),
         ];
 
         return view(config('app.template').'.place.table', $data);
@@ -47,7 +47,7 @@ class PlaceController extends Controller
         }
 
         $data = [
-            'types' => PlaceKategori::lists('nama', 'id'),
+            'types' => PlaceKategori::where('active', 1)->lists('nama', 'id'),
         ];
 
         return view(config('app.template').'.place.create', $data);
@@ -98,7 +98,7 @@ class PlaceController extends Controller
         }
 
         $data = [
-            'types' => PlaceKategori::lists('nama', 'id'),
+            'types' => PlaceKategori::where('active', 1)->lists('nama', 'id'),
             'place' => $place,
         ];
 
@@ -135,7 +135,7 @@ class PlaceController extends Controller
 
         $place = Place::find($id);
 
-        if( $place && $place->delete() ){
+        if( $place && $place->update(['active', 0]) ){
             return redirect()->back()->with('succcess', 'Sukses hapus data '.$place->nama.'.');
         }
 
@@ -145,11 +145,11 @@ class PlaceController extends Controller
     public function ajaxLoad(Request $request)
     {
         if( $request->get('id') ){
-            return Place::find($request->get('id'));
+            return Place::where('active', 1)->where('id', $request->get('id'))->first();
         }elseif($request->get('ids')){
-            return Place::whereIn('id', explode('+', $request->get('ids')))->get();
+            return Place::where('active', 1)->whereIn('id', explode('+', $request->get('ids')))->get();
         }else{
-            return Place::where('nama', 'like', '%'.$request->get('q').'%')
+            return Place::where('nama', 'like', '%'.$request->get('q').'%')->where('active', 1)
                         ->get();
         }
     }

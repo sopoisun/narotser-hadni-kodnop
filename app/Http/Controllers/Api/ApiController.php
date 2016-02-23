@@ -25,10 +25,11 @@ class ApiController extends Controller
         $credentials = [
             'username' => $request->get('username'),
             'password'  => $request->get('password'),
+            'active'    => 1,
         ];
 
         if( Auth::once($credentials) ){
-            $user = User::where('username', $request->get('username'))->first();
+            $user = User::where('active', 1)->where('username', $request->get('username'))->first();
             return $user->api_token;
         }
 
@@ -50,7 +51,7 @@ class ApiController extends Controller
 
     public function karyawan()
     {
-        $karyawans = Karyawan::all();
+        $karyawans = Karyawan::where('active', 1)->get();
 
         $data = [];
         foreach($karyawans as $karyawan)
@@ -92,7 +93,7 @@ class ApiController extends Controller
 
     public function place()
     {
-        $places = \App\Place::with('kategori')->get();
+        $places = \App\Place::where('active', 1)->with('kategori')->get();
 
         $data = [];
         foreach($places as $place)
@@ -112,7 +113,7 @@ class ApiController extends Controller
 
     public function tax()
     {
-        $taxs = \App\Tax::all();
+        $taxs = \App\Tax::where('active', 1)->get();
 
         $data = [];
         foreach($taxs as $tax)
@@ -131,7 +132,7 @@ class ApiController extends Controller
 
     public function bank()
     {
-        $banks = \App\Bank::all();
+        $banks = \App\Bank::where('active', 1)->get();
 
         $data = [];
         foreach($banks as $bank)
@@ -173,7 +174,7 @@ class ApiController extends Controller
 
         $produkId   = $request->get('id');
         $qty        = $request->get('qty') ? $request->get('qty') : 1;
-        $produk     = Produk::with('detail')->find($produkId);
+        $produk     = Produk::with('detail')->where('active', 1)->where('id', $produkId)->first();
 
         $denied = false;
         if( $produk->detail->count() ){

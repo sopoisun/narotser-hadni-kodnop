@@ -23,7 +23,7 @@ class PlaceKategoriController extends Controller
             return view(config('app.template').'.error.403');
         }
 
-        $data = ['kategoris' => PlaceKategori::all()];
+        $data = ['kategoris' => PlaceKategori::where('active', 1)->get()];
         return view(config('app.template').'.place-kategori.table', $data);
     }
 
@@ -143,7 +143,7 @@ class PlaceKategoriController extends Controller
 
         $kategori = PlaceKategori::find($id);
 
-        if( $kategori && $kategori->delete() ){
+        if( $kategori && $kategori->update(['active', 0]) ){
             return redirect()->back()->with('succcess', 'Sukses hapus data '.$kategori->nama.'.');
         }
 

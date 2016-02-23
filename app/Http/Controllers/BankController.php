@@ -23,7 +23,7 @@ class BankController extends Controller
             return view(config('app.template').'.error.403');
         }
 
-        $data = ['banks' => Bank::all()];
+        $data = ['banks' => Bank::where('active', 1)->get()];
         return view(config('app.template').'.bank.table', $data);
     }
 
@@ -149,7 +149,7 @@ class BankController extends Controller
 
         $bank = Bank::find($id);
 
-        if( $bank && $bank->delete() ){
+        if( $bank && $bank->update(['active', 0]) ){
             return redirect()->back()->with('succcess', 'Sukses hapus data bank '.$bank->nama_bank.'.');
         }
 
@@ -159,9 +159,9 @@ class BankController extends Controller
     public function ajaxLoad(Request $request)
     {
         if( $request->get('id') ){
-            return Bank::find($request->get('id'));
+            return Bank::where('active', 1)->where('id', $request->get('id'))->first();
         }
 
-        return Bank::all();
+        return Bank::where('active', 1)->get();
     }
 }
