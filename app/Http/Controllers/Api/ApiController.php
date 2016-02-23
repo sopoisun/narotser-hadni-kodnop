@@ -11,6 +11,7 @@ use App\OrderDetail;
 use App\Setting;
 use App\User;
 use App\Produk;
+use App\Karyawan;
 use DB;
 use Hash;
 use Auth;
@@ -45,6 +46,24 @@ class ApiController extends Controller
             'karyawan_id'   => $user->karyawan->id,
             'api_token'     => $request->get('api_token'),
         ];
+    }
+
+    public function karyawan()
+    {
+        $karyawans = Karyawan::all();
+
+        $data = [];
+        foreach($karyawans as $karyawan)
+        {
+            array_push($data, [
+                'karyawan_id' => $karyawan->id,
+                'nama_karyawan'  => $karyawan->nama,
+            ]);
+        }
+
+        $display['karyawan'] = $data;
+
+        return $display;
     }
 
     public function produk()
@@ -128,6 +147,88 @@ class ApiController extends Controller
         return 0;
     }
 
+    public function OpenTransaksi(Request $request)
+    {
+        \Debugbar::disable();
+
+        $data_order_detail = json_decode($request->get('data_order'), true);
+        // Convert like data session
+        $temp = [];
+        foreach ($data_order_detail as $d) {
+            $key = $d['id'];
+            $temp[$key] = $d;
+        }
+        $data_order_detail = $temp;
+
+        # Create Nota
+        $setting = Setting::first();
+        // Get Last Order
+        $tanggal    = $request->get('tanggal');
+        $lastOrder  = Order::where('tanggal', $tanggal)->get()->count();
+        $nota       = $setting->init_kode."-".str_replace('-', '', date('dmY', strtotime($tanggal))).($lastOrder+1);
+
+        // Order
+        $karyawan_id = $request->get('karyawan_id');
+        $order = $request->only(['tanggal']) + ['nota' => $nota, 'state' => 'On Going', 'karyawan_id' => $karyawan_id];
+        $order = \App\Order::create($order);
+
+        if( $order ){
+            // Order Place
+            $places     = explode(',', $request->get('places'));
+            $places     = \App\Place::whereIn('id', $places)->get();
+            $orderPlaces = [];
+            foreach($places as $place){
+                $placeType      = $place->kategori_id; // For Redirect
+                array_push($orderPlaces, [
+                    'order_id'  => $order->id,
+                    'place_id'  => $place->id,
+                    'harga'     => $place->harga,
+                ]);
+            }
+            \App\OrderPlace::insert($orderPlaces);
+
+            // Order Detail & Order Detail Bahan
+            $produks = Produk::with(['detail' => function($query){
+                $query->join('bahans', 'produk_details.bahan_id', '=', 'bahans.id');
+            }])->whereIn('id', array_keys($data_order_detail))->get();
+            $orderDetailBahan = [];
+            foreach($produks as $produk){
+                $id = $produk->id;
+                // Order Detail
+                $orderDetail        = [
+                    'order_id'      => $order->id,
+                    'produk_id'     => $produk->id,
+                    'hpp'           => $produk->hpp,
+                    'harga_jual'    => $data_order_detail[$id]['harga'],
+                    'qty'           => $data_order_detail[$id]['qty'],
+                    'use_mark_up'   => $produk->use_mark_up,
+                    'mark_up'       => $produk->mark_up,
+                    'note'          => "",
+                ];
+                //echo "<pre>", print_r($orderDetail), "</pre>";
+                $orderDetail = \App\OrderDetail::create($orderDetail);
+
+                if( $produk->detail->count() ){
+                    // Order Detail Bahan
+                    foreach($produk->detail as $pd){
+                        array_push($orderDetailBahan, [
+                            'order_detail_id'   => $orderDetail->id,
+                            'bahan_id'          => $pd->bahan_id,
+                            'harga'             => $pd->harga,
+                            'qty'               => $pd->qty,
+                            'satuan'            => $pd->satuan,
+                        ]);
+                    }
+                }
+            }
+            \App\OrderDetailBahan::insert($orderDetailBahan);
+
+            return 1;
+        }
+
+        return 0;
+    }
+
     public function transaksi(Request $request)
     {
         $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
@@ -145,6 +246,7 @@ class ApiController extends Controller
                 'nota'      => $order->nota,
                 'status'    => $order->state,
                 'karyawan'  => $order->karyawan->nama,
+                'karyawan_id' => $order->karyawan_id,
             ]);
         }
 
