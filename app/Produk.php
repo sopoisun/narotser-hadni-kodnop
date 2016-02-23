@@ -9,7 +9,7 @@ class Produk extends Model
 {
     protected $fillable = ['nama', 'satuan', 'konsinyasi', 'supplier_id', 'hpp',
                             'harga', 'use_mark_up', 'mark_up', 'produk_kategori_id',
-                            'qty_warning'];
+                            'qty_warning', 'active'];
     protected $hidden   = ['created_at', 'updated_at'];
 
     public function kategori()

@@ -7,7 +7,7 @@ use DB;
 
 class Account extends Model
 {
-    protected $fillable = ['nama_akun', 'data_state', 'type', 'relation', 'can_edit'];
+    protected $fillable = ['nama_akun', 'data_state', 'type', 'relation', 'can_edit', 'active'];
     protected $hidden   = ['created_at', 'updated_at'];
     public static $data_states  = [
         'input' => 'Input Manual',

@@ -26,7 +26,7 @@ class BahanController extends Controller
         }
 
         $data = [
-            'bahans' => Bahan::all(),
+            'bahans' => Bahan::where('active', 1)->get(),
         ];
 
         return view(config('app.template').'.bahan.table', $data);
@@ -158,7 +158,7 @@ class BahanController extends Controller
 
         $bahan = Bahan::find($id);
 
-        if( $bahan && $bahan->delete() ){
+        if( $bahan && $bahan->update(['active' => 0]) ){
             return redirect()->back()->with('succcess', 'Sukses hapus data bahan produksi "'.$bahan->nama.'".');
         }
 

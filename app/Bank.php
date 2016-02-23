@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Bank extends Model
 {
-    protected $fillable = ['nama_bank', 'credit_card_tax'];
+    protected $fillable = ['nama_bank', 'credit_card_tax', 'active'];
     protected $hidden   = ['created_at', 'updated_at'];
 
     public function orderBayarBank()

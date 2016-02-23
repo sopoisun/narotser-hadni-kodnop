@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tax extends Model
 {
-    protected $fillable = ['type', 'procentage'];
+    protected $fillable = ['type', 'procentage', 'active'];
     protected $hidden   = ['created_at', 'updated_at'];
 
     public function orderTax()

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PlaceKategori extends Model
 {
-    protected $fillable = ['nama'];
+    protected $fillable = ['nama', 'active'];
     protected $hidden   = ['created_at', 'updated_at'];
 
     public function place()
