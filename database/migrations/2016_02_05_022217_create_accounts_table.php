@@ -19,6 +19,7 @@ class CreateAccountsTable extends Migration
             $table->enum('type', ['debet', 'kredit'])->default('debet');
             $table->string('relation')->nullable();
             $table->enum('can_edit', ['Ya', 'Tidak'])->default('Ya');
+            $table->enum('active', [1, 0])->default(1);
             $table->timestamps();
         });
     }

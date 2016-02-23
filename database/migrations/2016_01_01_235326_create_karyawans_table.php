@@ -19,6 +19,7 @@ class CreateKaryawansTable extends Migration
             $table->string('alamat');
             $table->string('jabatan');
             $table->string('user_id')->nullable();
+            $table->enum('active', [1, 0])->default(1);
             $table->timestamps();
         });
     }

@@ -15,6 +15,7 @@ class CreateProdukKategorisTable extends Migration
         Schema::create('produk_kategoris', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nama');
+            $table->enum('active', [1, 0])->default(1);
             $table->timestamps();
         });
     }

@@ -19,6 +19,7 @@ class CreateCustomersTable extends Migration
             $table->string('no_hp')->nullable();
             $table->string('alamat')->nullable();
             $table->text('keterangan')->nullable();
+            $table->enum('active', [1, 0])->default(1);
             $table->timestamps();
         });
     }

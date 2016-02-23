@@ -16,6 +16,7 @@ class CreateBanksTable extends Migration
             $table->increments('id');
             $table->string('nama_bank');
             $table->float('credit_card_tax');
+            $table->enum('active', [1, 0])->default(1);
             $table->timestamps();
         });
     }

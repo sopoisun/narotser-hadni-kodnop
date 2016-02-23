@@ -17,6 +17,7 @@ class CreatePlacesTable extends Migration
             $table->string('nama');
             $table->string('kategori_id');
             $table->integer('harga')->default(0);
+            $table->enum('active', [1, 0])->default(1);
             $table->timestamps();
         });
     }

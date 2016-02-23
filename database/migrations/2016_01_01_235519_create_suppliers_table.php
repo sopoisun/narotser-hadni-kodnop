@@ -18,6 +18,7 @@ class CreateSuppliersTable extends Migration
             $table->string('no_hp');
             $table->string('alamat');
             $table->string('nama_perusahaan');
+            $table->enum('active', [1, 0])->default(1);
             $table->timestamps();
         });
     }

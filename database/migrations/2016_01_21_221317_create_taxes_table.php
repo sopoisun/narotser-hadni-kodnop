@@ -16,6 +16,7 @@ class CreateTaxesTable extends Migration
             $table->increments('id');
             $table->string('type');
             $table->integer('procentage');
+            $table->enum('active', [1, 0])->default(1);
             $table->timestamps();
         });
     }
