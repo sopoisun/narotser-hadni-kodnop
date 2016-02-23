@@ -488,7 +488,8 @@ class ApiController extends Controller
         if( $request->get('id') ){
             $id = $request->get('id');
 
-            $order = Order::with('bayar', 'tax.tax', 'bayarBank.bank', 'place.place')->find($id);
+            $order = Order::with(['karyawan', 'bayar.karyawan', 'tax.tax',
+                'bayarBank.bank', 'place.place'])->find($id);
 
             $total = $orderDetails = OrderDetail::with('order')->leftJoin('order_detail_returns', 'order_details.id', '=', 'order_detail_returns.order_detail_id')
                 ->join('produks', 'order_details.produk_id', '=', 'produks.id')
@@ -514,6 +515,8 @@ class ApiController extends Controller
             $kembali    = round($order->bayar->bayar - $sisa);
 
             return [
+                'kasir'         => $order->bayar->karyawan->nama,
+                'waiters'       => $order->karyawan->nama,
                 'total'         => number_format($total, 0, ",", "."),
                 'tax_pro'       => $order->tax->procentage,
                 'tax'           => number_format($tax, 0, ",", "."),
@@ -534,5 +537,22 @@ class ApiController extends Controller
     public function setting()
     {
         return Setting::first();
+    }
+
+    public function changePassword(Request $request)
+    {
+        \Debugbar::disable();
+
+        $user = auth()->guard('api')->user();
+
+        if( !Hash::check($request->get('old_password'), $user->password) ){
+            return 1;
+        }
+
+        if( $user->update(['password' => Hash::make($request->get('password'))]) ){
+            return 2;
+        }
+
+        return 0;
     }
 }
