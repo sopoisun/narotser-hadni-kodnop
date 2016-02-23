@@ -229,6 +229,79 @@ class ApiController extends Controller
         return 0;
     }
 
+    public function changeTransaksi(Request $request)
+    {
+        \Debugbar::disable();
+
+        $id = $request->get('id');
+
+        $data_order_detail = $request->get('data_order') != "" ? json_decode($request->get('data_order'), true) : [];
+        // Convert like data session
+        $temp = [];
+        foreach ($data_order_detail as $d) {
+            $key = $d['id'];
+            $temp[$key] = $d;
+        }
+        $data_order_detail = $temp;
+
+        $order = \App\Order::with('place.place')->find($id);
+
+        if( count($data_order_detail) ){
+            // Order Detail
+            $orderDetailOld = \App\OrderDetail::where('order_id', $id)
+                                ->whereIn('produk_id', array_keys($data_order_detail))
+                                ->get();
+
+            # Update Order Detail
+            foreach($orderDetailOld as $odo){
+                $oldQty     = $odo->qty;
+                $updateQty  = $oldQty + $data_order_detail[$odo->produk_id]['qty'];
+                \App\OrderDetail::find($odo->id)->update(['qty' => $updateQty]);
+                unset($data_order_detail[$odo->produk_id]);
+            }
+
+            if( count($data_order_detail) ){
+                # New Order Detail
+                $produks = Produk::with(['detail' => function($query){
+                    $query->join('bahans', 'produk_details.bahan_id', '=', 'bahans.id');
+                }])->whereIn('id', array_keys($data_order_detail))->get();
+                $orderDetailBahan = [];
+                foreach($produks as $produk){
+                    $pId = $produk->id;
+                    // Order Detail
+                    $orderDetail        = [
+                        'order_id'      => $id,
+                        'produk_id'     => $produk->id,
+                        'hpp'           => $produk->hpp,
+                        'harga_jual'    => $data_order_detail[$pId]['harga'],
+                        'qty'           => $data_order_detail[$pId]['qty'],
+                        'use_mark_up'   => $produk->use_mark_up,
+                        'mark_up'       => $produk->mark_up,
+                        'note'          => "",
+                    ];
+                    //echo "<pre>", print_r($orderDetail), "</pre>";
+                    $orderDetail = \App\OrderDetail::create($orderDetail);
+
+                    if( $produk->detail->count() ){
+                        // Order Detail Bahan
+                        foreach($produk->detail as $pd){
+                            array_push($orderDetailBahan, [
+                                'order_detail_id'   => $orderDetail->id,
+                                'bahan_id'          => $pd->bahan_id,
+                                'harga'             => $pd->harga,
+                                'qty'               => $pd->qty,
+                                'satuan'            => $pd->satuan,
+                            ]);
+                        }
+                    }
+                }
+                \App\OrderDetailBahan::insert($orderDetailBahan);
+            }
+        }
+
+        return 1;
+    }
+
     public function transaksi(Request $request)
     {
         $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
