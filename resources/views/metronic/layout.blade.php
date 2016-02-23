@@ -603,7 +603,20 @@
                     <a href="{{ url('/setting') }}">
                         <i class="icon-cogs"></i>
                         <span class="title">Setting</span>
+                        <span class="arrow "></span>
                     </a>
+                    <ul class="sub-menu">
+                        @can('setting.update')
+                        <li class="{{ set_active('setting') }}">
+                            <a href="{{ url('/setting') }}">General Setting</a>
+                        </li>
+                        @endcan
+                        @can('app.reset')
+                        <li class="{{ set_active('setting/reset') }}">
+                            <a href="{{ url('/setting/reset') }}">Reset Aplikasi</a>
+                        </li>
+                        @endcan
+                    </ul>
                 </li>
                 @endcan
             </ul>

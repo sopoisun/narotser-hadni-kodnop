@@ -7,7 +7,7 @@
     <div class="col-md-12">
         <!-- BEGIN PAGE TITLE & BREADCRUMB-->
         <h3 class="page-title">
-            Setting <small>Setting aplikasi</small>
+            Setting <small>General setting</small>
         </h3>
         <ul class="page-breadcrumb breadcrumb">
             <li>
@@ -16,10 +16,10 @@
                 <i class="icon-angle-right"></i>
             </li>
             <li>
-                <a href="{{ url('/supplier') }}">Setting</a>
+                <a href="{{ url('/setting') }}">Setting</a>
                 <i class="icon-angle-right"></i>
             </li>
-            <li><a href="javascript:void(0)">Ubah Setting</a></li>
+            <li><a href="javascript:void(0)">General Setting</a></li>
         </ul>
         <!-- END PAGE TITLE & BREADCRUMB-->
     </div>

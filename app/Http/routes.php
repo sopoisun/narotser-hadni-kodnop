@@ -147,6 +147,8 @@ Route::group(['middleware' => ['web']], function () {
         // Setting
         Route::get('/setting', 'SettingController@index');
         Route::post('/setting', 'SettingController@save');
+        Route::get('/setting/reset', 'SettingController@appReset');
+        Route::post('/setting/reset', 'SettingController@saveAppReset');
 
         // Order
         Route::get('/order', 'OrderController@index');
