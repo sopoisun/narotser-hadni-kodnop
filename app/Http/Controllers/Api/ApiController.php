@@ -110,6 +110,62 @@ class ApiController extends Controller
         return $display;
     }
 
+    public function tax()
+    {
+        $taxs = \App\Tax::all();
+
+        $data = [];
+        foreach($taxs as $tax)
+        {
+            array_push($data, [
+                'tax_id' => $tax->id,
+                'type' => $tax->type,
+                'procentage' => $tax->procentage,
+            ]);
+        }
+
+        $display['tax'] = $data;
+
+        return $display;
+    }
+
+    public function bank()
+    {
+        $banks = \App\Bank::all();
+
+        $data = [];
+        foreach($banks as $bank)
+        {
+            array_push($data, [
+                'bank_id' => $bank->id,
+                'nama_bank' => $bank->nama_bank,
+                'credit_card_tax' => $bank->credit_card_tax,
+            ]);
+        }
+
+        $display['bank'] = $data;
+
+        return $display;
+    }
+
+    public function customer()
+    {
+        $customers = \App\Customer::whereNotNull('customers.nama')->get();
+
+        $data = [];
+        foreach($customers as $customer)
+        {
+            array_push($data, [
+                'customer_code' => $customer->kode,
+                'nama_customer' => $customer->nama,
+            ]);
+        }
+
+        $display['customers'] = $data;
+
+        return $display;
+    }
+
     public function checkStok(Request $request)
     {
         \Debugbar::disable();

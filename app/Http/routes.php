@@ -314,6 +314,9 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function(){
     Route::group(['middleware' => ['auth.api']], function(){
         Route::get('/user', 'ApiController@user');
         Route::get('/karyawan', 'ApiController@karyawan');
+        Route::get('/bank', 'ApiController@bank');
+        Route::get('/tax', 'ApiController@tax');
+        Route::get('/customer', 'ApiController@customer');
         Route::get('/produk', 'ApiController@produk');
         Route::get('/produk/stok', 'ApiController@checkStok');
         Route::get('/place', 'ApiController@place');
