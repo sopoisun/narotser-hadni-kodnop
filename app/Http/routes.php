@@ -94,6 +94,7 @@ Route::group(['middleware' => ['web']], function () {
         // Bahan
         Route::get('/bahan-produksi', 'BahanController@index');
         Route::get('/bahan-produksi/stok', 'BahanController@stok');
+        Route::get('/bahan-produksi/stok-print', 'BahanController@stokPrint');
         Route::get('/bahan-produksi/add', 'BahanController@create');
         Route::post('/bahan-produksi/add', 'BahanController@store');
         Route::get('/bahan-produksi/edit/{id}', 'BahanController@edit');
@@ -111,6 +112,7 @@ Route::group(['middleware' => ['web']], function () {
         // Produk
         Route::get('/produk', 'ProdukController@index');
         Route::get('/produk/stok', 'ProdukController@stok');
+        Route::get('/produk/stok-print', 'ProdukController@stokPrint');
         Route::get('/produk/add', 'ProdukController@create');
         Route::post('/produk/add', 'ProdukController@store');
         Route::get('/produk/edit/{id}', 'ProdukController@edit');

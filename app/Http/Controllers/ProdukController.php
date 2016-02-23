@@ -10,6 +10,7 @@ use App\Http\Requests\ProdukRequest;
 use App\Produk;
 use App\ProdukKategori;
 use App\ProdukDetail;
+use Carbon\Carbon;
 use DB;
 use Gate;
 
@@ -39,9 +40,31 @@ class ProdukController extends Controller
             return view(config('app.template').'.error.403');
         }
 
-        $produks = Produk::stok()->orderBy('produks.id')->get();;
-        $data = ['produks' => $produks];
+        $data = $this->_stok();
+
         return view(config('app.template').".produk.stok", $data);
+    }
+
+    public function stokPrint()
+    {
+        if( Gate::denies('produk.stok') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $data = $this->_stok();
+
+        $print = new \App\Libraries\StokProduk([
+            'header' => 'Laporan Stok Produk '.Carbon::now()->format('d M Y'),
+            'data' => $data['produks'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _stok()
+    {
+        $produks = Produk::stok()->orderBy('produks.id')->get();;
+        return ['produks' => $produks];
     }
 
     /**

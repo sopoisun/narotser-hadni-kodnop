@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BahanRequest;
 use App\Bahan;
+use Carbon\Carbon;
 use DB;
 use Gate;
 
@@ -37,9 +38,31 @@ class BahanController extends Controller
             return view(config('app.template').'.error.403');
         }
 
-        $bahans = Bahan::stok()->orderBy('bahans.id')->get();
-        $data = ['bahans' => $bahans];
+        $data = $this->_stok();
+
         return view(config('app.template').'.bahan.stok', $data);
+    }
+
+    public function stokPrint()
+    {
+        if( Gate::denies('bahan.stok') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $data = $this->_stok();
+
+        $print = new \App\Libraries\StokBahan([
+            'header' => 'Laporan Stok Bahan '.Carbon::now()->format('d M Y'),
+            'data' => $data['bahans'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _stok()
+    {
+        $bahans = Bahan::stok()->orderBy('bahans.id')->get();
+        return ['bahans' => $bahans];
     }
 
     /**
