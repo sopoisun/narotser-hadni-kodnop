@@ -71,7 +71,7 @@
                                 <td>{{ $adjustment->karyawan->nama }}</td>
                                 <td>{{ $adjustment->keterangan }}</td>
                                 <td>
-                                    @can('adjustment.detail')
+                                    @can('adjustment.read.detail')
                                     <a href="{{ url('/adjustment/detail/'.$adjustment->id) }}" class="btn btn-sm yellow" title="detail"><i class="icon-search"></i></a>
                                     @endcan
                                 </td>

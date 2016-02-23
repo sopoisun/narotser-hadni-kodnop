@@ -30,7 +30,7 @@ class AdjustmentController extends Controller
 
     public function detail($id)
     {
-        if( Gate::denies('adjustment.detail') ){
+        if( Gate::denies('adjustment.read.detail') ){
             return view(config('app.template').'.error.403');
         }
 
