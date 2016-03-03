@@ -45,7 +45,7 @@ class OrderController extends Controller
                 FROM order_places INNER JOIN orders ON order_places.`order_id` = orders.`id`
                 WHERE SUBSTRING(orders.tanggal, 1, 10) = '".$tgl."' AND orders.`state` = 'On Going' )as order_place_temp"), function($query){
                     $query->on('places.id', '=', 'order_place_temp.place_id');
-            })->where('kategori_id', $type)->where('active', 1)
+            })->where('kategori_id', $type)->where('places.active', 1)
             ->orderBy('places.id')->get();
 
             $data = [

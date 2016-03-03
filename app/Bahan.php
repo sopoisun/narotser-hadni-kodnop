@@ -102,7 +102,7 @@ class Bahan extends Model
                 DB::raw('ifnull(penjualan.qty, 0)terjual'),
                 DB::raw('ifnull((penjualan.harga*penjualan.qty), 0)subtotal'),
             ])
-            ->where('active', 1)
+            ->where('bahans.active', 1)
             ->get();
     }
 }

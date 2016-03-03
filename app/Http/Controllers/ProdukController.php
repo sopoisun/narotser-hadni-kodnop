@@ -274,7 +274,7 @@ class ProdukController extends Controller
         }else{
             $produk = Produk::leftJoin('produk_details', 'produks.id', '=', 'produk_details.produk_id')
                 ->where('nama', 'like', '%'.$request->get('q').'%')
-                ->where('active', 1)
+                ->where('produks.active', 1)
                 ->whereNotIn('produks.id', explode('+', $request->get('except')))
                 ->select('produks.*')
                 ->groupBy('produks.id')
