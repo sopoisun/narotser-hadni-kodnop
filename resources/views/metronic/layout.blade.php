@@ -152,8 +152,16 @@
                                 <li class="{{ set_active('report/pertanggal') }}"><a href="{{ url('/report/pertanggal') }}">Laporan Penjualan</a></li>
                                 @endcan
                                 @can('report.pertanggal.solditem')
-                                <li class="{{ set_active('report/pertanggal/solditem') }}"><a href="{{ url('/report/pertanggal/solditem') }}">Laporan Sold Item</a></li>
-                                <li class="{{ set_active('report/pertanggal/solditembahan') }}"><a href="{{ url('/report/pertanggal/solditembahan') }}">Laporan Sold Bahan</a></li>
+                                <li class="{{ set_active('report/pertanggal*') }}">
+                                    <a href="javascript:;">
+                                    Sold Item
+                                    <span class="arrow"></span>
+                                    </a>
+                                    <ul class="sub-menu">
+                                        <li class="{{ set_active('report/pertanggal/solditem') }}"><a href="{{ url('/report/pertanggal/solditem') }}">Produk</a></li>
+                                        <li class="{{ set_active('report/pertanggal/solditembahan') }}"><a href="{{ url('/report/pertanggal/solditembahan') }}">Bahan</a></li>
+                                    </ul>
+                                </li>
                                 @endcan
                                 @can('report.pertanggal.karyawan')
                                 <li class="{{ set_active('report/pertanggal/karyawan') }}"><a href="{{ url('/report/pertanggal/karyawan') }}">Laporan Karyawan</a></li>
@@ -170,8 +178,16 @@
                             </a>
                             <ul class="sub-menu">
                                 @can('report.periode.solditem')
-                                <li class="{{ set_active('report/periode/solditem') }}"><a href="{{ url('/report/periode/solditem') }}">Laporan Sold Item</a></li>
-                                <li class="{{ set_active('report/periode/solditembahan') }}"><a href="{{ url('/report/periode/solditembahan') }}">Laporan Sold Bahan</a></li>
+                                <li class="{{ set_active('report/periode*') }}">
+                                    <a href="javascript:;">
+                                    Sold Item
+                                    <span class="arrow"></span>
+                                    </a>
+                                    <ul class="sub-menu">
+                                        <li class="{{ set_active('report/periode/solditem') }}"><a href="{{ url('/report/periode/solditem') }}">Produk</a></li>
+                                        <li class="{{ set_active('report/periode/solditembahan') }}"><a href="{{ url('/report/periode/solditembahan') }}">Bahan</a></li>
+                                    </ul>
+                                </li>
                                 @endcan
                                 @can('report.periode.karyawan')
                                 <li class="{{ set_active('report/periode/karyawan') }}"><a href="{{ url('/report/periode/karyawan') }}">Laporan Karyawan</a></li>
@@ -191,8 +207,16 @@
                                 <li class="{{ set_active('report/perbulan') }}"><a href="{{ url('/report/perbulan') }}">Laporan Penjualan</a></li>
                                 @endcan
                                 @can('report.perbulan.solditem')
-                                <li class="{{ set_active('report/perbulan/solditem') }}"><a href="{{ url('/report/perbulan/solditem') }}">Laporan Sold Item</a></li>
-                                <li class="{{ set_active('report/perbulan/solditembahan') }}"><a href="{{ url('/report/perbulan/solditembahan') }}">Laporan Sold Bahan</a></li>
+                                <li class="{{ set_active('report/perbulan*') }}">
+                                    <a href="javascript:;">
+                                    Sold Item
+                                    <span class="arrow"></span>
+                                    </a>
+                                    <ul class="sub-menu">
+                                        <li class="{{ set_active('report/perbulan/solditem') }}"><a href="{{ url('/report/perbulan/solditem') }}">Produk</a></li>
+                                        <li class="{{ set_active('report/perbulan/solditembahan') }}"><a href="{{ url('/report/perbulan/solditembahan') }}">Bahan</a></li>
+                                    </ul>
+                                </li>
                                 @endcan
                                 @can('report.perbulan.karyawan')
                                 <li class="{{ set_active('report/perbulan/karyawan') }}"><a href="{{ url('/report/perbulan/karyawan') }}">Laporan Karyawan</a></li>
@@ -212,8 +236,16 @@
                                 <li class="{{ set_active('report/pertahun') }}"><a href="{{ url('/report/pertahun') }}">Laporan Penjualan</a></li>
                                 @endcan
                                 @can('report.pertahun.solditem')
-                                <li class="{{ set_active('report/pertahun/solditem') }}"><a href="{{ url('/report/pertahun/solditem') }}">Laporan Sold Item</a></li>
-                                <li class="{{ set_active('report/pertahun/solditembahan') }}"><a href="{{ url('/report/pertahun/solditembahan') }}">Laporan Sold Bahan</a></li>
+                                <li class="{{ set_active('report/pertahun*') }}">
+                                    <a href="javascript:;">
+                                    Sold Item
+                                    <span class="arrow"></span>
+                                    </a>
+                                    <ul class="sub-menu">
+                                        <li class="{{ set_active('report/pertahun/solditem') }}"><a href="{{ url('/report/pertahun/solditem') }}">Produk</a></li>
+                                        <li class="{{ set_active('report/pertahun/solditembahan') }}"><a href="{{ url('/report/pertahun/solditembahan') }}">Bahan</a></li>
+                                    </ul>
+                                </li>
                                 @endcan
                                 @can('report.pertahun.karyawan')
                                 <li class="{{ set_active('report/pertahun/karyawan') }}"><a href="{{ url('/report/pertahun/karyawan') }}">Laporan Karyawan</a></li>

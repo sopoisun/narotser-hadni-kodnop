@@ -201,6 +201,62 @@ class ReportController extends Controller
         ];
     }
 
+    public function purchasedItem(Request $request)
+    {
+        $data = $this->_purchasedItem($request);
+
+        return view(config('app.template').'.report.pertanggal-purchaseditem', $data);
+    }
+
+    protected function _purchasedItem(Request $request)
+    {
+        $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
+
+        $produks = \App\PembelianDetail::join('produks', 'pembelian_details.relation_id', '=', 'produks.id')
+            ->join('pembelians', 'pembelian_details.pembelian_id', '=', 'pembelians.id')
+            ->where('pembelians.tanggal', $tanggal)
+            ->where('type', 'produk')
+            ->select([
+                'produks.nama',
+                DB::raw('ROUND(SUM(pembelian_details.harga)/SUM(pembelian_details.stok))harga_per_stok'),
+                DB::raw('SUM(pembelian_details.stok)stok'),
+                DB::raw('SUM(pembelian_details.harga)total'),
+            ])->groupBy('produks.id')->get();
+
+        return [
+            'tanggal' => Carbon::parse($tanggal),
+            'produks' => $produks,
+        ];
+    }
+
+    public function purchasedItemBahan(Request $request)
+    {
+        $data = $this->_purchasedItemBahan($request);
+
+        return view(config('app.template').'.report.pertanggal-purchaseditembahan', $data);
+    }
+
+    protected function _purchasedItemBahan(Request $request)
+    {
+        $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
+
+        $bahans = \App\PembelianDetail::join('bahans', 'pembelian_details.relation_id', '=', 'bahans.id')
+            ->join('pembelians', 'pembelian_details.pembelian_id', '=', 'pembelians.id')
+            ->where('pembelians.tanggal', $tanggal)
+            ->where('type', 'bahan')
+            ->select([
+                'bahans.nama',
+                DB::raw('ROUND(SUM(pembelian_details.harga)/SUM(pembelian_details.stok))harga_per_stok'),
+                DB::raw('SUM(pembelian_details.stok)stok'),
+                DB::raw('SUM(pembelian_details.harga)total'),
+            ])->groupBy('bahans.id')->get();
+
+        return [
+            'tanggal' => Carbon::parse($tanggal),
+            'bahans' => $bahans,
+        ];
+    }
+
     public function karyawan(Request $request)
     {
         if( Gate::denies('report.pertanggal.karyawan') ){
@@ -458,6 +514,66 @@ class ReportController extends Controller
         $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : $tanggal;
 
         $bahans = \App\Bahan::soldItem("( orders.`tanggal` BETWEEN '$tanggal' AND '$to_tanggal' ) AND");
+        return [
+            'tanggal'   => Carbon::createFromFormat('Y-m-d', $tanggal),
+            'to_tanggal'=> Carbon::createFromFormat('Y-m-d', $to_tanggal),
+            'bahans'   => $bahans
+        ];
+    }
+
+    public function purchasedItemPeriode(Request $request)
+    {
+        $data = $this->_purchasedItemPeriode($request);
+
+        return view(config('app.template').'.report.periode-purchaseditem', $data);
+    }
+
+    protected function _purchasedItemPeriode(Request $request)
+    {
+        $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
+        $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : $tanggal;
+
+        $produks = \App\PembelianDetail::join('produks', 'pembelian_details.relation_id', '=', 'produks.id')
+            ->join('pembelians', 'pembelian_details.pembelian_id', '=', 'pembelians.id')
+            ->whereBetween('pembelians.tanggal', [$tanggal, $to_tanggal])
+            ->where('type', 'produk')
+            ->select([
+                'produks.nama',
+                DB::raw('ROUND(SUM(pembelian_details.harga)/SUM(pembelian_details.stok))harga_per_stok'),
+                DB::raw('SUM(pembelian_details.stok)stok'),
+                DB::raw('SUM(pembelian_details.harga)total'),
+            ])->groupBy('produks.id')->get();
+
+        return [
+            'tanggal'   => Carbon::createFromFormat('Y-m-d', $tanggal),
+            'to_tanggal'=> Carbon::createFromFormat('Y-m-d', $to_tanggal),
+            'produks'   => $produks
+        ];
+    }
+
+    public function purchasedItemBahanPeriode(Request $request)
+    {
+        $data = $this->_purchasedItemBahanPeriode($request);
+
+        return view(config('app.template').'.report.periode-purchaseditembahan', $data);
+    }
+
+    protected function _purchasedItemBahanPeriode(Request $request)
+    {
+        $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
+        $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : $tanggal;
+
+        $bahans = \App\PembelianDetail::join('bahans', 'pembelian_details.relation_id', '=', 'bahans.id')
+            ->join('pembelians', 'pembelian_details.pembelian_id', '=', 'pembelians.id')
+            ->whereBetween('pembelians.tanggal', [$tanggal, $to_tanggal])
+            ->where('type', 'bahan')
+            ->select([
+                'bahans.nama',
+                DB::raw('ROUND(SUM(pembelian_details.harga)/SUM(pembelian_details.stok))harga_per_stok'),
+                DB::raw('SUM(pembelian_details.stok)stok'),
+                DB::raw('SUM(pembelian_details.harga)total'),
+            ])->groupBy('bahans.id')->get();
+
         return [
             'tanggal'   => Carbon::createFromFormat('Y-m-d', $tanggal),
             'to_tanggal'=> Carbon::createFromFormat('Y-m-d', $to_tanggal),
@@ -738,6 +854,62 @@ class ReportController extends Controller
         ];
     }
 
+    public function purchasedItemPerbulan(Request $request)
+    {
+        $data = $this->_purchasedItemPerbulan($request);
+
+        return view(config('app.template').'.report.perbulan-purchaseditem', $data);
+    }
+
+    protected function _purchasedItemPerbulan(Request $request)
+    {
+        $bulan = $request->get('bulan') ? $request->get('bulan') : date('Y-m');
+
+        $produks = \App\PembelianDetail::join('produks', 'pembelian_details.relation_id', '=', 'produks.id')
+            ->join('pembelians', 'pembelian_details.pembelian_id', '=', 'pembelians.id')
+            ->where(DB::raw('SUBSTRING(pembelians.tanggal, 1, 7)'), $bulan)
+            ->where('type', 'produk')
+            ->select([
+                'produks.nama',
+                DB::raw('ROUND(SUM(pembelian_details.harga)/SUM(pembelian_details.stok))harga_per_stok'),
+                DB::raw('SUM(pembelian_details.stok)stok'),
+                DB::raw('SUM(pembelian_details.harga)total'),
+            ])->groupBy('produks.id')->get();
+
+        return [
+            'tanggal' => Carbon::parse($bulan),
+            'produks' => $produks
+        ];
+    }
+
+    public function purchasedItemBahanPerbulan(Request $request)
+    {
+        $data = $this->_purchasedItemBahanPerbulan($request);
+
+        return view(config('app.template').'.report.perbulan-purchaseditembahan', $data);
+    }
+
+    public function _purchasedItemBahanPerbulan(Request $request)
+    {
+        $bulan = $request->get('bulan') ? $request->get('bulan') : date('Y-m');
+
+        $bahans = \App\PembelianDetail::join('bahans', 'pembelian_details.relation_id', '=', 'bahans.id')
+            ->join('pembelians', 'pembelian_details.pembelian_id', '=', 'pembelians.id')
+            ->where(DB::raw('SUBSTRING(pembelians.tanggal, 1, 7)'), $bulan)
+            ->where('type', 'bahan')
+            ->select([
+                'bahans.nama',
+                DB::raw('ROUND(SUM(pembelian_details.harga)/SUM(pembelian_details.stok))harga_per_stok'),
+                DB::raw('SUM(pembelian_details.stok)stok'),
+                DB::raw('SUM(pembelian_details.harga)total'),
+            ])->groupBy('bahans.id')->get();
+
+        return [
+            'tanggal' => Carbon::parse($bulan),
+            'bahans' => $bahans
+        ];
+    }
+
     public function karyawanPerbulan(Request $request)
     {
         if( Gate::denies('report.perbulan.karyawan') ){
@@ -1000,6 +1172,62 @@ class ReportController extends Controller
 
         return [
             'tanggal'   => Carbon::createFromFormat('Y', $tahun),
+            'bahans'   => $bahans
+        ];
+    }
+
+    public function purchasedItemPertahun(Request $request)
+    {
+        $data = $this->_purchasedItemPertahun($request);
+
+        return view(config('app.template').'.report.pertahun-purchaseditem', $data);
+    }
+
+    protected function _purchasedItemPertahun(Request $request)
+    {
+        $tahun = $request->get('tahun') ? $request->get('tahun') : date('Y');
+
+        $produks = \App\PembelianDetail::join('produks', 'pembelian_details.relation_id', '=', 'produks.id')
+            ->join('pembelians', 'pembelian_details.pembelian_id', '=', 'pembelians.id')
+            ->where(DB::raw('SUBSTRING(pembelians.tanggal, 1, 4)'), $tahun)
+            ->where('type', 'produk')
+            ->select([
+                'produks.nama',
+                DB::raw('ROUND(SUM(pembelian_details.harga)/SUM(pembelian_details.stok))harga_per_stok'),
+                DB::raw('SUM(pembelian_details.stok)stok'),
+                DB::raw('SUM(pembelian_details.harga)total'),
+            ])->groupBy('produks.id')->get();
+
+        return [
+            'tanggal'   => Carbon::createFromFormat('Y', $tahun),
+            'produks'   => $produks
+        ];
+    }
+
+    public function purchasedItemBahanPertahun(Request $request)
+    {
+        $data = $this->_purchasedItemBahanPertahun($request);
+
+        return view(config('app.template').'.report.pertahun-purchaseditembahan', $data);
+    }
+
+    protected function _purchasedItemBahanPertahun(Request $request)
+    {
+        $tahun = $request->get('tahun') ? $request->get('tahun') : date('Y');
+
+        $bahans = \App\PembelianDetail::join('bahans', 'pembelian_details.relation_id', '=', 'bahans.id')
+            ->join('pembelians', 'pembelian_details.pembelian_id', '=', 'pembelians.id')
+            ->where(DB::raw('SUBSTRING(pembelians.tanggal, 1, 4)'), $tahun)
+            ->where('type', 'bahan')
+            ->select([
+                'bahans.nama',
+                DB::raw('ROUND(SUM(pembelian_details.harga)/SUM(pembelian_details.stok))harga_per_stok'),
+                DB::raw('SUM(pembelian_details.stok)stok'),
+                DB::raw('SUM(pembelian_details.harga)total'),
+            ])->groupBy('bahans.id')->get();
+
+        return [
+            'tanggal'  => Carbon::createFromFormat('Y', $tahun),
             'bahans'   => $bahans
         ];
     }

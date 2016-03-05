@@ -11,7 +11,7 @@
     <div class="col-md-12">
         <!-- BEGIN PAGE TITLE & BREADCRUMB-->
         <h3 class="page-title">
-            Laporan Bahan Terjual
+            Laporan Produk Dibeli [ Purchased Item ]
         </h3>
         <ul class="page-breadcrumb breadcrumb">
             <li>
@@ -27,7 +27,7 @@
                 <a href="{{ url('/report/perbulan') }}">Perbulan</a>
                 <i class="icon-angle-right"></i>
             </li>
-            <li><a href="javascript:void(0)">Laporan Bahan Terjual {{ $tanggal->format('M Y') }}</a></li>
+            <li><a href="javascript:void(0)">Laporan Produk Dibeli {{ $tanggal->format('M Y') }}</a></li>
         </ul>
         <!-- END PAGE TITLE & BREADCRUMB-->
     </div>
@@ -54,7 +54,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="bulan" class="col-md-3 control-label">Bulan</label>
+                                    <label for="tanggal" class="col-md-3 control-label">Bulan</label>
                                     <div class="col-md-8">
                                     {{ Form::text('bulan', $tanggal->format('Y-m'), ['class' => 'form-control tanggalan', 'id' => 'bulan', 'data-date-format' => 'yyyy-mm']) }}
                                     </div>
@@ -68,7 +68,7 @@
                             <div class="col-md-6">
                                 <div class="col-md-offset-3 col-md-9">
                                     <button type="submit" class="btn red">Tampilkan</button>
-                                    <a href="{{ url('/report/perbulan/solditembahan-print?bulan='.$tanggal->format('Y-m')) }}"
+                                    <a href="{{ url('/report/perbulan/purchaseditem-print?bulan='.$tanggal->format('Y-m')) }}"
                                         target="_blank" class="btn blue">
                                         Print
                                     </a>
@@ -87,7 +87,7 @@
         <!-- BEGIN SAMPLE TABLE PORTLET-->
         <div class="portlet box green">
             <div class="portlet-title">
-                <div class="caption"><i class="icon-comments"></i>Daftar Bahan Terjual {{ $tanggal->format('M Y') }}</div>
+                <div class="caption"><i class="icon-comments"></i>Daftar Produk Dibeli {{ $tanggal->format('M Y') }}</div>
                 <div class="tools">
                     <a href="javascript:;" class="collapse"></a>
                     <a href="#portlet-config" data-toggle="modal" class="config"></a>
@@ -101,35 +101,33 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Nama Bahan</th>
-                                <th>Harga (Avg)</th>
-                                <th>Terjual</th>
-                                <th>Subtotal</th>
+                                <th>Nama Produk</th>
+                                <th>Stok</th>
+                                <th>Total Harga</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @if($bahans->count())
+                            @if($produks->count())
                             {{--*/ $no = 0; /*--}}
-                            @foreach($bahans as $bahan)
+                            @foreach($produks as $produk)
                             {{--*/ $no++; /*--}}
                             <tr>
                                 <td>{{ $no }}</td>
-                                <td>{{ $bahan->nama }}</td>
-                                <td style="text-align:right;">{{ number_format($bahan->harga, 0, ',', '.') }}</td>
-                                <td>{{ $bahan->terjual }}</td>
-                                <td style="text-align:right;">{{ number_format($bahan->subtotal, 0, ',', '.') }}</td>
+                                <td>{{ $produk->nama }}</td>
+                                <td>{{ $produk->stok }}</td>
+                                <td style="text-align:right;">{{ number_format($produk->total, 0, ',', '.') }}</td>
                             </tr>
                             @endforeach
 
                             <tr>
                                 <td></td>
-                                <td colspan="3">Total</td>
-                                <td style="text-align:right;">{{ number_format($bahans->sum('subtotal'), 0, ',', '.') }}</td>
+                                <td colspan="2">Total</td>
+                                <td style="text-align:right;">{{ number_format(collect($produks)->sum('total'), 0, ',', '.') }}</td>
                             </tr>
 
                             @else
                             <tr>
-                                <td colspan="5" style="text-align:center;">No Data Here</td>
+                                <td colspan="4" style="text-align:center;">No Data Here</td>
                             </tr>
                             @endif
                         </tbody>
