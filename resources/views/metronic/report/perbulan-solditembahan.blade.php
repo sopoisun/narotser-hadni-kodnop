@@ -27,6 +27,10 @@
                 <a href="{{ url('/report/perbulan') }}">Perbulan</a>
                 <i class="icon-angle-right"></i>
             </li>
+            <li>
+                <a href="{{ url('/report/perbulan/solditem/produk') }}">Sold Item</a>
+                <i class="icon-angle-right"></i>
+            </li>
             <li><a href="javascript:void(0)">Laporan Bahan Terjual {{ $tanggal->format('M Y') }}</a></li>
         </ul>
         <!-- END PAGE TITLE & BREADCRUMB-->
@@ -68,7 +72,7 @@
                             <div class="col-md-6">
                                 <div class="col-md-offset-3 col-md-9">
                                     <button type="submit" class="btn red">Tampilkan</button>
-                                    <a href="{{ url('/report/perbulan/solditembahan-print?bulan='.$tanggal->format('Y-m')) }}"
+                                    <a href="{{ url('/report/perbulan/solditem/bahan-print?bulan='.$tanggal->format('Y-m')) }}"
                                         target="_blank" class="btn blue">
                                         Print
                                     </a>
