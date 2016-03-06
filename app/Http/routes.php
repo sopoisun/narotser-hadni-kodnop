@@ -188,7 +188,9 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/report/pertanggal/labarugi', 'ReportController@labaRugi');
         Route::get('/report/pertanggal/labarugi-print', 'ReportController@labaRugiPrint');
         Route::get('/report/pertanggal/purchaseditem/produk', 'ReportController@purchasedItem');
+        Route::get('/report/pertanggal/purchaseditem/produk-print', 'ReportController@purchasedItemPrint');
         Route::get('/report/pertanggal/purchaseditem/bahan', 'ReportController@purchasedItemBahan');
+        Route::get('/report/pertanggal/purchaseditem/bahan-print', 'ReportController@purchasedItemBahanPrint');
         # Periode
         Route::get('/report/periode/solditem/produk', 'ReportController@soldItemPeriode');
         Route::get('/report/periode/solditem/produk-print', 'ReportController@soldItemPeriodePrint');
@@ -199,7 +201,9 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/report/periode/labarugi', 'ReportController@labaRugiPeriode');
         Route::get('/report/periode/labarugi-print', 'ReportController@labaRugiPeriodePrint');
         Route::get('/report/periode/purchaseditem/produk', 'ReportController@purchasedItemPeriode');
+        Route::get('/report/periode/purchaseditem/produk-print', 'ReportController@purchasedItemPeriodePrint');
         Route::get('/report/periode/purchaseditem/bahan', 'ReportController@purchasedItemBahanPeriode');
+        Route::get('/report/periode/purchaseditem/bahan-print', 'ReportController@purchasedItemBahanPeriodePrint');
         # Perbulan
         Route::get('/report/perbulan', 'ReportController@perbulan');
         Route::get('/report/perbulan-print', 'ReportController@perbulanPrint');
@@ -212,7 +216,9 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/report/perbulan/labarugi', 'ReportController@labaRugiPerbulan');
         Route::get('/report/perbulan/labarugi-print', 'ReportController@labaRugiPerbulanPrint');
         Route::get('/report/perbulan/purchaseditem/produk', 'ReportController@purchasedItemPerbulan');
+        Route::get('/report/perbulan/purchaseditem/produk-print', 'ReportController@purchasedItemPerbulanPrint');
         Route::get('/report/perbulan/purchaseditem/bahan', 'ReportController@purchasedItemBahanPerbulan');
+        Route::get('/report/perbulan/purchaseditem/bahan-print', 'ReportController@purchasedItemBahanPerbulanPrint');
         # Pertahun
         Route::get('/report/pertahun', 'ReportController@pertahun');
         Route::get('/report/pertahun-print', 'ReportController@pertahunPrint');
@@ -225,7 +231,9 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/report/pertahun/labarugi', 'ReportController@labaRugiPertahun');
         Route::get('/report/pertahun/labarugi-print', 'ReportController@labaRugiPertahunPrint');
         Route::get('/report/pertahun/purchaseditem/produk', 'ReportController@purchasedItemPertahun');
+        Route::get('/report/pertahun/purchaseditem/produk-print', 'ReportController@purchasedItemPertahunPrint');
         Route::get('/report/pertahun/purchaseditem/bahan', 'ReportController@purchasedItemBahanPertahun');
+        Route::get('/report/pertahun/purchaseditem/bahan-print', 'ReportController@purchasedItemBahanPertahunPrint');
 
         // Account
         Route::get('/account', 'AccountController@index');

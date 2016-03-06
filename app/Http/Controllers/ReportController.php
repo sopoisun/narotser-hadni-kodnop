@@ -208,6 +208,19 @@ class ReportController extends Controller
         return view(config('app.template').'.report.pertanggal-purchaseditem', $data);
     }
 
+    public function purchasedItemPrint(Request $request)
+    {
+        $data = $this->_purchasedItem($request);
+
+        $print = new \App\Libraries\Purchasing([
+            'header' => 'Laporan Pembelian Produk '.$data['tanggal']->format('d M Y'),
+            'type'  => 'Produk',
+            'data' => $data['produks'],
+        ]);
+
+        $print->WritePage();
+    }
+
     protected function _purchasedItem(Request $request)
     {
         $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
@@ -234,6 +247,19 @@ class ReportController extends Controller
         $data = $this->_purchasedItemBahan($request);
 
         return view(config('app.template').'.report.pertanggal-purchaseditembahan', $data);
+    }
+
+    public function purchasedItemBahanPrint(Request $request)
+    {
+        $data = $this->_purchasedItemBahan($request);
+
+        $print = new \App\Libraries\Purchasing([
+            'header' => 'Laporan Pembelian Bahan '.$data['tanggal']->format('d M Y'),
+            'type'  => 'Bahan',
+            'data' => $data['bahans'],
+        ]);
+
+        $print->WritePage();
     }
 
     protected function _purchasedItemBahan(Request $request)
@@ -528,6 +554,19 @@ class ReportController extends Controller
         return view(config('app.template').'.report.periode-purchaseditem', $data);
     }
 
+    public function purchasedItemPeriodePrint(Request $request)
+    {
+        $data = $this->_purchasedItemPeriode($request);
+
+        $print = new \App\Libraries\Purchasing([
+            'header' => 'Laporan Pembelian Produk '.$data['tanggal']->format('d M Y').' s/d '.$data['to_tanggal']->format('d M Y'),
+            'type'  => 'Produk',
+            'data' => $data['produks'],
+        ]);
+
+        $print->WritePage();
+    }
+
     protected function _purchasedItemPeriode(Request $request)
     {
         $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
@@ -556,6 +595,19 @@ class ReportController extends Controller
         $data = $this->_purchasedItemBahanPeriode($request);
 
         return view(config('app.template').'.report.periode-purchaseditembahan', $data);
+    }
+
+    public function purchasedItemBahanPeriodePrint(Request $request)
+    {
+        $data = $this->_purchasedItemBahanPeriode($request);
+
+        $print = new \App\Libraries\Purchasing([
+            'header' => 'Laporan Pembelian Bahan '.$data['tanggal']->format('d M Y').' s/d '.$data['to_tanggal']->format('d M Y'),
+            'type'  => 'Bahan',
+            'data' => $data['bahans'],
+        ]);
+
+        $print->WritePage();
     }
 
     protected function _purchasedItemBahanPeriode(Request $request)
@@ -861,6 +913,19 @@ class ReportController extends Controller
         return view(config('app.template').'.report.perbulan-purchaseditem', $data);
     }
 
+    public function purchasedItemPerbulanPrint(Request $request)
+    {
+        $data = $this->_purchasedItemPerbulan($request);
+
+        $print = new \App\Libraries\Purchasing([
+            'header' => 'Laporan Pembelian Produk Bulan '.$data['tanggal']->format('M Y'),
+            'type'  => 'Produk',
+            'data' => $data['produks'],
+        ]);
+
+        $print->WritePage();
+    }
+
     protected function _purchasedItemPerbulan(Request $request)
     {
         $bulan = $request->get('bulan') ? $request->get('bulan') : date('Y-m');
@@ -887,6 +952,19 @@ class ReportController extends Controller
         $data = $this->_purchasedItemBahanPerbulan($request);
 
         return view(config('app.template').'.report.perbulan-purchaseditembahan', $data);
+    }
+
+    public function purchasedItemBahanPerbulanPrint(Request $request)
+    {
+        $data = $this->_purchasedItemBahanPerbulan($request);
+
+        $print = new \App\Libraries\Purchasing([
+            'header' => 'Laporan Pembelian Bahan Bulan '.$data['tanggal']->format('M Y'),
+            'type'  => 'Bahan',
+            'data' => $data['bahans'],
+        ]);
+
+        $print->WritePage();
     }
 
     public function _purchasedItemBahanPerbulan(Request $request)
@@ -1183,6 +1261,19 @@ class ReportController extends Controller
         return view(config('app.template').'.report.pertahun-purchaseditem', $data);
     }
 
+    public function purchasedItemPertahunPrint(Request $request)
+    {
+        $data = $this->_purchasedItemPertahun($request);
+
+        $print = new \App\Libraries\Purchasing([
+            'header' => 'Laporan Pembelian Produk Tahun '.$data['tanggal']->format('Y'),
+            'type'  => 'Produk',
+            'data' => $data['produks'],
+        ]);
+
+        $print->WritePage();
+    }
+
     protected function _purchasedItemPertahun(Request $request)
     {
         $tahun = $request->get('tahun') ? $request->get('tahun') : date('Y');
@@ -1209,6 +1300,19 @@ class ReportController extends Controller
         $data = $this->_purchasedItemBahanPertahun($request);
 
         return view(config('app.template').'.report.pertahun-purchaseditembahan', $data);
+    }
+
+    public function purchasedItemBahanPertahunPrint(Request $request)
+    {
+        $data = $this->_purchasedItemBahanPertahun($request);
+
+        $print = new \App\Libraries\Purchasing([
+            'header' => 'Laporan Pembelian Bahan Tahun '.$data['tanggal']->format('Y'),
+            'type'  => 'Bahan',
+            'data' => $data['bahans'],
+        ]);
+
+        $print->WritePage();
     }
 
     protected function _purchasedItemBahanPertahun(Request $request)
