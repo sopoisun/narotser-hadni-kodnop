@@ -24,14 +24,14 @@
                 <i class="icon-angle-right"></i>
             </li>
             <li>
-                <a href="{{ url('/report/pertanggal') }}">Pertanggal</a>
+                <a href="{{ url('/report/pertahun') }}">Pertahun</a>
                 <i class="icon-angle-right"></i>
             </li>
             <li>
-                <a href="{{ url('/report/pertanggal/adjustment') }}">Adjustment</a>
+                <a href="{{ url('/report/pertahun/adjustment') }}">Adjustment</a>
                 <i class="icon-angle-right"></i>
             </li>
-            <li><a href="javascript:void(0)">Laporan Adjustment {{ $tanggal->format('d M Y') }}</a></li>
+            <li><a href="javascript:void(0)">Laporan Adjustment {{ $tanggal->format('Y') }}</a></li>
         </ul>
         <!-- END PAGE TITLE & BREADCRUMB-->
     </div>
@@ -43,7 +43,7 @@
         <!-- BEGIN SAMPLE TABLE PORTLET-->
         <div class="portlet box yellow">
             <div class="portlet-title">
-                <div class="caption"><i class="icon-filter"></i>Filter Tanggal</div>
+                <div class="caption"><i class="icon-filter"></i>Filter Tahun</div>
                 <div class="tools">
                     <a href="javascript:;" class="collapse"></a>
                     <a href="#portlet-config" data-toggle="modal" class="config"></a>
@@ -60,7 +60,7 @@
                                 <div class="form-group">
                                     <label for="tanggal" class="col-md-3 control-label">Tanggal</label>
                                     <div class="col-md-8">
-                                    {{ Form::text('tanggal', $tanggal->format('Y-m-d'), ['class' => 'form-control tanggalan', 'id' => 'tanggal', 'data-date-format' => 'yyyy-mm-dd']) }}
+                                    {{ Form::text('tahun', $tanggal->format('Y'), ['class' => 'form-control tanggalan', 'id' => 'tahun', 'data-date-format' => 'yyyy']) }}
                                     </div>
                                 </div>
                             </div>
@@ -72,7 +72,7 @@
                             <div class="col-md-6">
                                 <div class="col-md-offset-3 col-md-9">
                                     <button type="submit" class="btn red">Tampilkan</button>
-                                    <a href="{{ url('/report/pertanggal/adjustment-print?tanggal='.$tanggal->format('Y-m-d')) }}"
+                                    <a href="{{ url('/report/pertahun/adjustment-print?tahun='.$tanggal->format('Y')) }}"
                                         target="_blank" class="btn blue">
                                         Print
                                     </a>
@@ -91,7 +91,7 @@
         <!-- BEGIN SAMPLE TABLE PORTLET-->
         <div class="portlet box green">
             <div class="portlet-title">
-                <div class="caption"><i class="icon-comments"></i>Daftar Adjustment (+) {{ $tanggal->format('d M Y') }}</div>
+                <div class="caption"><i class="icon-comments"></i>Daftar Adjustment (+) {{ $tanggal->format('Y') }}</div>
                 <div class="tools">
                     <a href="javascript:;" class="collapse"></a>
                     <a href="#portlet-config" data-toggle="modal" class="config"></a>
@@ -151,7 +151,7 @@
         <!-- BEGIN SAMPLE TABLE PORTLET-->
         <div class="portlet box red">
             <div class="portlet-title">
-                <div class="caption"><i class="icon-comments"></i>Daftar Adjustment (-) {{ $tanggal->format('d M Y') }}</div>
+                <div class="caption"><i class="icon-comments"></i>Daftar Adjustment (-) {{ $tanggal->format('Y') }}</div>
                 <div class="tools">
                     <a href="javascript:;" class="collapse"></a>
                     <a href="#portlet-config" data-toggle="modal" class="config"></a>
@@ -218,7 +218,10 @@
 
 @section('js_section')
 <script>
-    $(".tanggalan").datepicker();
+    $(".tanggalan").datepicker({
+        viewMode: 2,
+        minViewMode: 2
+    });
 
     $("#ajax").on("show.bs.modal", function(e) {
         $(this).removeData('bs.modal');

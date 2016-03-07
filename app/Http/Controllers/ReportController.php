@@ -290,7 +290,19 @@ class ReportController extends Controller
         return view(config('app.template').'.report.pertanggal-adjustments', $data);
     }
 
-    public function _adjustment(Request $request)
+    public function adjustmentPrint(Request $request)
+    {
+        $data = $this->_adjustment($request);
+
+        $print = new \App\Libraries\Adjustment([
+            'header' => 'Laporan Adjustment '.$data['tanggal']->format('d M Y'),
+            'data' => $data['adjustments'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _adjustment(Request $request)
     {
         $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
 
@@ -722,6 +734,25 @@ class ReportController extends Controller
     }
 
     public function adjustmentPeriode(Request $request)
+    {
+        $data = $this->_adjustmentPeriode($request);
+
+        return view(config('app.template').'.report.periode-adjustments', $data);
+    }
+
+    public function adjustmentPeriodePrint(Request $request)
+    {
+        $data = $this->_adjustmentPeriode($request);
+
+        $print = new \App\Libraries\Adjustment([
+            'header' => 'Laporan Adjustment '.$data['tanggal']->format('d M Y').' s/d '.$data['to_tanggal']->format('d M Y'),
+            'data' => $data['adjustments'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _adjustmentPeriode(Request $request)
     {
         $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
         $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : $tanggal;
@@ -1161,6 +1192,25 @@ class ReportController extends Controller
 
     public function adjustmentPerbulan(Request $request)
     {
+        $data = $this->_adjustmentPerbulan($request);
+
+        return view(config('app.template').'.report.perbulan-adjustments', $data);
+    }
+
+    public function adjustmentPerbulanPrint(Request $request)
+    {
+        $data = $this->_adjustmentPerbulan($request);
+
+        $print = new \App\Libraries\Adjustment([
+            'header' => 'Laporan Adjustment Bulan '.$data['tanggal']->format('M Y'),
+            'data' => $data['adjustments'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _adjustmentPerbulan(Request $request)
+    {
         $bulan = $request->get('bulan') ? $request->get('bulan') : date('Y-m');
 
         // Produk
@@ -1589,6 +1639,25 @@ class ReportController extends Controller
     }
 
     public function adjustmentPertahun(Request $request)
+    {
+        $data = $this->_adjustmentPertahun($request);
+
+        return view(config('app.template').'.report.pertahun-adjustments', $data);
+    }
+
+    public function adjustmentPertahunPrint(Request $request)
+    {
+        $data = $this->_adjustmentPertahun($request);
+
+        $print = new \App\Libraries\Adjustment([
+            'header' => 'Laporan Adjustment Tahun '.$data['tanggal']->format('Y'),
+            'data' => $data['adjustments'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _adjustmentPertahun(Request $request)
     {
         $tahun = $request->get('tahun') ? $request->get('tahun') : date('Y');
 

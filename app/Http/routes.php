@@ -193,6 +193,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/report/pertanggal/purchaseditem/bahan-print', 'ReportController@purchasedItemBahanPrint');
 
         Route::get('/report/pertanggal/adjustment', 'ReportController@adjustment');
+        Route::get('/report/pertanggal/adjustment-print', 'ReportController@adjustmentPrint');
         # Periode
         Route::get('/report/periode/solditem/produk', 'ReportController@soldItemPeriode');
         Route::get('/report/periode/solditem/produk-print', 'ReportController@soldItemPeriodePrint');
@@ -208,6 +209,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/report/periode/purchaseditem/bahan-print', 'ReportController@purchasedItemBahanPeriodePrint');
 
         Route::get('/report/periode/adjustment', 'ReportController@adjustmentPeriode');
+        Route::get('/report/periode/adjustment-print', 'ReportController@adjustmentPeriodePrint');
         # Perbulan
         Route::get('/report/perbulan', 'ReportController@perbulan');
         Route::get('/report/perbulan-print', 'ReportController@perbulanPrint');
@@ -225,6 +227,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/report/perbulan/purchaseditem/bahan-print', 'ReportController@purchasedItemBahanPerbulanPrint');
 
         Route::get('/report/perbulan/adjustment', 'ReportController@adjustmentPerbulan');
+        Route::get('/report/perbulan/adjustment-print', 'ReportController@adjustmentPerbulanPrint');
         # Pertahun
         Route::get('/report/pertahun', 'ReportController@pertahun');
         Route::get('/report/pertahun-print', 'ReportController@pertahunPrint');
@@ -242,6 +245,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/report/pertahun/purchaseditem/bahan-print', 'ReportController@purchasedItemBahanPertahunPrint');
 
         Route::get('/report/pertahun/adjustment', 'ReportController@adjustmentPertahun');
+        Route::get('/report/pertahun/adjustment-print', 'ReportController@adjustmentPertahunPrint');
 
         // Account
         Route::get('/account', 'AccountController@index');
