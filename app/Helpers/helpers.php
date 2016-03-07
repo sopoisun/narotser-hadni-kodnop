@@ -67,7 +67,7 @@ function ConvertRawQueryToArray($data)
 
 function timeFilter()
 {
-    return \Carbon\Carbon::create(2016, 03, 20, 00, 00, 00);
+    return \Carbon\Carbon::create(2016, 03, 25, 00, 00, 00);
 }
 
 function setting()
