@@ -239,6 +239,8 @@ class ReportController extends Controller
             ->where('type', 'produk')
             ->select([
                 'produks.nama',
+                DB::raw('SUM(pembelian_details.qty)qty'),
+                'pembelian_details.satuan',
                 DB::raw('ROUND(SUM(pembelian_details.harga)/SUM(pembelian_details.stok))harga_per_stok'),
                 DB::raw('SUM(pembelian_details.stok)stok'),
                 DB::raw('SUM(pembelian_details.harga)total'),
@@ -288,6 +290,8 @@ class ReportController extends Controller
             ->where('type', 'bahan')
             ->select([
                 'bahans.nama',
+                DB::raw('SUM(pembelian_details.qty)qty'),
+                'pembelian_details.satuan',
                 DB::raw('ROUND(SUM(pembelian_details.harga)/SUM(pembelian_details.stok))harga_per_stok'),
                 DB::raw('SUM(pembelian_details.stok)stok'),
                 DB::raw('SUM(pembelian_details.harga)total'),
@@ -710,6 +714,8 @@ class ReportController extends Controller
             ->where('type', 'produk')
             ->select([
                 'produks.nama',
+                DB::raw('SUM(pembelian_details.qty)qty'),
+                'pembelian_details.satuan',
                 DB::raw('ROUND(SUM(pembelian_details.harga)/SUM(pembelian_details.stok))harga_per_stok'),
                 DB::raw('SUM(pembelian_details.stok)stok'),
                 DB::raw('SUM(pembelian_details.harga)total'),
@@ -761,6 +767,8 @@ class ReportController extends Controller
             ->where('type', 'bahan')
             ->select([
                 'bahans.nama',
+                DB::raw('SUM(pembelian_details.qty)qty'),
+                'pembelian_details.satuan',
                 DB::raw('ROUND(SUM(pembelian_details.harga)/SUM(pembelian_details.stok))harga_per_stok'),
                 DB::raw('SUM(pembelian_details.stok)stok'),
                 DB::raw('SUM(pembelian_details.harga)total'),
@@ -1194,6 +1202,8 @@ class ReportController extends Controller
             ->where('type', 'produk')
             ->select([
                 'produks.nama',
+                DB::raw('SUM(pembelian_details.qty)qty'),
+                'pembelian_details.satuan',
                 DB::raw('ROUND(SUM(pembelian_details.harga)/SUM(pembelian_details.stok))harga_per_stok'),
                 DB::raw('SUM(pembelian_details.stok)stok'),
                 DB::raw('SUM(pembelian_details.harga)total'),
@@ -1233,7 +1243,7 @@ class ReportController extends Controller
         $print->WritePage();
     }
 
-    public function _purchasedItemBahanPerbulan(Request $request)
+    protected function _purchasedItemBahanPerbulan(Request $request)
     {
         $bulan = $request->get('bulan') ? $request->get('bulan') : date('Y-m');
 
@@ -1243,6 +1253,8 @@ class ReportController extends Controller
             ->where('type', 'bahan')
             ->select([
                 'bahans.nama',
+                DB::raw('SUM(pembelian_details.qty)qty'),
+                'pembelian_details.satuan',
                 DB::raw('ROUND(SUM(pembelian_details.harga)/SUM(pembelian_details.stok))harga_per_stok'),
                 DB::raw('SUM(pembelian_details.stok)stok'),
                 DB::raw('SUM(pembelian_details.harga)total'),
@@ -1666,6 +1678,8 @@ class ReportController extends Controller
             ->where('type', 'produk')
             ->select([
                 'produks.nama',
+                DB::raw('SUM(pembelian_details.qty)qty'),
+                'pembelian_details.satuan',
                 DB::raw('ROUND(SUM(pembelian_details.harga)/SUM(pembelian_details.stok))harga_per_stok'),
                 DB::raw('SUM(pembelian_details.stok)stok'),
                 DB::raw('SUM(pembelian_details.harga)total'),
@@ -1715,6 +1729,8 @@ class ReportController extends Controller
             ->where('type', 'bahan')
             ->select([
                 'bahans.nama',
+                DB::raw('SUM(pembelian_details.qty)qty'),
+                'pembelian_details.satuan',
                 DB::raw('ROUND(SUM(pembelian_details.harga)/SUM(pembelian_details.stok))harga_per_stok'),
                 DB::raw('SUM(pembelian_details.stok)stok'),
                 DB::raw('SUM(pembelian_details.harga)total'),

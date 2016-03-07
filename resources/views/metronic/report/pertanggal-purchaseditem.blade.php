@@ -106,6 +106,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Nama Produk</th>
+                                <th>Qty</th>
                                 <th>Stok</th>
                                 <th>Total Harga</th>
                             </tr>
@@ -118,6 +119,7 @@
                             <tr>
                                 <td>{{ $no }}</td>
                                 <td>{{ $produk->nama }}</td>
+                                <td>{{ $produk->qty.' '.$produk->satuan }}</td>
                                 <td>{{ $produk->stok }}</td>
                                 <td style="text-align:right;">{{ number_format($produk->total, 0, ',', '.') }}</td>
                             </tr>
@@ -125,13 +127,13 @@
 
                             <tr>
                                 <td></td>
-                                <td colspan="2">Total</td>
+                                <td colspan="3">Total</td>
                                 <td style="text-align:right;">{{ number_format(collect($produks)->sum('total'), 0, ',', '.') }}</td>
                             </tr>
 
                             @else
                             <tr>
-                                <td colspan="4" style="text-align:center;">No Data Here</td>
+                                <td colspan="5" style="text-align:center;">No Data Here</td>
                             </tr>
                             @endif
                         </tbody>

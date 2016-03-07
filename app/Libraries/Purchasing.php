@@ -34,7 +34,8 @@ class Purchasing extends Fpdf{
         // table header
         $this->SetFont('Arial', 'B', 11);
         $this->Cell(10, 8, "#", 1, 0, 'C');
-        $this->Cell(130, 8, "Nama ".$this->type, 1, 0);
+        $this->Cell(100, 8, "Nama ".$this->type, 1, 0);
+        $this->Cell(30, 8, "Qty", 1, 0);
         $this->Cell(15, 8, "Stok", 1, 0);
         $this->Cell(35, 8, "Total ", 1, 1);
 
@@ -46,7 +47,8 @@ class Purchasing extends Fpdf{
                 $no++;
 
                 $this->Cell(10, 8, $no, 1, 0, 'C');
-                $this->Cell(130, 8, $v['nama'], 1, 0);
+                $this->Cell(100, 8, $v['nama'], 1, 0);
+                $this->Cell(30, 8, $v['qty'].' '.$v['satuan'], 1, 0, 'C');
                 $this->Cell(15, 8, $v['stok'], 1, 0, 'C');
                 $this->Cell(35, 8, number_format($v['total'], 0, ',', '.'), 1, 1, 'R');
             }
