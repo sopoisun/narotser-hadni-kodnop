@@ -9,6 +9,11 @@
         {{ Form::text('satuan', null, ['class' => 'form-control', 'id' => 'satuan']) }}
         @if($errors->has('satuan'))<span class="help-block">{{ $errors->first('satuan') }}</span>@endif
     </div>
+    <div class="form-group @if($errors->has('satuan_beli')) has-error @endif">
+        <label for="satuan_beli" class="control-label">Satuan Pembelian</label>
+        {{ Form::text('satuan_beli', null, ['class' => 'form-control', 'id' => 'satuan_beli']) }}
+        @if($errors->has('satuan_beli'))<span class="help-block">{{ $errors->first('satuan_beli') }}</span>@endif
+    </div>
     <!--<div class="form-group @if($errors->has('harga')) has-error @endif">
         <label for="harga" class="control-label">Harga</label>
         {{ Form::text('harga', null, ['class' => 'form-control', 'id' => 'harga']) }}

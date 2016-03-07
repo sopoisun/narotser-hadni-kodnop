@@ -180,7 +180,7 @@
                             <div class="form-group">
                                 <label for="satuan" class="col-md-3 control-label">Satuan</label>
                                 <div class="col-md-8">
-                                {{ Form::text('satuan', null, ['class' => 'form-control', 'id' => 'satuan']) }}
+                                {{ Form::text('satuan', null, ['class' => 'form-control', 'id' => 'satuan', 'readonly' => 'readonly']) }}
                                 </div>
                             </div>
                         </div>
@@ -346,10 +346,12 @@
             optSelect2.ajax.url = "{{ url('/ajax/produk') }}?without_has_bahan=Ya";
         }
         txtBarang.select2(optSelect2).on('change', select2OnChange);
+        $("#satuan").val('');
     });
 
     function select2OnChange(e){
         $("#satuanBrg").html("Stok / "+e.added.satuan);
+        $("#satuan").val(e.added.satuan_beli);
         $("#qty").focus();
     }
 

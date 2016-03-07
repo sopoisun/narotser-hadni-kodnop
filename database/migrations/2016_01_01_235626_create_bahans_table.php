@@ -16,6 +16,7 @@ class CreateBahansTable extends Migration
             $table->increments('id');
             $table->string('nama');
             $table->string('satuan');
+            $table->string('satuan_beli');
             $table->integer('harga');
             $table->integer('qty_warning')->default(0);
             $table->enum('active', [1, 0])->default(1);

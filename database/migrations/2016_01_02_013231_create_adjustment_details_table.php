@@ -19,7 +19,7 @@ class CreateAdjustmentDetailsTable extends Migration
             $table->enum('state', ['reduction', 'increase']);
             $table->string('relation_id');
             $table->integer('harga');
-            $table->integer('qty');
+            $table->float('qty');
             $table->text('keterangan');
             $table->timestamps();
         });

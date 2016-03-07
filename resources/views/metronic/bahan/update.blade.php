@@ -16,7 +16,7 @@
                 <i class="icon-angle-right"></i>
             </li>
             <li>
-                <a href="{{ url('/karyawan') }}">Bahan</a>
+                <a href="{{ url('/bahan-produksi') }}">Bahan</a>
                 <i class="icon-angle-right"></i>
             </li>
             <li><a href="javascript:void(0)">Ubah Bahan Produksi</a></li>

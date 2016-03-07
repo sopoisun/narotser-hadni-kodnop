@@ -63,6 +63,13 @@
                             @if($errors->has('satuan'))<span class="help-block">{{ $errors->first('satuan') }}</span>@endif
                             </div>
                         </div>
+                        <div class="form-group @if($errors->has('satuan_beli')) has-error @endif">
+                            <label for="satuan_beli" class="col-md-3 control-label">Satuan Beli</label>
+                            <div class="col-md-8">
+                            {{ Form::text('satuan_beli', null, ['class' => 'form-control', 'id' => 'satuan_beli']) }}
+                            @if($errors->has('satuan_beli'))<span class="help-block">{{ $errors->first('satuan_beli') }}</span>@endif
+                            </div>
+                        </div>
                         <div class="form-group @if($errors->has('qty_warning')) has-error @endif">
                             <label for="qty_warning" class="col-md-3 control-label">Qty Warning</label>
                             <div class="col-md-8">

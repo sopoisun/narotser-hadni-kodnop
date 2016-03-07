@@ -26,6 +26,7 @@ class BahanRequest extends Request
         return [
             'nama'      => 'required',
             'satuan'    => 'required',
+            'satuan_beli' => 'required',
             //'harga'     => 'required|numeric',
             'qty_warning' => 'required|numeric',
         ];
@@ -36,6 +37,7 @@ class BahanRequest extends Request
         return [
             'nama.required'         => 'Nama Bahan tidak boleh kosong.',
             'satuan.required'       => 'Satuan tidak boleh kosong.',
+            'satuan_beli.required'  => 'Satuan pembelian tidak boleh kosong.',
             //'harga.required'        => 'Harga tidak boleh kosong.',
             //'harga.numeric'         => 'Harga harus angka.',
             'qty_warning.required'   => 'Qty Warning tidak boleh kosong.',

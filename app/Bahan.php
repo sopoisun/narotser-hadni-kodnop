@@ -7,7 +7,7 @@ use DB;
 
 class Bahan extends Model
 {
-    protected $fillable = ['nama', 'satuan', 'harga', 'qty_warning', 'active'];
+    protected $fillable = ['nama', 'satuan', 'satuan_beli', 'harga', 'qty_warning', 'active'];
     protected $hidden   = ['created_at', 'updated_at'];
 
     public function produkDetail()

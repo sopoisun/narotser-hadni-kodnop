@@ -16,6 +16,7 @@ class CreateProduksTable extends Migration
             $table->increments('id');
             $table->string('nama');
             $table->string('satuan');
+            $table->string('satuan_beli');
             $table->enum('konsinyasi', ['Ya', 'Tidak']);
             $table->string('supplier_id')->nullable();
             $table->integer('hpp')->default(0);

@@ -16,7 +16,7 @@ class CreatePembelianDetailsTable extends Migration
             $table->increments('id');
             $table->string('pembelian_id');
             $table->string('relation_id');
-            $table->integer('qty');
+            $table->float('qty');
             $table->string('satuan');
             $table->integer('harga');
             $table->integer('stok');
