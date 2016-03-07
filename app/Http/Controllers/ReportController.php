@@ -283,6 +283,94 @@ class ReportController extends Controller
         ];
     }
 
+    public function adjustment(Request $request)
+    {
+        $data = $this->_adjustment($request);
+
+        return view(config('app.template').'.report.pertanggal-adjustments', $data);
+    }
+
+    public function _adjustment(Request $request)
+    {
+        $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
+
+        // Produk
+        # Increase
+        $produk_increase = \App\AdjustmentDetail::join('adjustments', 'adjustment_details.adjustment_id', '=', 'adjustments.id')
+            ->join('produks', 'adjustment_details.relation_id', '=', 'produks.id')
+            ->where('adjustments.tanggal', $tanggal)
+            ->where('adjustment_details.type', 'produk')
+            ->where('adjustment_details.state', 'increase')
+            ->groupBy('produks.id')
+            ->select([
+                'produks.nama',
+                'adjustment_details.type',
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty)/SUM(adjustment_details.qty))harga_avg'),
+                DB::raw('SUM(adjustment_details.qty)qty_stok'),
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty))subtotal'),
+                'produks.satuan',
+            ])
+            ->get();
+        # Reduction
+        $produk_reduction = \App\AdjustmentDetail::join('adjustments', 'adjustment_details.adjustment_id', '=', 'adjustments.id')
+            ->join('produks', 'adjustment_details.relation_id', '=', 'produks.id')
+            ->where('adjustments.tanggal', $tanggal)
+            ->where('adjustment_details.type', 'produk')
+            ->where('adjustment_details.state', 'reduction')
+            ->groupBy('produks.id')
+            ->select([
+                'produks.nama',
+                'adjustment_details.type',
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty)/SUM(adjustment_details.qty))harga_avg'),
+                DB::raw('SUM(adjustment_details.qty)qty_stok'),
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty))subtotal'),
+                'produks.satuan',
+            ])
+            ->get();
+
+        // Bahan
+        # Increase
+        $bahan_increase = \App\AdjustmentDetail::join('adjustments', 'adjustment_details.adjustment_id', '=', 'adjustments.id')
+            ->join('bahans', 'adjustment_details.relation_id', '=', 'bahans.id')
+            ->where('adjustments.tanggal', $tanggal)
+            ->where('adjustment_details.type', 'bahan')
+            ->where('adjustment_details.state', 'increase')
+            ->groupBy('bahans.id')
+            ->select([
+                'bahans.nama',
+                'adjustment_details.type',
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty)/SUM(adjustment_details.qty))harga_avg'),
+                DB::raw('SUM(adjustment_details.qty)qty_stok'),
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty))subtotal'),
+                'bahans.satuan',
+            ])
+            ->get();
+        # Reduction
+        $bahan_reduction = \App\AdjustmentDetail::join('adjustments', 'adjustment_details.adjustment_id', '=', 'adjustments.id')
+            ->join('bahans', 'adjustment_details.relation_id', '=', 'bahans.id')
+            ->where('adjustments.tanggal', $tanggal)
+            ->where('adjustment_details.type', 'bahan')
+            ->where('adjustment_details.state', 'reduction')
+            ->groupBy('bahans.id')
+            ->select([
+                'bahans.nama',
+                'adjustment_details.type',
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty)/SUM(adjustment_details.qty))harga_avg'),
+                DB::raw('SUM(adjustment_details.qty)qty_stok'),
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty))subtotal'),
+                'bahans.satuan',
+            ])
+            ->get();
+
+        return [
+            'tanggal' => Carbon::parse($tanggal),
+            'adjustments' => [
+                'increase' => array_merge($produk_increase->toArray(), $bahan_increase->toArray()),
+                'reduction' => array_merge($produk_reduction->toArray(), $bahan_reduction->toArray()),
+            ],
+        ];
+    }
+
     public function karyawan(Request $request)
     {
         if( Gate::denies('report.pertanggal.karyawan') ){
@@ -630,6 +718,89 @@ class ReportController extends Controller
             'tanggal'   => Carbon::createFromFormat('Y-m-d', $tanggal),
             'to_tanggal'=> Carbon::createFromFormat('Y-m-d', $to_tanggal),
             'bahans'   => $bahans
+        ];
+    }
+
+    public function adjustmentPeriode(Request $request)
+    {
+        $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
+        $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : $tanggal;
+
+        // Produk
+        # Increase
+        $produk_increase = \App\AdjustmentDetail::join('adjustments', 'adjustment_details.adjustment_id', '=', 'adjustments.id')
+            ->join('produks', 'adjustment_details.relation_id', '=', 'produks.id')
+            ->whereBetween('adjustments.tanggal', [$tanggal, $to_tanggal])
+            ->where('adjustment_details.type', 'produk')
+            ->where('adjustment_details.state', 'increase')
+            ->groupBy('produks.id')
+            ->select([
+                'produks.nama',
+                'adjustment_details.type',
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty)/SUM(adjustment_details.qty))harga_avg'),
+                DB::raw('SUM(adjustment_details.qty)qty_stok'),
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty))subtotal'),
+                'produks.satuan',
+            ])
+            ->get();
+        # Reduction
+        $produk_reduction = \App\AdjustmentDetail::join('adjustments', 'adjustment_details.adjustment_id', '=', 'adjustments.id')
+            ->join('produks', 'adjustment_details.relation_id', '=', 'produks.id')
+            ->whereBetween('adjustments.tanggal', [$tanggal, $to_tanggal])
+            ->where('adjustment_details.type', 'produk')
+            ->where('adjustment_details.state', 'reduction')
+            ->groupBy('produks.id')
+            ->select([
+                'produks.nama',
+                'adjustment_details.type',
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty)/SUM(adjustment_details.qty))harga_avg'),
+                DB::raw('SUM(adjustment_details.qty)qty_stok'),
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty))subtotal'),
+                'produks.satuan',
+            ])
+            ->get();
+
+        // Bahan
+        # Increase
+        $bahan_increase = \App\AdjustmentDetail::join('adjustments', 'adjustment_details.adjustment_id', '=', 'adjustments.id')
+            ->join('bahans', 'adjustment_details.relation_id', '=', 'bahans.id')
+            ->whereBetween('adjustments.tanggal', [$tanggal, $to_tanggal])
+            ->where('adjustment_details.type', 'bahan')
+            ->where('adjustment_details.state', 'increase')
+            ->groupBy('bahans.id')
+            ->select([
+                'bahans.nama',
+                'adjustment_details.type',
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty)/SUM(adjustment_details.qty))harga_avg'),
+                DB::raw('SUM(adjustment_details.qty)qty_stok'),
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty))subtotal'),
+                'bahans.satuan',
+            ])
+            ->get();
+        # Reduction
+        $bahan_reduction = \App\AdjustmentDetail::join('adjustments', 'adjustment_details.adjustment_id', '=', 'adjustments.id')
+            ->join('bahans', 'adjustment_details.relation_id', '=', 'bahans.id')
+            ->whereBetween('adjustments.tanggal', [$tanggal, $to_tanggal])
+            ->where('adjustment_details.type', 'bahan')
+            ->where('adjustment_details.state', 'reduction')
+            ->groupBy('bahans.id')
+            ->select([
+                'bahans.nama',
+                'adjustment_details.type',
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty)/SUM(adjustment_details.qty))harga_avg'),
+                DB::raw('SUM(adjustment_details.qty)qty_stok'),
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty))subtotal'),
+                'bahans.satuan',
+            ])
+            ->get();
+
+        return [
+            'tanggal'   => Carbon::createFromFormat('Y-m-d', $tanggal),
+            'to_tanggal'=> Carbon::createFromFormat('Y-m-d', $to_tanggal),
+            'adjustments' => [
+                'increase' => array_merge($produk_increase->toArray(), $bahan_increase->toArray()),
+                'reduction' => array_merge($produk_reduction->toArray(), $bahan_reduction->toArray()),
+            ],
         ];
     }
 
@@ -988,6 +1159,87 @@ class ReportController extends Controller
         ];
     }
 
+    public function adjustmentPerbulan(Request $request)
+    {
+        $bulan = $request->get('bulan') ? $request->get('bulan') : date('Y-m');
+
+        // Produk
+        # Increase
+        $produk_increase = \App\AdjustmentDetail::join('adjustments', 'adjustment_details.adjustment_id', '=', 'adjustments.id')
+            ->join('produks', 'adjustment_details.relation_id', '=', 'produks.id')
+            ->where(DB::raw('SUBSTRING(adjustments.tanggal, 1, 7)'), $bulan)
+            ->where('adjustment_details.type', 'produk')
+            ->where('adjustment_details.state', 'increase')
+            ->groupBy('produks.id')
+            ->select([
+                'produks.nama',
+                'adjustment_details.type',
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty)/SUM(adjustment_details.qty))harga_avg'),
+                DB::raw('SUM(adjustment_details.qty)qty_stok'),
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty))subtotal'),
+                'produks.satuan',
+            ])
+            ->get();
+        # Reduction
+        $produk_reduction = \App\AdjustmentDetail::join('adjustments', 'adjustment_details.adjustment_id', '=', 'adjustments.id')
+            ->join('produks', 'adjustment_details.relation_id', '=', 'produks.id')
+            ->where(DB::raw('SUBSTRING(adjustments.tanggal, 1, 7)'), $bulan)
+            ->where('adjustment_details.type', 'produk')
+            ->where('adjustment_details.state', 'reduction')
+            ->groupBy('produks.id')
+            ->select([
+                'produks.nama',
+                'adjustment_details.type',
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty)/SUM(adjustment_details.qty))harga_avg'),
+                DB::raw('SUM(adjustment_details.qty)qty_stok'),
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty))subtotal'),
+                'produks.satuan',
+            ])
+            ->get();
+
+        // Bahan
+        # Increase
+        $bahan_increase = \App\AdjustmentDetail::join('adjustments', 'adjustment_details.adjustment_id', '=', 'adjustments.id')
+            ->join('bahans', 'adjustment_details.relation_id', '=', 'bahans.id')
+            ->where(DB::raw('SUBSTRING(adjustments.tanggal, 1, 7)'), $bulan)
+            ->where('adjustment_details.type', 'bahan')
+            ->where('adjustment_details.state', 'increase')
+            ->groupBy('bahans.id')
+            ->select([
+                'bahans.nama',
+                'adjustment_details.type',
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty)/SUM(adjustment_details.qty))harga_avg'),
+                DB::raw('SUM(adjustment_details.qty)qty_stok'),
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty))subtotal'),
+                'bahans.satuan',
+            ])
+            ->get();
+        # Reduction
+        $bahan_reduction = \App\AdjustmentDetail::join('adjustments', 'adjustment_details.adjustment_id', '=', 'adjustments.id')
+            ->join('bahans', 'adjustment_details.relation_id', '=', 'bahans.id')
+            ->where(DB::raw('SUBSTRING(adjustments.tanggal, 1, 7)'), $bulan)
+            ->where('adjustment_details.type', 'bahan')
+            ->where('adjustment_details.state', 'reduction')
+            ->groupBy('bahans.id')
+            ->select([
+                'bahans.nama',
+                'adjustment_details.type',
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty)/SUM(adjustment_details.qty))harga_avg'),
+                DB::raw('SUM(adjustment_details.qty)qty_stok'),
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty))subtotal'),
+                'bahans.satuan',
+            ])
+            ->get();
+
+        return [
+            'tanggal' => Carbon::parse($bulan),
+            'adjustments' => [
+                'increase' => array_merge($produk_increase->toArray(), $bahan_increase->toArray()),
+                'reduction' => array_merge($produk_reduction->toArray(), $bahan_reduction->toArray()),
+            ],
+        ];
+    }
+
     public function karyawanPerbulan(Request $request)
     {
         if( Gate::denies('report.perbulan.karyawan') ){
@@ -1333,6 +1585,87 @@ class ReportController extends Controller
         return [
             'tanggal'  => Carbon::createFromFormat('Y', $tahun),
             'bahans'   => $bahans
+        ];
+    }
+
+    public function adjustmentPertahun(Request $request)
+    {
+        $tahun = $request->get('tahun') ? $request->get('tahun') : date('Y');
+
+        // Produk
+        # Increase
+        $produk_increase = \App\AdjustmentDetail::join('adjustments', 'adjustment_details.adjustment_id', '=', 'adjustments.id')
+            ->join('produks', 'adjustment_details.relation_id', '=', 'produks.id')
+            ->where(DB::raw('SUBSTRING(adjustments.tanggal, 1, 4)'), $tahun)
+            ->where('adjustment_details.type', 'produk')
+            ->where('adjustment_details.state', 'increase')
+            ->groupBy('produks.id')
+            ->select([
+                'produks.nama',
+                'adjustment_details.type',
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty)/SUM(adjustment_details.qty))harga_avg'),
+                DB::raw('SUM(adjustment_details.qty)qty_stok'),
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty))subtotal'),
+                'produks.satuan',
+            ])
+            ->get();
+        # Reduction
+        $produk_reduction = \App\AdjustmentDetail::join('adjustments', 'adjustment_details.adjustment_id', '=', 'adjustments.id')
+            ->join('produks', 'adjustment_details.relation_id', '=', 'produks.id')
+            ->where(DB::raw('SUBSTRING(adjustments.tanggal, 1, 4)'), $tahun)
+            ->where('adjustment_details.type', 'produk')
+            ->where('adjustment_details.state', 'reduction')
+            ->groupBy('produks.id')
+            ->select([
+                'produks.nama',
+                'adjustment_details.type',
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty)/SUM(adjustment_details.qty))harga_avg'),
+                DB::raw('SUM(adjustment_details.qty)qty_stok'),
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty))subtotal'),
+                'produks.satuan',
+            ])
+            ->get();
+
+        // Bahan
+        # Increase
+        $bahan_increase = \App\AdjustmentDetail::join('adjustments', 'adjustment_details.adjustment_id', '=', 'adjustments.id')
+            ->join('bahans', 'adjustment_details.relation_id', '=', 'bahans.id')
+            ->where(DB::raw('SUBSTRING(adjustments.tanggal, 1, 4)'), $tahun)
+            ->where('adjustment_details.type', 'bahan')
+            ->where('adjustment_details.state', 'increase')
+            ->groupBy('bahans.id')
+            ->select([
+                'bahans.nama',
+                'adjustment_details.type',
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty)/SUM(adjustment_details.qty))harga_avg'),
+                DB::raw('SUM(adjustment_details.qty)qty_stok'),
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty))subtotal'),
+                'bahans.satuan',
+            ])
+            ->get();
+        # Reduction
+        $bahan_reduction = \App\AdjustmentDetail::join('adjustments', 'adjustment_details.adjustment_id', '=', 'adjustments.id')
+            ->join('bahans', 'adjustment_details.relation_id', '=', 'bahans.id')
+            ->where(DB::raw('SUBSTRING(adjustments.tanggal, 1, 4)'), $tahun)
+            ->where('adjustment_details.type', 'bahan')
+            ->where('adjustment_details.state', 'reduction')
+            ->groupBy('bahans.id')
+            ->select([
+                'bahans.nama',
+                'adjustment_details.type',
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty)/SUM(adjustment_details.qty))harga_avg'),
+                DB::raw('SUM(adjustment_details.qty)qty_stok'),
+                DB::raw('(SUM(adjustment_details.harga*adjustment_details.qty))subtotal'),
+                'bahans.satuan',
+            ])
+            ->get();
+
+        return [
+            'tanggal'  => Carbon::createFromFormat('Y', $tahun),
+            'adjustments' => [
+                'increase' => array_merge($produk_increase->toArray(), $bahan_increase->toArray()),
+                'reduction' => array_merge($produk_reduction->toArray(), $bahan_reduction->toArray()),
+            ],
         ];
     }
 
