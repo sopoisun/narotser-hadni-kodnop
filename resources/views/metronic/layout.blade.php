@@ -163,6 +163,7 @@
                                     </ul>
                                 </li>
                                 @endcan
+                                @can('report.pertanggal.purchaseditem')
                                 <li class="{{ set_active('report/pertanggal/purchaseditem*') }}">
                                     <a href="javascript:;">
                                     Purchased Item
@@ -173,7 +174,10 @@
                                         <li class="{{ set_active('report/pertanggal/purchaseditem/bahan') }}"><a href="{{ url('/report/pertanggal/purchaseditem/bahan') }}">Bahan</a></li>
                                     </ul>
                                 </li>
+                                @endcan
+                                @can('report.pertanggal.adjustment')
                                 <li class="{{ set_active('report/pertanggal/adjustment') }}"><a href="{{ url('/report/pertanggal/adjustment') }}">Laporan Adjustment</a></li>
+                                @endcan
                                 @can('report.pertanggal.karyawan')
                                 <li class="{{ set_active('report/pertanggal/karyawan') }}"><a href="{{ url('/report/pertanggal/karyawan') }}">Laporan Karyawan</a></li>
                                 @endcan
@@ -200,6 +204,7 @@
                                     </ul>
                                 </li>
                                 @endcan
+                                @can('report.periode.purchaseditem')
                                 <li class="{{ set_active('report/periode/purchaseditem*') }}">
                                     <a href="javascript:;">
                                     Purchased Item
@@ -210,7 +215,10 @@
                                         <li class="{{ set_active('report/periode/purchaseditem/bahan') }}"><a href="{{ url('/report/periode/purchaseditem/bahan') }}">Bahan</a></li>
                                     </ul>
                                 </li>
+                                @endcan
+                                @can('report.periode.adjustment')
                                 <li class="{{ set_active('report/periode/adjustment') }}"><a href="{{ url('/report/periode/adjustment') }}">Laporan Adjustment</a></li>
+                                @endcan
                                 @can('report.periode.karyawan')
                                 <li class="{{ set_active('report/periode/karyawan') }}"><a href="{{ url('/report/periode/karyawan') }}">Laporan Karyawan</a></li>
                                 @endcan
@@ -240,6 +248,7 @@
                                     </ul>
                                 </li>
                                 @endcan
+                                @can('report.perbulan.purchaseditem')
                                 <li class="{{ set_active('report/perbulan/purchaseditem*') }}">
                                     <a href="javascript:;">
                                     Purchased Item
@@ -250,7 +259,10 @@
                                         <li class="{{ set_active('report/perbulan/purchaseditem/bahan') }}"><a href="{{ url('/report/perbulan/purchaseditem/bahan') }}">Bahan</a></li>
                                     </ul>
                                 </li>
+                                @endcan
+                                @can('report.perbulan.adjustment')
                                 <li class="{{ set_active('report/perbulan/adjustment') }}"><a href="{{ url('/report/perbulan/adjustment') }}">Laporan Adjustment</a></li>
+                                @endcan
                                 @can('report.perbulan.karyawan')
                                 <li class="{{ set_active('report/perbulan/karyawan') }}"><a href="{{ url('/report/perbulan/karyawan') }}">Laporan Karyawan</a></li>
                                 @endcan
@@ -280,6 +292,7 @@
                                     </ul>
                                 </li>
                                 @endcan
+                                @can('report.pertahun.purchaseditem')
                                 <li class="{{ set_active('report/pertahun/purchaseditem*') }}">
                                     <a href="javascript:;">
                                     Purchased Item
@@ -290,7 +303,10 @@
                                         <li class="{{ set_active('report/pertahun/purchaseditem/bahan') }}"><a href="{{ url('/report/pertahun/purchaseditem/bahan') }}">Bahan</a></li>
                                     </ul>
                                 </li>
+                                @endcan
+                                @can('report.pertahun.adjustment')
                                 <li class="{{ set_active('report/pertahun/adjustment') }}"><a href="{{ url('/report/pertahun/adjustment') }}">Laporan Adjustment</a></li>
+                                @endcan
                                 @can('report.pertahun.karyawan')
                                 <li class="{{ set_active('report/pertahun/karyawan') }}"><a href="{{ url('/report/pertahun/karyawan') }}">Laporan Karyawan</a></li>
                                 @endcan

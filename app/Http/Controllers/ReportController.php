@@ -203,6 +203,10 @@ class ReportController extends Controller
 
     public function purchasedItem(Request $request)
     {
+        if( Gate::denies('report.pertanggal.purchaseditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_purchasedItem($request);
 
         return view(config('app.template').'.report.pertanggal-purchaseditem', $data);
@@ -210,6 +214,10 @@ class ReportController extends Controller
 
     public function purchasedItemPrint(Request $request)
     {
+        if( Gate::denies('report.pertanggal.purchaseditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_purchasedItem($request);
 
         $print = new \App\Libraries\Purchasing([
@@ -244,6 +252,10 @@ class ReportController extends Controller
 
     public function purchasedItemBahan(Request $request)
     {
+        if( Gate::denies('report.pertanggal.purchaseditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_purchasedItemBahan($request);
 
         return view(config('app.template').'.report.pertanggal-purchaseditembahan', $data);
@@ -251,6 +263,10 @@ class ReportController extends Controller
 
     public function purchasedItemBahanPrint(Request $request)
     {
+        if( Gate::denies('report.pertanggal.purchaseditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_purchasedItemBahan($request);
 
         $print = new \App\Libraries\Purchasing([
@@ -285,6 +301,10 @@ class ReportController extends Controller
 
     public function adjustment(Request $request)
     {
+        if( Gate::denies('report.pertanggal.adjustment') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_adjustment($request);
 
         return view(config('app.template').'.report.pertanggal-adjustments', $data);
@@ -292,6 +312,10 @@ class ReportController extends Controller
 
     public function adjustmentPrint(Request $request)
     {
+        if( Gate::denies('report.pertanggal.adjustment') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_adjustment($request);
 
         $print = new \App\Libraries\Adjustment([
@@ -649,6 +673,10 @@ class ReportController extends Controller
 
     public function purchasedItemPeriode(Request $request)
     {
+        if( Gate::denies('report.periode.purchaseditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_purchasedItemPeriode($request);
 
         return view(config('app.template').'.report.periode-purchaseditem', $data);
@@ -656,6 +684,10 @@ class ReportController extends Controller
 
     public function purchasedItemPeriodePrint(Request $request)
     {
+        if( Gate::denies('report.periode.purchaseditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_purchasedItemPeriode($request);
 
         $print = new \App\Libraries\Purchasing([
@@ -692,6 +724,10 @@ class ReportController extends Controller
 
     public function purchasedItemBahanPeriode(Request $request)
     {
+        if( Gate::denies('report.periode.purchaseditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_purchasedItemBahanPeriode($request);
 
         return view(config('app.template').'.report.periode-purchaseditembahan', $data);
@@ -699,6 +735,10 @@ class ReportController extends Controller
 
     public function purchasedItemBahanPeriodePrint(Request $request)
     {
+        if( Gate::denies('report.periode.purchaseditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_purchasedItemBahanPeriode($request);
 
         $print = new \App\Libraries\Purchasing([
@@ -735,6 +775,10 @@ class ReportController extends Controller
 
     public function adjustmentPeriode(Request $request)
     {
+        if( Gate::denies('report.periode.adjustment') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_adjustmentPeriode($request);
 
         return view(config('app.template').'.report.periode-adjustments', $data);
@@ -742,6 +786,10 @@ class ReportController extends Controller
 
     public function adjustmentPeriodePrint(Request $request)
     {
+        if( Gate::denies('report.periode.adjustment') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_adjustmentPeriode($request);
 
         $print = new \App\Libraries\Adjustment([
@@ -1110,6 +1158,10 @@ class ReportController extends Controller
 
     public function purchasedItemPerbulan(Request $request)
     {
+        if( Gate::denies('report.perbulan.purchaseditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_purchasedItemPerbulan($request);
 
         return view(config('app.template').'.report.perbulan-purchaseditem', $data);
@@ -1117,6 +1169,10 @@ class ReportController extends Controller
 
     public function purchasedItemPerbulanPrint(Request $request)
     {
+        if( Gate::denies('report.perbulan.purchaseditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_purchasedItemPerbulan($request);
 
         $print = new \App\Libraries\Purchasing([
@@ -1151,6 +1207,10 @@ class ReportController extends Controller
 
     public function purchasedItemBahanPerbulan(Request $request)
     {
+        if( Gate::denies('report.perbulan.purchaseditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_purchasedItemBahanPerbulan($request);
 
         return view(config('app.template').'.report.perbulan-purchaseditembahan', $data);
@@ -1158,6 +1218,10 @@ class ReportController extends Controller
 
     public function purchasedItemBahanPerbulanPrint(Request $request)
     {
+        if( Gate::denies('report.perbulan.purchaseditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_purchasedItemBahanPerbulan($request);
 
         $print = new \App\Libraries\Purchasing([
@@ -1192,6 +1256,10 @@ class ReportController extends Controller
 
     public function adjustmentPerbulan(Request $request)
     {
+        if( Gate::denies('report.perbulan.adjustment') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_adjustmentPerbulan($request);
 
         return view(config('app.template').'.report.perbulan-adjustments', $data);
@@ -1199,6 +1267,10 @@ class ReportController extends Controller
 
     public function adjustmentPerbulanPrint(Request $request)
     {
+        if( Gate::denies('report.perbulan.adjustment') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_adjustmentPerbulan($request);
 
         $print = new \App\Libraries\Adjustment([
@@ -1558,6 +1630,10 @@ class ReportController extends Controller
 
     public function purchasedItemPertahun(Request $request)
     {
+        if( Gate::denies('report.pertahun.purchaseditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_purchasedItemPertahun($request);
 
         return view(config('app.template').'.report.pertahun-purchaseditem', $data);
@@ -1565,6 +1641,10 @@ class ReportController extends Controller
 
     public function purchasedItemPertahunPrint(Request $request)
     {
+        if( Gate::denies('report.pertahun.purchaseditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_purchasedItemPertahun($request);
 
         $print = new \App\Libraries\Purchasing([
@@ -1599,6 +1679,10 @@ class ReportController extends Controller
 
     public function purchasedItemBahanPertahun(Request $request)
     {
+        if( Gate::denies('report.pertahun.purchaseditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_purchasedItemBahanPertahun($request);
 
         return view(config('app.template').'.report.pertahun-purchaseditembahan', $data);
@@ -1606,6 +1690,10 @@ class ReportController extends Controller
 
     public function purchasedItemBahanPertahunPrint(Request $request)
     {
+        if( Gate::denies('report.pertahun.purchaseditem') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_purchasedItemBahanPertahun($request);
 
         $print = new \App\Libraries\Purchasing([
@@ -1640,6 +1728,10 @@ class ReportController extends Controller
 
     public function adjustmentPertahun(Request $request)
     {
+        if( Gate::denies('report.pertahun.adjustment') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_adjustmentPertahun($request);
 
         return view(config('app.template').'.report.pertahun-adjustments', $data);
@@ -1647,6 +1739,10 @@ class ReportController extends Controller
 
     public function adjustmentPertahunPrint(Request $request)
     {
+        if( Gate::denies('report.pertahun.adjustment') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_adjustmentPertahun($request);
 
         $print = new \App\Libraries\Adjustment([
