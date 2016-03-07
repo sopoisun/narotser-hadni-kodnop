@@ -376,7 +376,7 @@ class ApiController extends Controller
             $orderBayar = [
                 'order_id'      => $id,
                 'karyawan_id'   => ( Auth::check() ? Auth::guard('api')->user()->karyawan->id : '1' ),
-                'service_cost'  => setting()->service_cost,
+                'service_cost'  => $request->get('service_cost'), //setting()->service_cost,
                 'diskon'        => ( $request->get('diskon') != '' ? $request->get('diskon') : 0 ),
                 'bayar'         => $request->get('bayar'),
                 'type_bayar'    => $request->get('type_bayar'),
@@ -489,7 +489,7 @@ class ApiController extends Controller
                     'qty'           => 1,
                     'subtotal'      => number_format($order->bayar->service_cost, 0, ",", "."),
                 ]);
-            }else{
+            }/*else{
                 array_push($data, [
                     'no'            => $i,
                     'nama_produk'   => "Service Waiters",
@@ -497,7 +497,7 @@ class ApiController extends Controller
                     'qty'           => 1,
                     'subtotal'      => number_format(setting()->service_cost, 0, ",", "."),
                 ]);
-            }
+            }*/
 
             $display['detail_penjualan'] = $data;
 

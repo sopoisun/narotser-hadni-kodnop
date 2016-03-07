@@ -79,6 +79,26 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
+                                            <label for="cmb_service_cost" class="col-md-3 control-label">Use Srv</label>
+                                            <div class="col-md-8">
+                                                {{--*/ $cmb_service_cost = old('cmb_service_cost')  ? old('cmb_service_cost') : null; /*--}}
+                                                {{ Form::select('cmb_service_cost', ['Ya' => 'Ya', 'Tidak' => 'Tidak'], $cmb_service_cost, ['class' => 'form-control', 'id' => 'cmb_service_cost']) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="service_cost" class="col-md-3 control-label">Srv Cost</label>
+                                            <div class="col-md-8">
+                                                {{--*/ $service_cost = old('service_cost')  ? old('service_cost') : setting()->service_cost; /*--}}
+                                                {{ Form::text('service_cost', $service_cost, ['class' => 'form-control number', 'id' => 'service_cost',  'readonly' => 'readonly']) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
                                             <label for="places" class="col-md-3 control-label">Type Pajak</label>
                                             <div class="col-md-8">
                                                 {{--*/ $tax_id = old('tax_id')  ? old('tax_id') : $init_tax->id; /*--}}
@@ -150,7 +170,7 @@
                                         <div class="form-group">
                                             <label for="diskon" class="col-md-3 control-label">Diskon</label>
                                             <div class="col-md-8">
-                                                {{ Form::text('diskon', null, ['class' => 'form-control number', 'id' => 'diskon']) }}
+                                                {{ Form::text('diskon', null, ['class' => 'form-control number', 'id' => 'diskon', 'autocomplete' => 'off']) }}
                                             </div>
                                         </div>
                                     </div>
@@ -189,7 +209,7 @@
                                         <div class="form-group">
                                             <label for="bayar" class="col-md-3 control-label">Bayar</label>
                                             <div class="col-md-8">
-                                                {{ Form::text('bayar', null, ['class' => 'form-control number', 'id' => 'bayar']) }}
+                                                {{ Form::text('bayar', null, ['class' => 'form-control number', 'id' => 'bayar', 'autocomplete' => 'off']) }}
                                                 @if($errors->has('bayar'))<span class="help-block">{{ $errors->first('bayar') }}</span>@endif
                                             </div>
                                         </div>
@@ -283,16 +303,10 @@
                                     </tr>
                                     @endforeach
 
-                                    {{--*/ $i++; /*--}}
-                                    <tr>
-                                        <td>{{ $i }}</td>
-                                        <td colspan="3">Service Waiters</td>
-                                        <td style="text-align:right;">{{ number_format(setting()->service_cost, 0, ',', '.') }}</td>
-                                    </tr>
                                     <tr>
                                         <td></td>
                                         <td colspan="3">Total</td>
-                                        <td id="totalDetail" style="text-align:right;">{{ number_format((collect($orderDetail)->sum('subtotal') + collect($orderPlaces)->sum('harga') + setting()->service_cost), 0, ',', '.') }}</td>
+                                        <td id="totalDetail" style="text-align:right;">{{ number_format((collect($orderDetail)->sum('subtotal') + collect($orderPlaces)->sum('harga')), 0, ',', '.') }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -373,7 +387,7 @@
     });
     /* End Search Karyawan */
 
-    $("#total").val("{{ (collect($orderDetail)->sum('subtotal') + collect($orderPlaces)->sum('harga') + setting()->service_cost) }}");
+    $("#total").val("{{ (collect($orderDetail)->sum('subtotal') + collect($orderPlaces)->sum('harga')) }}");
     $("#tax-label").html("Tax "+$("#tax_procentage").val()+" %");
     $("#tax-bayar-label").html("Tax "+$("#tax_bayar_procentage").val()+" %");
 
@@ -381,6 +395,14 @@
 
     $("#diskon").on('keyup', HitungTotalAkhir);
     $("#bayar").on('keyup', HitungKembalian);
+    $("#cmb_service_cost").change(function(){
+        if($(this).val() == 'Ya'){
+            $("#service_cost").val("{{ setting()->service_cost }}");
+        }else{
+            $("#service_cost").val("0");
+        }
+        HitungTotalAkhir();
+    });
     $("#tax_id").change(function(){
         $.ajax({
             url: "{{ url('/ajax/tax') }}",
@@ -435,6 +457,8 @@
     function HitungTotalAkhir()
     {
         var total               = $("#total").val();
+        var service_cost        = $("#service_cost").val();
+        total                   = parseInt(total) + parseInt(service_cost);
         var taxProcentage       = $("#tax_procentage").val();
         var taxNominal          = parseInt(total) * ( taxProcentage / 100 );
         var taxBayarProcentage  = $("#tax_bayar_procentage").val();
