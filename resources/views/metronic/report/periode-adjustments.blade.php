@@ -24,7 +24,7 @@
                 <i class="icon-angle-right"></i>
             </li>
             <li>
-                <a href="{{ url('/report/periode/solditem') }}">Periode</a>
+                <a href="{{ url('/report/periode/solditem/produk') }}">Periode</a>
                 <i class="icon-angle-right"></i>
             </li>
             <li>

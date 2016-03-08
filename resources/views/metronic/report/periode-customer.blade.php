@@ -11,7 +11,7 @@
     <div class="col-md-12">
         <!-- BEGIN PAGE TITLE & BREADCRUMB-->
         <h3 class="page-title">
-            Laporan Laba/Rugi
+            Laporan Customer / Member
         </h3>
         <ul class="page-breadcrumb breadcrumb">
             <li>
@@ -27,7 +27,7 @@
                 <a href="{{ url('/report/periode/solditem/produk') }}">Periode</a>
                 <i class="icon-angle-right"></i>
             </li>
-            <li><a href="javascript:void(0)">Laporan Laba/Rugi {{ $tanggal->format('d M Y').' s/d '.$to_tanggal->format('d M Y') }}</a></li>
+            <li><a href="javascript:void(0)">Laporan Customer / Member {{ $tanggal->format('d M Y').' s/d '.$to_tanggal->format('d M Y') }}</a></li>
         </ul>
         <!-- END PAGE TITLE & BREADCRUMB-->
     </div>
@@ -54,7 +54,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="tgl" class="col-md-3 control-label">Tanggal</label>
+                                    <label for="tanggal" class="col-md-3 control-label">Tanggal</label>
                                     <div class="col-md-8">
                                         <div class="input-group input-large tanggalan input-daterange" data-date="10/11/2012" data-date-format="yyyy-mm-dd">
                                             <input type="text" class="form-control" name="tanggal" value="{{ $tanggal->format('Y-m-d') }}" />
@@ -72,7 +72,7 @@
                             <div class="col-md-6">
                                 <div class="col-md-offset-3 col-md-9">
                                     <button type="submit" class="btn red">Tampilkan</button>
-                                    <a href="{{ url('/report/periode/labarugi-print?tanggal='.$tanggal->format('Y-m-d').'&to_tanggal='.$to_tanggal->format('Y-m-d')) }}"
+                                    <a href="{{ url('/report/periode/customer-print?tanggal='.$tanggal->format('Y-m-d').'&to_tanggal='.$to_tanggal->format('Y-m-d')) }}"
                                         target="_blank" class="btn blue">
                                         Print
                                     </a>
@@ -91,7 +91,7 @@
         <!-- BEGIN SAMPLE TABLE PORTLET-->
         <div class="portlet box green">
             <div class="portlet-title">
-                <div class="caption"><i class="icon-comments"></i>Laporan Laba/Rugi {{ $tanggal->format('d M Y').' s/d '.$to_tanggal->format('d M Y') }}</div>
+                <div class="caption"><i class="icon-comments"></i>Daftar Customer / Member Tanggal {{ $tanggal->format('d M Y').' s/d '.$to_tanggal->format('d M Y') }}</div>
                 <div class="tools">
                     <a href="javascript:;" class="collapse"></a>
                     <a href="#portlet-config" data-toggle="modal" class="config"></a>
@@ -105,37 +105,30 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Keterangan</th>
-                                <th>Nominal</th>
+                                <th>ID / Kode</th>
+                                <th>Nama Customer / Member</th>
+                                <th>Jumlah Transaksi</th>
+                                <th>Total</th>
                             </tr>
                         </thead>
-                        {{--*/
-                            $tableGroup = collect($tableTemp)->groupBy('type');
-                        /*--}}
                         <tbody>
-                            @foreach($tableGroup as $key => $val)
-                            <tr style="font-weight:bold;">
-                                <td colspan="3">{{ strtoupper($key) }}</td>
-                            </tr>
+                            @if($customers->count())
                             {{--*/ $no = 0; /*--}}
-                            @foreach($val as $v)
-                            {{--*/ $no++ /*--}}
+                            @foreach($customers as $customer)
+                            {{--*/ $no++; /*--}}
                             <tr>
                                 <td>{{ $no }}</td>
-                                <td>{{ $v['keterangan'] }}</td>
-                                <td style="text-align:right;">{{ number_format($v['nominal'], 0, ',', '.') }}</td>
+                                <td>{{ $customer->kode }}</td>
+                                <td>{{ $customer->nama }}</td>
+                                <td>{{ $customer->jumlah_transaksi }}</td>
+                                <td style="text-align:right;">{{ number_format($customer->total, 0, ',', '.') }}</td>
                             </tr>
                             @endforeach
-                            <tr style="font-weight:bold;">
-                                <td></td>
-                                <td>Total {{ ucfirst($key) }}</td>
-                                <td style="text-align:right;">{{ number_format(collect($val)->sum('nominal'), 0, ',', '.') }}</td>
+                            @else
+                            <tr>
+                                <td colspan="5" style="text-align:center;">No Data Here</td>
                             </tr>
-                            @endforeach
-                            <tr style="font-weight:bold;">
-                                <td colspan="2">Laba/Rugi</td>
-                                <td style="text-align:right;">{{ number_format(collect($tableTemp)->sum('sum'), 0, ',', '.') }}</td>
-                            </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -152,6 +145,7 @@
 
 @section('js_assets')
 <script src="{{ url('/') }}/assets/metronic/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js" type="text/javascript"></script>
+<script type="text/javascript" src="{{ url('/') }}/assets/metronic/plugins/jquery-inputmask/jquery.inputmask.bundle.min.js"></script>
 @stop
 
 @section('js_section')

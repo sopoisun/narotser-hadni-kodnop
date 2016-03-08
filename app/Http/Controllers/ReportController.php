@@ -588,6 +588,37 @@ class ReportController extends Controller
         }
     }
 
+    public function customer(Request $request)
+    {
+        $data = $this->_customer($request);
+
+        return view(config('app.template').'.report.pertanggal-customer', $data);
+    }
+
+    public function customerPrint(Request $request)
+    {
+        $data = $this->_customer($request);
+
+        $print = new \App\Libraries\Customer([
+            'header' => 'Laporan Customer / Member '.$data['tanggal']->format('d M Y'),
+            'data' => $data['customers'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _customer(Request $request)
+    {
+        $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
+
+        $customers = \App\Customer::Report($tanggal);
+
+        return [
+            'tanggal'   => Carbon::parse($tanggal),
+            'customers' => $customers,
+        ];
+    }
+
     public function labaRugi(Request $request)
     {
         if( Gate::denies('report.pertanggal.labarugi') ){
@@ -1103,6 +1134,39 @@ class ReportController extends Controller
             'tanggal'   => Carbon::createFromFormat('Y-m-d', $tanggal),
             'to_tanggal'=> Carbon::createFromFormat('Y-m-d', $to_tanggal),
             'karyawans' => $karyawans,
+        ];
+    }
+
+    public function customerPeriode(Request $request)
+    {
+        $data = $this->_customerPeriode($request);
+
+        return view(config('app.template').'.report.periode-customer', $data);
+    }
+
+    public function customerPeriodePrint(Request $request)
+    {
+        $data = $this->_customerPeriode($request);
+
+        $print = new \App\Libraries\Customer([
+            'header' => 'Laporan Customer / Member '.$data['tanggal']->format('d M Y').' s/d '.$data['to_tanggal']->format('d M Y'),
+            'data' => $data['customers'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _customerPeriode(Request $request)
+    {
+        $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
+        $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : $tanggal;
+
+        $customers = \App\Customer::Report($tanggal, $to_tanggal);
+
+        return [
+            'tanggal'   => Carbon::createFromFormat('Y-m-d', $tanggal),
+            'to_tanggal'=> Carbon::createFromFormat('Y-m-d', $to_tanggal),
+            'customers' => $customers,
         ];
     }
 
@@ -1671,6 +1735,39 @@ class ReportController extends Controller
         ];
     }
 
+    public function customerPerbulan(Request $request)
+    {
+        $data = $this->_customerPerbulan($request);
+
+        return view(config('app.template').'.report.perbulan-customer', $data);
+    }
+
+    public function customerPerbulanPrint(Request $request)
+    {
+        $data = $this->_customerPerbulan($request);
+
+        $print = new \App\Libraries\Customer([
+            'header' => 'Laporan Customer / Member Bulan '.$data['tanggal']->format('M Y'),
+            'data' => $data['customers'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _customerPerbulan(Request $request)
+    {
+        $bulan  = $request->get('bulan') ? $request->get('bulan') : date('Y-m');
+        $start  = Carbon::createFromFormat('Y-m', $bulan)->startOfMonth();
+        $end    = Carbon::createFromFormat('Y-m', $bulan)->endOfMonth();
+
+        $customers = \App\Customer::Report($start->format('Y-m-d'), $end->format('Y-m-d'));
+
+        return [
+            'tanggal'   => Carbon::parse($bulan),
+            'customers' => $customers,
+        ];
+    }
+
     public function labaRugiPerbulan(Request $request)
     {
         if( Gate::denies('report.perbulan.labarugi') ){
@@ -2156,7 +2253,7 @@ class ReportController extends Controller
         if( Gate::denies('report.pertahun.stok') ){
             return view(config('app.template').'.error.403');
         }
-        
+
         $data = $this->_stokBahanPertahun($request);
 
         $print = new \App\Libraries\MutasiStok([
@@ -2228,6 +2325,39 @@ class ReportController extends Controller
         return [
             'tanggal'   => Carbon::createFromFormat('Y', $tahun),
             'karyawans' => $karyawans,
+        ];
+    }
+
+    public function customerPertahun(Request $request)
+    {
+        $data = $this->_customerPertahun($request);
+
+        return view(config('app.template').'.report.pertahun-customer', $data);
+    }
+
+    public function customerPertahunPrint(Request $request)
+    {
+        $data = $this->_customerPertahun($request);
+
+        $print = new \App\Libraries\Customer([
+            'header' => 'Laporan Customer / Member Tahun '.$data['tanggal']->format('Y'),
+            'data' => $data['customers'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _customerPertahun(Request $request)
+    {
+        $tahun  = $request->get('tahun') ? $request->get('tahun') : date('Y');
+        $start  = Carbon::parse('first day of January '.$tahun);
+        $end    = Carbon::parse('last day of December '.$tahun);
+
+        $customers = \App\Customer::Report($start->format('Y-m-d'), $end->format('Y-m-d'));
+
+        return [
+            'tanggal'   => Carbon::createFromFormat('Y', $tahun),
+            'customers' => $customers,
         ];
     }
 
