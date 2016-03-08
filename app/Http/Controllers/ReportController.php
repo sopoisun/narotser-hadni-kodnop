@@ -411,6 +411,19 @@ class ReportController extends Controller
         ];
     }
 
+    public function stok(Request $request) // produk
+    {
+        $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
+
+        $produks = \App\Produk::leftJoin('produk_details', 'produks.id', '=', 'produk_details.produk_id')
+            ->whereNull('produk_details.id')
+            ->select(['produks.id', 'produks.nama'])->get();
+
+        $before = \App\Produk::AmbilStokSebelumnya($produks, $tanggal);
+
+        return \App\Produk::AmbilStokSekarang($before, $tanggal, $tanggal);
+    }
+
     public function karyawan(Request $request)
     {
         if( Gate::denies('report.pertanggal.karyawan') ){

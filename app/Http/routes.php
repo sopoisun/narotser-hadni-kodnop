@@ -191,9 +191,10 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/report/pertanggal/purchaseditem/produk-print', 'ReportController@purchasedItemPrint');
         Route::get('/report/pertanggal/purchaseditem/bahan', 'ReportController@purchasedItemBahan');
         Route::get('/report/pertanggal/purchaseditem/bahan-print', 'ReportController@purchasedItemBahanPrint');
-
         Route::get('/report/pertanggal/adjustment', 'ReportController@adjustment');
         Route::get('/report/pertanggal/adjustment-print', 'ReportController@adjustmentPrint');
+
+        Route::get('/report/pertanggal/stok', 'ReportController@stok');
         # Periode
         Route::get('/report/periode/solditem/produk', 'ReportController@soldItemPeriode');
         Route::get('/report/periode/solditem/produk-print', 'ReportController@soldItemPeriodePrint');

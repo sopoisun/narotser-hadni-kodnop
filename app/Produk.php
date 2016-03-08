@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 use DB;
 
 class Produk extends Model
@@ -161,5 +162,191 @@ class Produk extends Model
             ])
             ->where('produks.active', 1)
             ->groupBy('produks.id');
+    }
+
+    public static function AmbilStokSebelumnya($produks, $tanggal)
+    {
+        $CTanggal = Carbon::createFromFormat('Y-m-d h:i:s', $tanggal.' 00:00:00');
+        $CYesterday = $CTanggal->copy()->addDays(-1);
+        $yesterday  = $CYesterday->format('Y-m-d');
+
+        $adjustmentIncreaseBefore = [];
+        $firstAdjustmentIncrease = \App\AdjustmentDetail::where('type', 'produk')
+            ->where('state', 'increase')->with('adjustment')->first();
+        if( $firstAdjustmentIncrease ){
+            if( $firstAdjustmentIncrease->adjustment->tanggal->lte($CYesterday) ){
+                $adjustmentIncreaseBefore = self::_adjustmentIncrease_Stok($firstAdjustmentIncrease->adjustment->tanggal->format('Y-m-d'), $yesterday);
+            }
+        }
+
+        $adjustmentReductionBefore = [];
+        $firstAdjustmentReduction = \App\AdjustmentDetail::where('type', 'produk')
+            ->where('state', 'reduction')->with('adjustment')->first();
+        if( $firstAdjustmentReduction ){
+            if( $firstAdjustmentReduction->adjustment->tanggal->lte($CYesterday) ){
+                $adjustmentReductionBefore = self::_adjustmentReduction_Stok($firstAdjustmentReduction->adjustment->tanggal->format('Y-m-d'), $yesterday);
+            }
+        }
+
+        $pembelianBefore = [];
+        $firstPembelian = \App\PembelianDetail::where('pembelian_details.type', 'produk')
+            ->with('pembelian')->first();
+        if( $firstPembelian ){
+            if( $firstPembelian->pembelian->tanggal->lte($CYesterday) ){
+                $pembelianBefore = self::_pembelian($firstPembelian->pembelian->tanggal->format('Y-m-d'), $yesterday);
+            }
+        }
+
+        $penjualanBefore = [];
+        $firstPenjualan = \App\OrderDetail::join(DB::raw("(SELECT produks.`id`, produks.`nama`
+                FROM produks LEFT JOIN produk_details ON produks.`id` = produk_details.`produk_id`
+                WHERE produk_details.`id` IS NULL GROUP BY produks.`id`)temp_produk"),
+                'order_details.produk_id', '=', 'temp_produk.id')
+            ->with('order')->select(['temp_produk.nama', 'order_details.*'])->first();
+        if( $firstPenjualan ){
+            if( $firstPenjualan->order->tanggal->lte($CYesterday) ){
+                $penjualanBefore = self::_penjualan($firstPenjualan->order->tanggal->format('Y-m-d'), $yesterday);
+            }
+        }
+
+        $display = [];
+        foreach($produks as $produk){
+            $temp = [];
+            $sum = [];
+
+            $idx = array_search($produk['id'], array_column($adjustmentIncreaseBefore, 'id'));
+            if (false !== $idx) {
+                $sum[] = $adjustmentIncreaseBefore[$idx]['qty'];
+            }
+
+            $idx = array_search($produk['id'], array_column($adjustmentReductionBefore, 'id'));
+            if (false !== $idx) {
+                $sum[] = -abs($adjustmentReductionBefore[$idx]['qty']);
+            }
+
+            $idx = array_search($produk['id'], array_column($pembelianBefore, 'id'));
+            if (false !== $idx) {
+                $sum[] = $pembelianBefore[$idx]['qty'];
+            }
+
+            $idx = array_search($produk['id'], array_column($penjualanBefore, 'id'));
+            if (false !== $idx) {
+                $sum[] = -abs($penjualanBefore[$idx]['qty']);
+            }
+
+            $display[] = $produk->toArray() + ['before' => array_sum($sum)];
+        }
+
+        return $display;
+    }
+
+    public static function AmbilStokSekarang($stokSebelumnya, $tanggal1, $tanggal2)
+    {
+        $adjustmentIncrease = self::_adjustmentIncrease_Stok($tanggal1, $tanggal2);
+        $adjustmentReduction = self::_adjustmentReduction_Stok($tanggal1, $tanggal2);
+        $pembelian = self::_pembelian($tanggal1, $tanggal2);
+        $penjualan = self::_penjualan($tanggal1, $tanggal2);
+
+        $display = [];
+        foreach ($stokSebelumnya as $produk) {
+            $row = [];
+
+            $adjustment_increase = 0;
+            $idx = array_search($produk['id'], array_column($adjustmentIncrease, 'id'));
+            if (false !== $idx) {
+                $adjustment_increase = $adjustmentIncrease[$idx]['qty'];
+            }
+            $row['adjustment_increase'] = $adjustment_increase;
+
+            $adjustment_reduction = 0;
+            $idx = array_search($produk['id'], array_column($adjustmentReduction, 'id'));
+            if (false !== $idx) {
+                $adjustment_reduction = $adjustmentReduction[$idx]['qty'];
+            }
+            $row['adjustment_reduction'] = $adjustment_reduction;
+
+            $_pembelian = 0;
+            $idx = array_search($produk['id'], array_column($pembelian, 'id'));
+            if (false !== $idx) {
+                $_pembelian = $pembelian[$idx]['qty'];
+            }
+            $row['pembelian'] = $_pembelian;
+
+            $_penjualan = 0;
+            $idx = array_search($produk['id'], array_column($penjualan, 'id'));
+            if (false !== $idx) {
+                $_penjualan = $penjualan[$idx]['qty'];
+            }
+            $row['penjualan'] = $_penjualan;
+
+            $row['sisa'] = array_sum([
+                $produk['before'],
+                $adjustment_increase,
+                -abs($adjustment_reduction),
+                $_pembelian,
+                -abs($_penjualan),
+            ]);
+
+            $display[] = $produk + $row;
+        }
+
+        return $display;
+    }
+
+    protected static function _adjustmentIncrease_Stok($tanggal1, $tanggal2)
+    {
+        return \App\AdjustmentDetail::join('produks', 'adjustment_details.relation_id', '=', 'produks.id')
+            ->join('adjustments', 'adjustment_details.adjustment_id', '=', 'adjustments.id')
+            ->whereBetween('adjustments.tanggal', [$tanggal1, $tanggal2])
+            ->where('type', 'produk')
+            ->where('state', 'increase')
+            ->groupBy('produks.id')
+            ->select([
+                'produks.id', 'produks.nama',
+                DB::raw('SUM(adjustment_details.qty)qty')
+            ])->get()->toArray();
+    }
+
+    protected static function _adjustmentReduction_Stok($tanggal1, $tanggal2)
+    {
+        return \App\AdjustmentDetail::join('produks', 'adjustment_details.relation_id', '=', 'produks.id')
+            ->join('adjustments', 'adjustment_details.adjustment_id', '=', 'adjustments.id')
+            ->whereBetween('adjustments.tanggal', [$tanggal1, $tanggal2])
+            ->where('type', 'produk')
+            ->where('state', 'increase')
+            ->groupBy('produks.id')
+            ->select([
+                'produks.id', 'produks.nama',
+                DB::raw('SUM(adjustment_details.qty)qty')
+            ])->get()->toArray();
+    }
+
+    protected static function _pembelian($tanggal1, $tanggal2)
+    {
+        return \App\PembelianDetail::join('produks', 'pembelian_details.relation_id', '=', 'produks.id')
+            ->join('pembelians', 'pembelian_details.pembelian_id', '=', 'pembelians.id')
+            ->whereBetween('pembelians.tanggal', [$tanggal1, $tanggal2])
+            ->where('pembelian_details.type', 'produk')
+            ->groupBy('produks.id')
+            ->select([
+                'produks.id', 'produks.nama',
+                DB::raw('SUM(pembelian_details.stok)qty')
+            ])->get()->toArray();
+    }
+
+    protected static function _penjualan($tanggal1, $tanggal2)
+    {
+        return \App\OrderDetail::join(DB::raw("(SELECT produks.`id`, produks.`nama`
+                FROM produks LEFT JOIN produk_details ON produks.`id` = produk_details.`produk_id`
+                WHERE produk_details.`id` IS NULL GROUP BY produks.`id`)temp_produk"),
+                'order_details.produk_id', '=', 'temp_produk.id')
+            ->leftJoin('order_detail_returns', 'order_details.id', '=', 'order_detail_returns.order_detail_id')
+            ->join('orders', 'order_details.order_id', '=', 'orders.id')
+            ->whereBetween('orders.tanggal', [$tanggal1, $tanggal2])
+            ->groupBy('temp_produk.id')
+            ->select([
+                'temp_produk.id', 'temp_produk.nama',
+                DB::raw('SUM(order_details.qty - ifnull(order_detail_returns.qty, 0))qty')
+            ])->get()->toArray();
     }
 }
