@@ -590,6 +590,10 @@ class ReportController extends Controller
 
     public function customer(Request $request)
     {
+        if( Gate::denies('report.pertanggal.customer') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_customer($request);
 
         return view(config('app.template').'.report.pertanggal-customer', $data);
@@ -597,6 +601,10 @@ class ReportController extends Controller
 
     public function customerPrint(Request $request)
     {
+        if( Gate::denies('report.pertanggal.customer') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_customer($request);
 
         $print = new \App\Libraries\Customer([
@@ -1139,6 +1147,10 @@ class ReportController extends Controller
 
     public function customerPeriode(Request $request)
     {
+        if( Gate::denies('report.periode.customer') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_customerPeriode($request);
 
         return view(config('app.template').'.report.periode-customer', $data);
@@ -1146,6 +1158,10 @@ class ReportController extends Controller
 
     public function customerPeriodePrint(Request $request)
     {
+        if( Gate::denies('report.periode.customer') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_customerPeriode($request);
 
         $print = new \App\Libraries\Customer([
@@ -1737,6 +1753,10 @@ class ReportController extends Controller
 
     public function customerPerbulan(Request $request)
     {
+        if( Gate::denies('report.perbulan.customer') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_customerPerbulan($request);
 
         return view(config('app.template').'.report.perbulan-customer', $data);
@@ -1744,6 +1764,10 @@ class ReportController extends Controller
 
     public function customerPerbulanPrint(Request $request)
     {
+        if( Gate::denies('report.perbulan.customer') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_customerPerbulan($request);
 
         $print = new \App\Libraries\Customer([
@@ -2330,6 +2354,10 @@ class ReportController extends Controller
 
     public function customerPertahun(Request $request)
     {
+        if( Gate::denies('report.pertahun.customer') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_customerPertahun($request);
 
         return view(config('app.template').'.report.pertahun-customer', $data);
@@ -2337,6 +2365,10 @@ class ReportController extends Controller
 
     public function customerPertahunPrint(Request $request)
     {
+        if( Gate::denies('report.pertahun.customer') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_customerPertahun($request);
 
         $print = new \App\Libraries\Customer([

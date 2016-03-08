@@ -193,6 +193,9 @@
                                 @can('report.pertanggal.karyawan')
                                 <li class="{{ set_active('report/pertanggal/karyawan') }}"><a href="{{ url('/report/pertanggal/karyawan') }}">Laporan Karyawan</a></li>
                                 @endcan
+                                @can('report.pertanggal.stok')
+                                <li class="{{ set_active('report/pertanggal/customer') }}"><a href="{{ url('/report/pertanggal/customer') }}">Laporan Customer</a></li>
+                                @endcan
                                 @can('report.pertanggal.labarugi')
                                 <li class="{{ set_active('report/pertanggal/labarugi') }}"><a href="{{ url('/report/pertanggal/labarugi') }}">Laporan Laba/Rugi</a></li>
                                 @endcan
@@ -245,6 +248,9 @@
                                 @endcan
                                 @can('report.periode.karyawan')
                                 <li class="{{ set_active('report/periode/karyawan') }}"><a href="{{ url('/report/periode/karyawan') }}">Laporan Karyawan</a></li>
+                                @endcan
+                                @can('report.periode.stok')
+                                <li class="{{ set_active('report/periode/customer') }}"><a href="{{ url('/report/periode/customer') }}">Laporan Customer</a></li>
                                 @endcan
                                 @can('report.periode.labarugi')
                                 <li class="{{ set_active('report/periode/labarugi') }}"><a href="{{ url('/report/periode/labarugi') }}">Laporan Laba/Rugi</a></li>
@@ -302,6 +308,9 @@
                                 @can('report.perbulan.karyawan')
                                 <li class="{{ set_active('report/perbulan/karyawan') }}"><a href="{{ url('/report/perbulan/karyawan') }}">Laporan Karyawan</a></li>
                                 @endcan
+                                @can('report.perbulan.stok')
+                                <li class="{{ set_active('report/perbulan/customer') }}"><a href="{{ url('/report/perbulan/customer') }}">Laporan Customer</a></li>
+                                @endcan
                                 @can('report.perbulan.labarugi')
                                 <li class="{{ set_active('report/perbulan/labarugi') }}"><a href="{{ url('/report/perbulan/labarugi') }}">Laporan Laba/Rugi</a></li>
                                 @endcan
@@ -357,6 +366,9 @@
                                 @endcan
                                 @can('report.pertahun.karyawan')
                                 <li class="{{ set_active('report/pertahun/karyawan') }}"><a href="{{ url('/report/pertahun/karyawan') }}">Laporan Karyawan</a></li>
+                                @endcan
+                                @can('report.pertahun.customer')
+                                <li class="{{ set_active('report/pertahun/customer') }}"><a href="{{ url('/report/pertahun/customer') }}">Laporan Customer</a></li>
                                 @endcan
                                 @can('report.pertahun.labarugi')
                                 <li class="{{ set_active('report/pertahun/labarugi') }}"><a href="{{ url('/report/pertahun/labarugi') }}">Laporan Laba/Rugi</a></li>
