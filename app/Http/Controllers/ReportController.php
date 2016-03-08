@@ -411,18 +411,68 @@ class ReportController extends Controller
         ];
     }
 
-    public function stok(Request $request) // produk
+    public function stok(Request $request)
+    {
+        $data = $this->_stok($request);
+
+        return view(config('app.template').'.report.pertanggal-stok', $data);
+    }
+
+    public function stokPrint(Request $request)
+    {
+        $data = $this->_stok($request);
+
+        $print = new \App\Libraries\MutasiStok([
+            'header' => 'Laporan Mutasi Stok Produk '.$data['tanggal']->format('d M Y'),
+            'type'  => 'Produk',
+            'data' => $data['produks'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _stok(Request $request) // produk
     {
         $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
 
-        return \App\Produk::MutasiStok($tanggal);
+        $produks = \App\Produk::MutasiStok($tanggal);
+
+        return [
+            'tanggal' => Carbon::parse($tanggal),
+            'produks' => $produks,
+        ];
     }
 
     public function stokBahan(Request $request) // bahan
     {
+        $data = $this->_stokBahan($request);
+
+        return view(config('app.template').'.report.pertanggal-stokbahan', $data);
+    }
+
+    public function stokBahanPrint(Request $request) // bahan
+    {
+        $data = $this->_stokBahan($request);
+
+        $print = new \App\Libraries\MutasiStok([
+            'header' => 'Laporan Mutasi Stok Bahan '.$data['tanggal']->format('d M Y'),
+            'type'  => 'Bahan',
+            'data' => $data['bahans'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _stokBahan(Request $request) // bahan
+    {
         $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
 
-        return \App\Bahan::MutasiStok($tanggal);
+        $bahans = \App\Bahan::MutasiStok($tanggal);
+
+        return [
+            'tanggal' => Carbon::parse($tanggal),
+            'bahans' => $bahans,
+        ];
     }
 
     public function karyawan(Request $request)
@@ -907,18 +957,70 @@ class ReportController extends Controller
 
     public function stokPeriode(Request $request)
     {
-        $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
-        $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : $tanggal;
+        $data = $this->_stokPeriode($request);
 
-        return \App\Produk::MutasiStok($tanggal, $to_tanggal);
+        return view(config('app.template').'.report.periode-stok', $data);
     }
 
-    public function stokBahanPeriode(Request $request)
+    public function stokPeriodePrint(Request $request)
+    {
+        $data = $this->_stokPeriode($request);
+
+        $print = new \App\Libraries\MutasiStok([
+            'header' => 'Laporan Mutasi Stok Produk '.$data['tanggal']->format('d M Y').' s/d '.$data['to_tanggal']->format('d M Y'),
+            'type'  => 'Produk',
+            'data' => $data['produks'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _stokPeriode(Request $request)
     {
         $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
         $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : $tanggal;
 
-        return \App\Bahan::MutasiStok($tanggal, $to_tanggal);
+        $produks = \App\Produk::MutasiStok($tanggal, $to_tanggal);
+
+        return [
+            'tanggal'   => Carbon::createFromFormat('Y-m-d', $tanggal),
+            'to_tanggal'=> Carbon::createFromFormat('Y-m-d', $to_tanggal),
+            'produks' => $produks,
+        ];
+    }
+
+    public function stokBahanPeriode(Request $request)
+    {
+        $data = $this->_stokBahanPeriode($request);
+
+        return view(config('app.template').'.report.periode-stokbahan', $data);
+    }
+
+    public function stokBahanPeriodePrint(Request $request)
+    {
+        $data = $this->_stokBahanPeriode($request);
+
+        $print = new \App\Libraries\MutasiStok([
+            'header' => 'Laporan Mutasi Stok Bahan '.$data['tanggal']->format('d M Y').' s/d '.$data['to_tanggal']->format('d M Y'),
+            'type'  => 'Bahan',
+            'data' => $data['bahans'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _stokBahanPeriode(Request $request)
+    {
+        $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
+        $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : $tanggal;
+
+        $bahans = \App\Bahan::MutasiStok($tanggal, $to_tanggal);
+
+        return [
+            'tanggal'   => Carbon::createFromFormat('Y-m-d', $tanggal),
+            'to_tanggal'=> Carbon::createFromFormat('Y-m-d', $to_tanggal),
+            'bahans' => $bahans,
+        ];
     }
 
     public function karyawanPeriode(Request $request)
@@ -1406,20 +1508,70 @@ class ReportController extends Controller
 
     public function stokPerbulan(Request $request)
     {
-        $bulan  = $request->get('bulan') ? $request->get('bulan') : date('Y-m');
-        $start  = Carbon::createFromFormat('Y-m', $bulan)->startOfMonth();
-        $end    = Carbon::createFromFormat('Y-m', $bulan)->endOfMonth();
+        $data = $this->_stokPerbulan($request);
 
-        return \App\Produk::MutasiStok($start->format('Y-m-d'), $end->format('Y-m-d'));
+        return view(config('app.template').'.report.perbulan-stok', $data);
     }
 
-    public function stokBahanPerbulan(Request $request)
+    public function stokPerbulanPrint(Request $request)
+    {
+        $data = $this->_stokPerbulan($request);
+
+        $print = new \App\Libraries\MutasiStok([
+            'header' => 'Laporan Mutasi Stok Produk Bulan '.$data['tanggal']->format('M Y'),
+            'type'  => 'Produk',
+            'data' => $data['produks'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _stokPerbulan(Request $request)
     {
         $bulan  = $request->get('bulan') ? $request->get('bulan') : date('Y-m');
         $start  = Carbon::createFromFormat('Y-m', $bulan)->startOfMonth();
         $end    = Carbon::createFromFormat('Y-m', $bulan)->endOfMonth();
 
-        return \App\Bahan::MutasiStok($start->format('Y-m-d'), $end->format('Y-m-d'));
+        $produks = \App\Produk::MutasiStok($start->format('Y-m-d'), $end->format('Y-m-d'));
+
+        return [
+            'tanggal' => Carbon::parse($bulan),
+            'produks' => $produks,
+        ];
+    }
+
+    public function stokBahanPerbulan(Request $request)
+    {
+        $data = $this->_stokBahanPerbulan($request);
+
+        return view(config('app.template').'.report.perbulan-stokbahan', $data);
+    }
+
+    public function stokBahanPerbulanPrint(Request $request)
+    {
+        $data = $this->_stokBahanPerbulan($request);
+
+        $print = new \App\Libraries\MutasiStok([
+            'header' => 'Laporan Mutasi Stok Bahan Bulan '.$data['tanggal']->format('M Y'),
+            'type'  => 'Bahan',
+            'data' => $data['bahans'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _stokBahanPerbulan(Request $request)
+    {
+        $bulan  = $request->get('bulan') ? $request->get('bulan') : date('Y-m');
+        $start  = Carbon::createFromFormat('Y-m', $bulan)->startOfMonth();
+        $end    = Carbon::createFromFormat('Y-m', $bulan)->endOfMonth();
+
+        $bahans = \App\Bahan::MutasiStok($start->format('Y-m-d'), $end->format('Y-m-d'));
+
+        return [
+            'tanggal' => Carbon::parse($bulan),
+            'bahans' => $bahans,
+        ];
     }
 
     public function karyawanPerbulan(Request $request)
@@ -1900,20 +2052,70 @@ class ReportController extends Controller
 
     public function stokPertahun(Request $request)
     {
-        $tahun  = $request->get('tahun') ? $request->get('tahun') : date('Y-m');
+        $data = $this->_stokPertahun($request);
+
+        return view(config('app.template').'.report.pertahun-stok', $data);
+    }
+
+    public function stokPertahunPrint(Request $request)
+    {
+        $data = $this->_stokPertahun($request);
+
+        $print = new \App\Libraries\MutasiStok([
+            'header' => 'Laporan Mutasi Stok Produk Tahun '.$data['tanggal']->format('Y'),
+            'type'  => 'Produk',
+            'data' => $data['produks'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _stokPertahun(Request $request)
+    {
+        $tahun  = $request->get('tahun') ? $request->get('tahun') : date('Y');
         $start  = Carbon::parse('first day of January '.$tahun);
         $end    = Carbon::parse('last day of December '.$tahun);
 
-        return \App\Produk::MutasiStok($start->format('Y-m-d'), $end->format('Y-m-d'));
+        $produks = \App\Produk::MutasiStok($start->format('Y-m-d'), $end->format('Y-m-d'));
+
+        return [
+            'tanggal' => Carbon::createFromFormat('Y', $tahun),
+            'produks' => $produks,
+        ];
     }
 
     public function stokBahanPertahun(Request $request)
     {
-        $tahun  = $request->get('tahun') ? $request->get('tahun') : date('Y-m');
+        $data = $this->_stokBahanPertahun($request);
+
+        return view(config('app.template').'.report.pertahun-stokbahan', $data);
+    }
+
+    public function stokBahanPertahunPrint(Request $request)
+    {
+        $data = $this->_stokBahanPertahun($request);
+
+        $print = new \App\Libraries\MutasiStok([
+            'header' => 'Laporan Mutasi Stok Bahan Tahun '.$data['tanggal']->format('Y'),
+            'type'  => 'Bahan',
+            'data' => $data['bahans'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    protected function _stokBahanPertahun(Request $request)
+    {
+        $tahun  = $request->get('tahun') ? $request->get('tahun') : date('Y');
         $start  = Carbon::parse('first day of January '.$tahun);
         $end    = Carbon::parse('last day of December '.$tahun);
 
-        return \App\Bahan::MutasiStok($start->format('Y-m-d'), $end->format('Y-m-d'));
+        $bahans = \App\Bahan::MutasiStok($start->format('Y-m-d'), $end->format('Y-m-d'));
+
+        return [
+            'tanggal' => Carbon::createFromFormat('Y', $tahun),
+            'bahans' => $bahans,
+        ];
     }
 
     public function karyawanPertahun(Request $request)

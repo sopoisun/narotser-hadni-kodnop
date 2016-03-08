@@ -11,7 +11,7 @@
     <div class="col-md-12">
         <!-- BEGIN PAGE TITLE & BREADCRUMB-->
         <h3 class="page-title">
-            Laporan Adjustment
+            Laporan Mutasi Stok Produk
         </h3>
         <ul class="page-breadcrumb breadcrumb">
             <li>
@@ -28,10 +28,10 @@
                 <i class="icon-angle-right"></i>
             </li>
             <li>
-                <a href="{{ url('/report/pertahun/adjustment') }}">Adjustment</a>
+                <a href="{{ url('/report/pertahun/stok/produk') }}">Stok</a>
                 <i class="icon-angle-right"></i>
             </li>
-            <li><a href="javascript:void(0)">Laporan Adjustment {{ $tanggal->format('Y') }}</a></li>
+            <li><a href="javascript:void(0)">Laporan Stok Produk  {{ $tanggal->format('Y') }}</a></li>
         </ul>
         <!-- END PAGE TITLE & BREADCRUMB-->
     </div>
@@ -72,7 +72,7 @@
                             <div class="col-md-6">
                                 <div class="col-md-offset-3 col-md-9">
                                     <button type="submit" class="btn red">Tampilkan</button>
-                                    <a href="{{ url('/report/pertahun/adjustment-print?tahun='.$tanggal->format('Y')) }}"
+                                    <a href="{{ url('/report/pertahun/stok/produk-print?tahun='.$tanggal->format('Y')) }}"
                                         target="_blank" class="btn blue">
                                         Print
                                     </a>
@@ -91,7 +91,7 @@
         <!-- BEGIN SAMPLE TABLE PORTLET-->
         <div class="portlet box green">
             <div class="portlet-title">
-                <div class="caption"><i class="icon-comments"></i>Daftar Adjustment (+) {{ $tanggal->format('Y') }}</div>
+                <div class="caption"><i class="icon-comments"></i>Daftar Stok Produk {{ $tanggal->format('Y') }}</div>
                 <div class="tools">
                     <a href="javascript:;" class="collapse"></a>
                     <a href="#portlet-config" data-toggle="modal" class="config"></a>
@@ -105,99 +105,30 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Nama Barang</th>
-                                <th>Nama Type</th>
-                                <th>Harga ( Avg )</th>
-                                <th>Stok</th>
-                                <th>Subtotal</th>
+                                <th>Nama Produk</th>
+                                <th>Stok Sebelumnya</th>
+                                <th>Pembelian</th>
+                                <th>Penjualan</th>
+                                <th>Adjustment (+)</th>
+                                <th>Adjustment (-)</th>
+                                <th>Sisa Stok</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @if(count($adjustments['increase']))
                             {{--*/ $no = 0; /*--}}
-                            @foreach($adjustments['increase'] as $adjustment)
+                            @foreach($produks as $produk)
                             {{--*/ $no++; /*--}}
                             <tr>
                                 <td>{{ $no }}</td>
-                                <td>{{ $adjustment['nama'] }}</td>
-                                <td>{{ ucfirst($adjustment['type']) }}</td>
-                                <td>{{ number_format($adjustment['harga_avg'], 0, ',', '.') }}</td>
-                                <td>{{ $adjustment['qty_stok'].' '.$adjustment['satuan'] }}</td>
-                                <td style="text-align:right;">{{ number_format($adjustment['subtotal'], 0, ',', '.') }}</td>
+                                <td>{{ $produk['nama'].' ('.$produk['satuan'].')' }}</td>
+                                <td style="text-align:center;">{{ $produk['before'] }}</td>
+                                <td style="text-align:center;">{{ $produk['pembelian'] }}</td>
+                                <td style="text-align:center;">{{ $produk['penjualan'] }}</td>
+                                <td style="text-align:center;">{{ $produk['adjustment_increase'] }}</td>
+                                <td style="text-align:center;">{{ $produk['adjustment_reduction'] }}</td>
+                                <td style="text-align:center;">{{ $produk['sisa'] }}</td>
                             </tr>
                             @endforeach
-
-                            <tr>
-                                <td></td>
-                                <td colspan="4">Total</td>
-                                <td style="text-align:right;">{{ number_format(collect($adjustments['increase'])->sum('subtotal'), 0, ',', '.') }}</td>
-                            </tr>
-
-                            @else
-                            <tr>
-                                <td colspan="6" style="text-align:center;">No Data Here</td>
-                            </tr>
-                            @endif
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <!-- END SAMPLE TABLE PORTLET-->
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <!-- BEGIN SAMPLE TABLE PORTLET-->
-        <div class="portlet box red">
-            <div class="portlet-title">
-                <div class="caption"><i class="icon-comments"></i>Daftar Adjustment (-) {{ $tanggal->format('Y') }}</div>
-                <div class="tools">
-                    <a href="javascript:;" class="collapse"></a>
-                    <a href="#portlet-config" data-toggle="modal" class="config"></a>
-                    <a href="javascript:;" class="reload"></a>
-                    <a href="javascript:;" class="remove"></a>
-                </div>
-            </div>
-            <div class="portlet-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Nama Barang</th>
-                                <th>Nama Type</th>
-                                <th>Harga ( Avg )</th>
-                                <th>Stok</th>
-                                <th>Subtotal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if(count($adjustments['reduction']))
-                            {{--*/ $no = 0; /*--}}
-                            @foreach($adjustments['reduction'] as $adjustment)
-                            {{--*/ $no++; /*--}}
-                            <tr>
-                                <td>{{ $no }}</td>
-                                <td>{{ $adjustment['nama'] }}</td>
-                                <td>{{ ucfirst($adjustment['type']) }}</td>
-                                <td>{{ number_format($adjustment['harga_avg'], 0, ',', '.') }}</td>
-                                <td>{{ $adjustment['qty_stok'].' '.$adjustment['satuan'] }}</td>
-                                <td style="text-align:right;">{{ number_format($adjustment['subtotal'], 0, ',', '.') }}</td>
-                            </tr>
-                            @endforeach
-
-                            <tr>
-                                <td></td>
-                                <td colspan="4">Total</td>
-                                <td style="text-align:right;">{{ number_format(collect($adjustments['reduction'])->sum('subtotal'), 0, ',', '.') }}</td>
-                            </tr>
-
-                            @else
-                            <tr>
-                                <td colspan="6" style="text-align:center;">No Data Here</td>
-                            </tr>
-                            @endif
                         </tbody>
                     </table>
                 </div>

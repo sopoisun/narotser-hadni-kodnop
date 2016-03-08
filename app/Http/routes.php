@@ -193,9 +193,10 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/report/pertanggal/purchaseditem/bahan-print', 'ReportController@purchasedItemBahanPrint');
         Route::get('/report/pertanggal/adjustment', 'ReportController@adjustment');
         Route::get('/report/pertanggal/adjustment-print', 'ReportController@adjustmentPrint');
-
         Route::get('/report/pertanggal/stok/produk', 'ReportController@stok');
+        Route::get('/report/pertanggal/stok/produk-print', 'ReportController@stokPrint');
         Route::get('/report/pertanggal/stok/bahan', 'ReportController@stokBahan');
+        Route::get('/report/pertanggal/stok/bahan-print', 'ReportController@stokBahanPrint');
         # Periode
         Route::get('/report/periode/solditem/produk', 'ReportController@soldItemPeriode');
         Route::get('/report/periode/solditem/produk-print', 'ReportController@soldItemPeriodePrint');
@@ -213,7 +214,9 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/report/periode/adjustment-print', 'ReportController@adjustmentPeriodePrint');
 
         Route::get('/report/periode/stok/produk', 'ReportController@stokPeriode');
+        Route::get('/report/periode/stok/produk-print', 'ReportController@stokPeriodePrint');
         Route::get('/report/periode/stok/bahan', 'ReportController@stokBahanPeriode');
+        Route::get('/report/periode/stok/bahan-print', 'ReportController@stokBahanPeriodePrint');
         # Perbulan
         Route::get('/report/perbulan', 'ReportController@perbulan');
         Route::get('/report/perbulan-print', 'ReportController@perbulanPrint');
@@ -233,7 +236,9 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/report/perbulan/adjustment-print', 'ReportController@adjustmentPerbulanPrint');
 
         Route::get('/report/perbulan/stok/produk', 'ReportController@stokPerbulan');
+        Route::get('/report/perbulan/stok/produk-print', 'ReportController@stokPerbulanPrint');
         Route::get('/report/perbulan/stok/bahan', 'ReportController@stokBahanPerbulan');
+        Route::get('/report/perbulan/stok/bahan-print', 'ReportController@stokBahanPerbulanPrint');
         # Pertahun
         Route::get('/report/pertahun', 'ReportController@pertahun');
         Route::get('/report/pertahun-print', 'ReportController@pertahunPrint');
@@ -253,7 +258,9 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/report/pertahun/adjustment-print', 'ReportController@adjustmentPertahunPrint');
 
         Route::get('/report/pertahun/stok/produk', 'ReportController@stokPertahun');
+        Route::get('/report/pertahun/stok/produk-print', 'ReportController@stokPertahunPrint');
         Route::get('/report/pertahun/stok/bahan', 'ReportController@stokBahanPertahun');
+        Route::get('/report/pertahun/stok/bahan-print', 'ReportController@stokBahanPertahunPrint');
 
         // Account
         Route::get('/account', 'AccountController@index');

@@ -227,7 +227,7 @@ class Produk extends Model
     {
         $produks = self::leftJoin('produk_details', 'produks.id', '=', 'produk_details.produk_id')
             ->whereNull('produk_details.id')
-            ->select(['produks.id', 'produks.nama'])->get();
+            ->select(['produks.id', 'produks.nama', 'produks.satuan'])->get();
 
         $CTanggal = Carbon::createFromFormat('Y-m-d h:i:s', $tanggal.' 00:00:00');
         $CYesterday = $CTanggal->copy()->addDays(-1);

@@ -168,7 +168,7 @@ class Bahan extends Model
 
     protected static function AmbilStokSebelumnya($tanggal)
     {
-        $bahans = self::select(['bahans.id', 'bahans.nama'])->get();
+        $bahans = self::select(['bahans.id', 'bahans.nama', 'bahans.satuan'])->get();
 
         $CTanggal = Carbon::createFromFormat('Y-m-d h:i:s', $tanggal.' 00:00:00');
         $CYesterday = $CTanggal->copy()->addDays(-1);
