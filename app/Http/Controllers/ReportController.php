@@ -413,6 +413,10 @@ class ReportController extends Controller
 
     public function stok(Request $request)
     {
+        if( Gate::denies('report.pertanggal.stok') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_stok($request);
 
         return view(config('app.template').'.report.pertanggal-stok', $data);
@@ -420,6 +424,10 @@ class ReportController extends Controller
 
     public function stokPrint(Request $request)
     {
+        if( Gate::denies('report.pertanggal.stok') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_stok($request);
 
         $print = new \App\Libraries\MutasiStok([
@@ -445,6 +453,10 @@ class ReportController extends Controller
 
     public function stokBahan(Request $request) // bahan
     {
+        if( Gate::denies('report.pertanggal.stok') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_stokBahan($request);
 
         return view(config('app.template').'.report.pertanggal-stokbahan', $data);
@@ -452,6 +464,10 @@ class ReportController extends Controller
 
     public function stokBahanPrint(Request $request) // bahan
     {
+        if( Gate::denies('report.pertanggal.stok') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_stokBahan($request);
 
         $print = new \App\Libraries\MutasiStok([
@@ -957,6 +973,10 @@ class ReportController extends Controller
 
     public function stokPeriode(Request $request)
     {
+        if( Gate::denies('report.periode.stok') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_stokPeriode($request);
 
         return view(config('app.template').'.report.periode-stok', $data);
@@ -964,6 +984,10 @@ class ReportController extends Controller
 
     public function stokPeriodePrint(Request $request)
     {
+        if( Gate::denies('report.periode.stok') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_stokPeriode($request);
 
         $print = new \App\Libraries\MutasiStok([
@@ -991,6 +1015,10 @@ class ReportController extends Controller
 
     public function stokBahanPeriode(Request $request)
     {
+        if( Gate::denies('report.periode.stok') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_stokBahanPeriode($request);
 
         return view(config('app.template').'.report.periode-stokbahan', $data);
@@ -998,6 +1026,10 @@ class ReportController extends Controller
 
     public function stokBahanPeriodePrint(Request $request)
     {
+        if( Gate::denies('report.periode.stok') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_stokBahanPeriode($request);
 
         $print = new \App\Libraries\MutasiStok([
@@ -1508,6 +1540,10 @@ class ReportController extends Controller
 
     public function stokPerbulan(Request $request)
     {
+        if( Gate::denies('report.perbulan.stok') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_stokPerbulan($request);
 
         return view(config('app.template').'.report.perbulan-stok', $data);
@@ -1515,6 +1551,10 @@ class ReportController extends Controller
 
     public function stokPerbulanPrint(Request $request)
     {
+        if( Gate::denies('report.perbulan.stok') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_stokPerbulan($request);
 
         $print = new \App\Libraries\MutasiStok([
@@ -1542,6 +1582,10 @@ class ReportController extends Controller
 
     public function stokBahanPerbulan(Request $request)
     {
+        if( Gate::denies('report.perbulan.stok') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_stokBahanPerbulan($request);
 
         return view(config('app.template').'.report.perbulan-stokbahan', $data);
@@ -1549,6 +1593,10 @@ class ReportController extends Controller
 
     public function stokBahanPerbulanPrint(Request $request)
     {
+        if( Gate::denies('report.perbulan.stok') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_stokBahanPerbulan($request);
 
         $print = new \App\Libraries\MutasiStok([
@@ -2052,6 +2100,10 @@ class ReportController extends Controller
 
     public function stokPertahun(Request $request)
     {
+        if( Gate::denies('report.pertahun.stok') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_stokPertahun($request);
 
         return view(config('app.template').'.report.pertahun-stok', $data);
@@ -2059,6 +2111,10 @@ class ReportController extends Controller
 
     public function stokPertahunPrint(Request $request)
     {
+        if( Gate::denies('report.pertahun.stok') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_stokPertahun($request);
 
         $print = new \App\Libraries\MutasiStok([
@@ -2086,6 +2142,10 @@ class ReportController extends Controller
 
     public function stokBahanPertahun(Request $request)
     {
+        if( Gate::denies('report.pertahun.stok') ){
+            return view(config('app.template').'.error.403');
+        }
+
         $data = $this->_stokBahanPertahun($request);
 
         return view(config('app.template').'.report.pertahun-stokbahan', $data);
@@ -2093,6 +2153,10 @@ class ReportController extends Controller
 
     public function stokBahanPertahunPrint(Request $request)
     {
+        if( Gate::denies('report.pertahun.stok') ){
+            return view(config('app.template').'.error.403');
+        }
+        
         $data = $this->_stokBahanPertahun($request);
 
         $print = new \App\Libraries\MutasiStok([

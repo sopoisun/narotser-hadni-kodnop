@@ -178,6 +178,18 @@
                                 @can('report.pertanggal.adjustment')
                                 <li class="{{ set_active('report/pertanggal/adjustment') }}"><a href="{{ url('/report/pertanggal/adjustment') }}">Laporan Adjustment</a></li>
                                 @endcan
+                                @can('report.pertanggal.stok')
+                                <li class="{{ set_active('report/pertanggal/stok*') }}">
+                                    <a href="javascript:;">
+                                    Mutasi Stok
+                                    <span class="arrow"></span>
+                                    </a>
+                                    <ul class="sub-menu">
+                                        <li class="{{ set_active('report/pertanggal/stok/produk') }}"><a href="{{ url('/report/pertanggal/stok/produk') }}">Produk</a></li>
+                                        <li class="{{ set_active('report/pertanggal/stok/bahan') }}"><a href="{{ url('/report/pertanggal/stok/bahan') }}">Bahan</a></li>
+                                    </ul>
+                                </li>
+                                @endcan
                                 @can('report.pertanggal.karyawan')
                                 <li class="{{ set_active('report/pertanggal/karyawan') }}"><a href="{{ url('/report/pertanggal/karyawan') }}">Laporan Karyawan</a></li>
                                 @endcan
@@ -218,6 +230,18 @@
                                 @endcan
                                 @can('report.periode.adjustment')
                                 <li class="{{ set_active('report/periode/adjustment') }}"><a href="{{ url('/report/periode/adjustment') }}">Laporan Adjustment</a></li>
+                                @endcan
+                                @can('report.periode.stok')
+                                <li class="{{ set_active('report/periode/stok*') }}">
+                                    <a href="javascript:;">
+                                    Mutasi Stok
+                                    <span class="arrow"></span>
+                                    </a>
+                                    <ul class="sub-menu">
+                                        <li class="{{ set_active('report/periode/stok/produk') }}"><a href="{{ url('/report/periode/stok/produk') }}">Produk</a></li>
+                                        <li class="{{ set_active('report/periode/stok/bahan') }}"><a href="{{ url('/report/periode/stok/bahan') }}">Bahan</a></li>
+                                    </ul>
+                                </li>
                                 @endcan
                                 @can('report.periode.karyawan')
                                 <li class="{{ set_active('report/periode/karyawan') }}"><a href="{{ url('/report/periode/karyawan') }}">Laporan Karyawan</a></li>
@@ -263,6 +287,18 @@
                                 @can('report.perbulan.adjustment')
                                 <li class="{{ set_active('report/perbulan/adjustment') }}"><a href="{{ url('/report/perbulan/adjustment') }}">Laporan Adjustment</a></li>
                                 @endcan
+                                @can('report.perbulan.stok')
+                                <li class="{{ set_active('report/perbulan/stok*') }}">
+                                    <a href="javascript:;">
+                                    Mutasi Stok
+                                    <span class="arrow"></span>
+                                    </a>
+                                    <ul class="sub-menu">
+                                        <li class="{{ set_active('report/perbulan/stok/produk') }}"><a href="{{ url('/report/perbulan/stok/produk') }}">Produk</a></li>
+                                        <li class="{{ set_active('report/perbulan/stok/bahan') }}"><a href="{{ url('/report/perbulan/stok/bahan') }}">Bahan</a></li>
+                                    </ul>
+                                </li>
+                                @endcan
                                 @can('report.perbulan.karyawan')
                                 <li class="{{ set_active('report/perbulan/karyawan') }}"><a href="{{ url('/report/perbulan/karyawan') }}">Laporan Karyawan</a></li>
                                 @endcan
@@ -306,6 +342,18 @@
                                 @endcan
                                 @can('report.pertahun.adjustment')
                                 <li class="{{ set_active('report/pertahun/adjustment') }}"><a href="{{ url('/report/pertahun/adjustment') }}">Laporan Adjustment</a></li>
+                                @endcan
+                                @can('report.pertahun.stok')
+                                <li class="{{ set_active('report/pertahun/stok*') }}">
+                                    <a href="javascript:;">
+                                    Mutasi Stok
+                                    <span class="arrow"></span>
+                                    </a>
+                                    <ul class="sub-menu">
+                                        <li class="{{ set_active('report/pertahun/stok/produk') }}"><a href="{{ url('/report/pertahun/stok/produk') }}">Produk</a></li>
+                                        <li class="{{ set_active('report/pertahun/stok/bahan') }}"><a href="{{ url('/report/pertahun/stok/bahan') }}">Bahan</a></li>
+                                    </ul>
+                                </li>
                                 @endcan
                                 @can('report.pertahun.karyawan')
                                 <li class="{{ set_active('report/pertahun/karyawan') }}"><a href="{{ url('/report/pertahun/karyawan') }}">Laporan Karyawan</a></li>
