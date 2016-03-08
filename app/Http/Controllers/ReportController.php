@@ -415,13 +415,14 @@ class ReportController extends Controller
     {
         $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
 
-        $produks = \App\Produk::leftJoin('produk_details', 'produks.id', '=', 'produk_details.produk_id')
-            ->whereNull('produk_details.id')
-            ->select(['produks.id', 'produks.nama'])->get();
+        return \App\Produk::MutasiStok($tanggal);
+    }
 
-        $before = \App\Produk::AmbilStokSebelumnya($produks, $tanggal);
+    public function stokBahan(Request $request) // bahan
+    {
+        $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
 
-        return \App\Produk::AmbilStokSekarang($before, $tanggal, $tanggal);
+        return \App\Bahan::MutasiStok($tanggal);
     }
 
     public function karyawan(Request $request)
@@ -902,6 +903,22 @@ class ReportController extends Controller
                 'reduction' => array_merge($produk_reduction->toArray(), $bahan_reduction->toArray()),
             ],
         ];
+    }
+
+    public function stokPeriode(Request $request)
+    {
+        $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
+        $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : $tanggal;
+
+        return \App\Produk::MutasiStok($tanggal, $to_tanggal);
+    }
+
+    public function stokBahanPeriode(Request $request)
+    {
+        $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
+        $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : $tanggal;
+
+        return \App\Bahan::MutasiStok($tanggal, $to_tanggal);
     }
 
     public function karyawanPeriode(Request $request)
@@ -1387,6 +1404,24 @@ class ReportController extends Controller
         ];
     }
 
+    public function stokPerbulan(Request $request)
+    {
+        $bulan  = $request->get('bulan') ? $request->get('bulan') : date('Y-m');
+        $start  = Carbon::createFromFormat('Y-m', $bulan)->startOfMonth();
+        $end    = Carbon::createFromFormat('Y-m', $bulan)->endOfMonth();
+
+        return \App\Produk::MutasiStok($start->format('Y-m-d'), $end->format('Y-m-d'));
+    }
+
+    public function stokBahanPerbulan(Request $request)
+    {
+        $bulan  = $request->get('bulan') ? $request->get('bulan') : date('Y-m');
+        $start  = Carbon::createFromFormat('Y-m', $bulan)->startOfMonth();
+        $end    = Carbon::createFromFormat('Y-m', $bulan)->endOfMonth();
+
+        return \App\Bahan::MutasiStok($start->format('Y-m-d'), $end->format('Y-m-d'));
+    }
+
     public function karyawanPerbulan(Request $request)
     {
         if( Gate::denies('report.perbulan.karyawan') ){
@@ -1861,6 +1896,24 @@ class ReportController extends Controller
                 'reduction' => array_merge($produk_reduction->toArray(), $bahan_reduction->toArray()),
             ],
         ];
+    }
+
+    public function stokPertahun(Request $request)
+    {
+        $tahun  = $request->get('tahun') ? $request->get('tahun') : date('Y-m');
+        $start  = Carbon::parse('first day of January '.$tahun);
+        $end    = Carbon::parse('last day of December '.$tahun);
+
+        return \App\Produk::MutasiStok($start->format('Y-m-d'), $end->format('Y-m-d'));
+    }
+
+    public function stokBahanPertahun(Request $request)
+    {
+        $tahun  = $request->get('tahun') ? $request->get('tahun') : date('Y-m');
+        $start  = Carbon::parse('first day of January '.$tahun);
+        $end    = Carbon::parse('last day of December '.$tahun);
+
+        return \App\Bahan::MutasiStok($start->format('Y-m-d'), $end->format('Y-m-d'));
     }
 
     public function karyawanPertahun(Request $request)

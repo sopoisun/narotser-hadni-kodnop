@@ -164,8 +164,71 @@ class Produk extends Model
             ->groupBy('produks.id');
     }
 
-    public static function AmbilStokSebelumnya($produks, $tanggal)
+    public static function MutasiStok($tanggal1, $tanggal2 = "")
     {
+        $stokSebelumnya = self::AmbilStokSebelumnya($tanggal1);
+
+        if( $tanggal2 == ""){
+            $tanggal2 = $tanggal1;
+        }
+
+        $adjustmentIncrease = self::_adjustmentIncrease_Stok($tanggal1, $tanggal2);
+        $adjustmentReduction = self::_adjustmentReduction_Stok($tanggal1, $tanggal2);
+        $pembelian = self::_pembelian($tanggal1, $tanggal2);
+        $penjualan = self::_penjualan($tanggal1, $tanggal2);
+
+        $display = [];
+        foreach ($stokSebelumnya as $produk) {
+            $row = [];
+
+            $adjustment_increase = 0;
+            $idx = array_search($produk['id'], array_column($adjustmentIncrease, 'id'));
+            if (false !== $idx) {
+                $adjustment_increase = $adjustmentIncrease[$idx]['qty'];
+            }
+            $row['adjustment_increase'] = $adjustment_increase;
+
+            $adjustment_reduction = 0;
+            $idx = array_search($produk['id'], array_column($adjustmentReduction, 'id'));
+            if (false !== $idx) {
+                $adjustment_reduction = $adjustmentReduction[$idx]['qty'];
+            }
+            $row['adjustment_reduction'] = $adjustment_reduction;
+
+            $_pembelian = 0;
+            $idx = array_search($produk['id'], array_column($pembelian, 'id'));
+            if (false !== $idx) {
+                $_pembelian = $pembelian[$idx]['qty'];
+            }
+            $row['pembelian'] = $_pembelian;
+
+            $_penjualan = 0;
+            $idx = array_search($produk['id'], array_column($penjualan, 'id'));
+            if (false !== $idx) {
+                $_penjualan = $penjualan[$idx]['qty'];
+            }
+            $row['penjualan'] = $_penjualan;
+
+            $row['sisa'] = array_sum([
+                $produk['before'],
+                $adjustment_increase,
+                -abs($adjustment_reduction),
+                $_pembelian,
+                -abs($_penjualan),
+            ]);
+
+            $display[] = $produk + $row;
+        }
+
+        return $display;
+    }
+
+    protected static function AmbilStokSebelumnya($tanggal)
+    {
+        $produks = self::leftJoin('produk_details', 'produks.id', '=', 'produk_details.produk_id')
+            ->whereNull('produk_details.id')
+            ->select(['produks.id', 'produks.nama'])->get();
+
         $CTanggal = Carbon::createFromFormat('Y-m-d h:i:s', $tanggal.' 00:00:00');
         $CYesterday = $CTanggal->copy()->addDays(-1);
         $yesterday  = $CYesterday->format('Y-m-d');
@@ -240,59 +303,6 @@ class Produk extends Model
         return $display;
     }
 
-    public static function AmbilStokSekarang($stokSebelumnya, $tanggal1, $tanggal2)
-    {
-        $adjustmentIncrease = self::_adjustmentIncrease_Stok($tanggal1, $tanggal2);
-        $adjustmentReduction = self::_adjustmentReduction_Stok($tanggal1, $tanggal2);
-        $pembelian = self::_pembelian($tanggal1, $tanggal2);
-        $penjualan = self::_penjualan($tanggal1, $tanggal2);
-
-        $display = [];
-        foreach ($stokSebelumnya as $produk) {
-            $row = [];
-
-            $adjustment_increase = 0;
-            $idx = array_search($produk['id'], array_column($adjustmentIncrease, 'id'));
-            if (false !== $idx) {
-                $adjustment_increase = $adjustmentIncrease[$idx]['qty'];
-            }
-            $row['adjustment_increase'] = $adjustment_increase;
-
-            $adjustment_reduction = 0;
-            $idx = array_search($produk['id'], array_column($adjustmentReduction, 'id'));
-            if (false !== $idx) {
-                $adjustment_reduction = $adjustmentReduction[$idx]['qty'];
-            }
-            $row['adjustment_reduction'] = $adjustment_reduction;
-
-            $_pembelian = 0;
-            $idx = array_search($produk['id'], array_column($pembelian, 'id'));
-            if (false !== $idx) {
-                $_pembelian = $pembelian[$idx]['qty'];
-            }
-            $row['pembelian'] = $_pembelian;
-
-            $_penjualan = 0;
-            $idx = array_search($produk['id'], array_column($penjualan, 'id'));
-            if (false !== $idx) {
-                $_penjualan = $penjualan[$idx]['qty'];
-            }
-            $row['penjualan'] = $_penjualan;
-
-            $row['sisa'] = array_sum([
-                $produk['before'],
-                $adjustment_increase,
-                -abs($adjustment_reduction),
-                $_pembelian,
-                -abs($_penjualan),
-            ]);
-
-            $display[] = $produk + $row;
-        }
-
-        return $display;
-    }
-
     protected static function _adjustmentIncrease_Stok($tanggal1, $tanggal2)
     {
         return \App\AdjustmentDetail::join('produks', 'adjustment_details.relation_id', '=', 'produks.id')
@@ -313,7 +323,7 @@ class Produk extends Model
             ->join('adjustments', 'adjustment_details.adjustment_id', '=', 'adjustments.id')
             ->whereBetween('adjustments.tanggal', [$tanggal1, $tanggal2])
             ->where('type', 'produk')
-            ->where('state', 'increase')
+            ->where('state', 'reduction')
             ->groupBy('produks.id')
             ->select([
                 'produks.id', 'produks.nama',
