@@ -448,7 +448,7 @@ class ApiController extends Controller
                     DB::raw('(order_details.harga_jual * (order_details.qty - ifnull(order_detail_returns.qty, 0)))subtotal'),
                 ])->get();
 
-            $order = Order::with('place.place')->find($id);
+            $order = Order::with('place.place.kategori')->find($id);
 
             $data = [];
             $i = 0;
@@ -469,7 +469,7 @@ class ApiController extends Controller
                     $i++;
                     array_push($data, [
                         'no'            => $i,
-                        'nama_produk'   => "Reservasi ".$op->place->nama,
+                        'nama_produk'   => "Reservasi ".$op->place->nama." - ".$op->place->kategori->nama,
                         'harga'         => number_format($op->harga, 0, ",", "."),
                         'qty'           => 1,
                         'subtotal'      => number_format($op->harga, 0, ",", "."),
@@ -484,7 +484,7 @@ class ApiController extends Controller
 
                 array_push($data, [
                     'no'            => $i,
-                    'nama_produk'   => "Service Waiters",
+                    'nama_produk'   => "Service",
                     'harga'         => number_format($order->bayar->service_cost, 0, ",", "."),
                     'qty'           => 1,
                     'subtotal'      => number_format($order->bayar->service_cost, 0, ",", "."),
@@ -492,7 +492,7 @@ class ApiController extends Controller
             }/*else{
                 array_push($data, [
                     'no'            => $i,
-                    'nama_produk'   => "Service Waiters",
+                    'nama_produk'   => "Service",
                     'harga'         => number_format(setting()->service_cost, 0, ",", "."),
                     'qty'           => 1,
                     'subtotal'      => number_format(setting()->service_cost, 0, ",", "."),
