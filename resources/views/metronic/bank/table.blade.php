@@ -73,7 +73,7 @@
                                     <a href="{{ url('/bank/edit/'.$bank->id) }}" class="btn btn-sm yellow"><i class="icon-edit"></i></a>
                                     @endcan
                                     @can('bank.delete')
-                                    <a href="{{ url('/bank/delete/'.$bank->id) }}" class="btn btn-sm red" onclick="return confirm('Yakin hapus {{ $bank->nama }} ??')"><i class="icon-edit"></i></a>
+                                    <a href="{{ url('/bank/delete/'.$bank->id) }}" class="btn btn-sm red" onclick="return confirm('Yakin hapus {{ $bank->nama }} ??')"><i class="icon-trash"></i></a>
                                     @endcan
                                 </td>
                             </tr>

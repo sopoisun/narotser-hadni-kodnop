@@ -181,7 +181,7 @@ class UserController extends Controller
 
         $karyawan_id = $user->karyawan->id;
 
-        if( $user->update(['active', 0]) ){
+        if( $user->update(['active' => 0]) ){
 
             DB::statement("UPDATE karyawans SET `user_id` = NULL where `id` = '$karyawan_id'");
 

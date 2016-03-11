@@ -421,7 +421,7 @@
                 data: function (term, page) {
                     return {
                         q: term, // search term
-                        page: page,
+                        //page: page,
                         except: existBahan(),
                     };
                 },

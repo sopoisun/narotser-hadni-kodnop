@@ -135,7 +135,7 @@ class PlaceController extends Controller
 
         $place = Place::find($id);
 
-        if( $place && $place->update(['active', 0]) ){
+        if( $place && $place->update(['active' => 0]) ){
             return redirect()->back()->with('succcess', 'Sukses hapus data '.$place->nama.'.');
         }
 

@@ -252,7 +252,7 @@ class ProdukController extends Controller
 
         $produk = Produk::find($id);
 
-        if( $produk && $produk->update(['active', 0]) ){
+        if( $produk && $produk->update(['active' => 0]) ){
             ProdukDetail::where('produk_id', $id)->delete();
             return redirect()->back()->with('succcess', 'Sukses hapus data produk "'.$produk->nama.'".');
         }

@@ -122,7 +122,7 @@ class ProdukKategoriController extends Controller
 
         $kategori = ProdukKategori::find($id);
 
-        if( $kategori && $kategori->update(['active', 0]) ){
+        if( $kategori && $kategori->update(['active' => 0]) ){
             return redirect()->back()->with('succcess', 'Sukses hapus data '.$kategori->nama.'.');
         }
 

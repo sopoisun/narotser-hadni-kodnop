@@ -149,7 +149,7 @@ class BankController extends Controller
 
         $bank = Bank::find($id);
 
-        if( $bank && $bank->update(['active', 0]) ){
+        if( $bank && $bank->update(['active' => 0]) ){
             return redirect()->back()->with('succcess', 'Sukses hapus data bank '.$bank->nama_bank.'.');
         }
 

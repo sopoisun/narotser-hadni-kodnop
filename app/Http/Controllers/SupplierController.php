@@ -126,7 +126,7 @@ class SupplierController extends Controller
 
         $supplier = Supplier::find($id);
 
-        if( $supplier && $supplier->update(['active', 0]) ){
+        if( $supplier && $supplier->update(['active' => 0]) ){
             return redirect()->back()->with('succcess', 'Sukses hapus data Supplier '.$supplier->nama.'.');
         }
 
