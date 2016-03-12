@@ -98,6 +98,7 @@ class SettingController extends Controller
 
         if( in_array("banks", $tables) ){
             DB::table('banks')->truncate();
+            DB::table('bank_taxes')->truncate();
         }
 
         if( in_array("customers", $tables) ){
