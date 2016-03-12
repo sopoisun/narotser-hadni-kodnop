@@ -91,6 +91,10 @@
                         </tbody>
                     </table>
                 </div>
+                <div style="float:right;">
+                    @include('metronic.paginator',['paginator' => $customers])
+                </div>
+                <div style="clear:both;"></div>
             </div>
         </div>
         <!-- END SAMPLE TABLE PORTLET-->

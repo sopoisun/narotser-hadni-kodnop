@@ -51,7 +51,7 @@
             </div>
             <div class="portlet-body">
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover">
+                    <table class="table table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -66,8 +66,14 @@
                         <tbody>
                             {{--*/ $no = 0; /*--}}
                             @foreach($pembelians as $pembelian)
-                            {{--*/ $no++; /*--}}
-                            <tr>
+                            {{--*/
+                                $no++;
+                                $txt = '';
+                                if(collect($pembelian->detail->toArray())->pluck('harga')->sum() > collect($pembelian->bayar->toArray())->pluck('nominal')->sum()){
+                                    $txt = 'class="danger"';
+                                }
+                            /*--}}
+                            <tr {!! $txt !!}>
                                 <td>{{ $no }}</td>
                                 <td>{{ $pembelian->tanggal->format('d M Y') }}</td>
                                 <td>{{ $pembelian->karyawan->nama }}</td>
@@ -91,6 +97,10 @@
                         </tbody>
                     </table>
                 </div>
+                <div style="float:right;">
+                    @include('metronic.paginator',['paginator' => $pembelians])
+                </div>
+                <div style="clear:both;"></div>
             </div>
         </div>
         <!-- END SAMPLE TABLE PORTLET-->

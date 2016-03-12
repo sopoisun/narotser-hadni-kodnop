@@ -41,7 +41,7 @@ class CustomerController extends Controller
                             DB::raw('sum(temp_orders.total_penjualan)as total')
                         ])
                         ->groupBy('customers.id')
-                        ->get();
+                        ->paginate(2);
             $data       = ['customers' => $customers];
             return view(config('app.template').'.customer.table', $data);
         }elseif( $type == 'unregistered' ){

@@ -68,8 +68,12 @@
                             {{--*/
                                 $no++;
                                 $total += $produk->hpp*$produk->sisa_stok;
+                                $txt = '';
+                                if( $produk->qty_warning > $produk->sisa_stok ){
+                                    $txt = 'class="danger"';
+                                }
                             /*--}}
-                            <tr>
+                            <tr {!! $txt !!}>
                                 <td>{{ $no }}</td>
                                 <td>{{ $produk->nama }}</td>
                                 <td>{{ $produk->sisa_stok.' '.$produk->satuan }}</td>

@@ -75,8 +75,14 @@
                         <tbody>
                             {{--*/ $no = 0; /*--}}
                             @foreach($produks as $produk)
-                            {{--*/ $no++; /*--}}
-                            <tr>
+                            {{--*/
+                                $no++;
+                                $txt = '';
+                                if( setting()->laba_procentage_warning > $produk->laba_procentage ){
+                                    $txt = 'class="danger"';
+                                }
+                            /*--}}
+                            <tr {!! $txt !!}>
                                 <td>{{ $no }}</td>
                                 <td>{{ $produk->nama }}</td>
                                 @can('produk.stok')

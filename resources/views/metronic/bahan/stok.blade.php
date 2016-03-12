@@ -68,8 +68,12 @@
                             {{--*/
                                 $no++;
                                 $total += $bahan->harga*$bahan->sisa_stok;
+                                $txt = '';
+                                if( $bahan->qty_warning > $bahan->sisa_stok ){
+                                    $txt = 'class="danger"';
+                                }
                             /*--}}
-                            <tr>
+                            <tr {!! $txt !!}>
                                 <td>{{ $no }}</td>
                                 <td>{{ $bahan->nama }}</td>
                                 <td>{{ $bahan->sisa_stok.' '.$bahan->satuan }}</td>

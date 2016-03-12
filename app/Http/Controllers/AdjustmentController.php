@@ -22,7 +22,8 @@ class AdjustmentController extends Controller
         }
 
         $data = [
-            'adjustments' => Adjustment::with('karyawan', 'detail')->get(),
+            'adjustments' => Adjustment::with('karyawan', 'detail')
+                ->orderBy('tanggal', 'desc')->paginate(20),
         ];
 
         return view(config('app.template').'.adjustment.table', $data);
