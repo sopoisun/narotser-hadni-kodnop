@@ -438,11 +438,16 @@
         dropdownCssClass: "bigdrop",
         escapeMarkup: function (markup) { return markup; },
         formatSelection: function(e) {
-            return e.nama || e.text
+            //return e.nama+" - "+e.kategori.nama || e.text
+            if( typeof e.nama != "undefined" ){
+                return e.nama+" - "+e.kategori.nama;
+            }else{
+                return e.text;
+            }
         },
         formatResult: function(e) {
             if (e.loading) return e.text;
-            return "<div>"+e.nama+"</div>";
+            return "<div>"+e.nama+" - "+e.kategori.nama+"</div>";
         },
     });
     /* End Search Place */

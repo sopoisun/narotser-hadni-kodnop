@@ -95,7 +95,7 @@
                                                     {{--*/ $i++; /*--}}
                                                     <tr>
                                                         <td>{{ $i }}</td>
-                                                        <td>{{ "Reservasi ".$op['place']['nama'] }}</td>
+                                                        <td>{{ "Reservasi ".$op['place']['nama'].' - '.$op['place']['kategori']['nama'] }}</td>
                                                         <td style="text-align:right;">{{ number_format($op['harga'], 0, ',', '.') }}</td>
                                                     </tr>
                                                     @endforeach

@@ -70,7 +70,7 @@ class ReportController extends Controller
         $order = Order::find($id);
 
         if( $order->state == 'Closed' ){
-            $order->load('tax', 'bayarBank', 'bayar', 'place.place');
+            $order->load('tax', 'bayarBank', 'bayar', 'place.place.kategori');
 
             $orderDetail = OrderDetail::join('produks', 'order_details.produk_id', '=', 'produks.id')
                 ->leftJoin('order_detail_returns', 'order_details.id', '=', 'order_detail_returns.order_detail_id')

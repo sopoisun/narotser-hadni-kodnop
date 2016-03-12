@@ -311,7 +311,7 @@
                                     {{--*/ $i++; /*--}}
                                     <tr>
                                         <td>{{ $i }}</td>
-                                        <td colspan="5">Service Waiters</td>
+                                        <td colspan="5">Service</td>
                                         <td style="text-align:right;">{{ number_format($order->bayar->service_cost, 0, ',', '.') }}</td>
                                         @can('order.update')
                                         <td></td>

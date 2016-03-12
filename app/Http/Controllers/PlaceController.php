@@ -145,11 +145,11 @@ class PlaceController extends Controller
     public function ajaxLoad(Request $request)
     {
         if( $request->get('id') ){
-            return Place::where('active', 1)->where('id', $request->get('id'))->first();
+            return Place::with(['kategori'])->where('active', 1)->where('id', $request->get('id'))->first();
         }elseif($request->get('ids')){
-            return Place::where('active', 1)->whereIn('id', explode('+', $request->get('ids')))->get();
+            return Place::with('kategori')->where('active', 1)->whereIn('id', explode('+', $request->get('ids')))->get();
         }else{
-            return Place::where('nama', 'like', '%'.$request->get('q').'%')->where('active', 1)
+            return Place::with('kategori')->where('nama', 'like', '%'.$request->get('q').'%')->where('active', 1)
                         ->get();
         }
     }

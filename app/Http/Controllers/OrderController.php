@@ -426,7 +426,7 @@ class OrderController extends Controller
             return view(config('app.template').'.error.403');
         }
 
-        $order = Order::with(['karyawan', 'detail.produk', 'detail.detailReturn', 'place.place'])->find($id);
+        $order = Order::with(['karyawan', 'detail.produk', 'detail.detailReturn', 'place.place.kategori'])->find($id);
 
         if( !$order ){
             return view(config('app.template').'.error.404');
@@ -450,7 +450,7 @@ class OrderController extends Controller
         foreach($order->place as $op){
             if( $op->harga > 0 ){
                 array_push($orderPlaces, [
-                    'nama'  => $op->place->nama,
+                    'nama'  => $op->place->nama.' - '.$op->place->kategori->nama,
                     'harga' => $op->harga,
                 ]);
             }
@@ -558,7 +558,7 @@ class OrderController extends Controller
         if( $request->get('id') ){
             $id = $request->get('id'); // order_id
 
-            $order = Order::with('customer', 'bayar.karyawan', 'tax.tax', 'bayarBank.bank', 'place.place')->find($id);
+            $order = Order::with('customer', 'bayar.karyawan', 'tax.tax', 'bayarBank.bank', 'place.place.kategori')->find($id);
 
             if( !$order ){
                 return view(config('app.template').'.error.404');
@@ -577,7 +577,7 @@ class OrderController extends Controller
             foreach($order->place as $op){
                 if( $op->harga > 0 ){
                     array_push($orderPlaces, [
-                        'nama'  => $op->place->nama,
+                        'nama'  => $op->place->nama.' - '.$op->place->kategori->nama,
                         'harga' => $op->harga,
                     ]);
                 }
@@ -777,9 +777,9 @@ class OrderController extends Controller
     public function getPlace(Request $request)
     {
         if( $request->get('id') ){
-            return Place::where('active', 1)->where('id', $request->get('id'))->first();
+            return Place::with('kategori')->where('active', 1)->where('id', $request->get('id'))->first();
         }elseif($request->get('ids')){
-            return Place::where('active', 1)->whereIn('id', explode('+', $request->get('ids')))->get();
+            return Place::with('kategori')->where('active', 1)->whereIn('id', explode('+', $request->get('ids')))->get();
         }else{
             $tgl    = $request->get('date') ? $request->get('date') : date('Y-m-d');
             $tgl    = ( $tgl != "" ) ? $tgl : date('Y-m-d');
@@ -796,7 +796,8 @@ class OrderController extends Controller
                 $places = $places->whereNotNull('order_place_temp.order_id');
             }
 
-            $places = $places->where('nama', 'like', '%'.$request->get('q').'%')->where('active', 1)->get();
+            $places = $places->where('nama', 'like', '%'.$request->get('q').'%')
+                        ->where('active', 1)->with('kategori')->get();
 
             return $places;
         }
