@@ -16,7 +16,7 @@
                 <i class="icon-angle-right"></i>
             </li>
             <li>
-                <a href="{{ url('/tax') }}">Bank</a>
+                <a href="{{ url('/bank') }}">Bank</a>
                 <i class="icon-angle-right"></i>
             </li>
             <li><a href="javascript:void(0)">Ubah Bank</a></li>

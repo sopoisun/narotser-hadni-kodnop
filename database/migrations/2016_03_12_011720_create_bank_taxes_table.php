@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateBanksTable extends Migration
+class CreateBankTaxesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,10 +12,11 @@ class CreateBanksTable extends Migration
      */
     public function up()
     {
-        Schema::create('banks', function (Blueprint $table) {
+        Schema::create('bank_taxes', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('nama_bank');
-            $table->enum('active', [1, 0])->default(1);
+            $table->string('bank_id');
+            $table->enum('type', ['debit', 'credit_card'])->default('debit');
+            $table->float('tax')->default(0);
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ class CreateBanksTable extends Migration
      */
     public function down()
     {
-        Schema::drop('banks');
+        Schema::drop('bank_taxes');
     }
 }

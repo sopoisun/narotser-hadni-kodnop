@@ -418,12 +418,7 @@
     $("#type_bayar").change(function(){
         if($(this).val() == 'debit' || $(this).val() == 'credit_card'){
             $("#bank_id").removeAttr('disabled');
-            if( $(this).val() == 'credit_card' ){
-                LoadBank();
-            }else{
-                $("#tax_bayar_procentage").val(0);
-                $("#tax-bayar-label").html("Tax Bayar 0 %");
-            }
+            LoadBank();
         }else{
             $("#tax_bayar_procentage").val(0);
             $("#tax-bayar-label").html("Tax Bayar 0 %");
@@ -434,10 +429,8 @@
     });
 
     $("#bank_id").change(function(){
-        if( $("#type_bayar").val() == 'credit_card' ){
-            LoadBank();
-            HitungTotalAkhir();
-        }
+        LoadBank();
+        HitungTotalAkhir();
     });
 
     function LoadBank()
@@ -446,10 +439,10 @@
             url: "{{ url('/ajax/bank') }}",
             type: "GET",
             async: false,
-            data: { id : $("#bank_id").val() },
+            data: { id: $("#bank_id").val(), type: $("#type_bayar").val() },
             success: function(res){
-                $("#tax_bayar_procentage").val(res.credit_card_tax);
-                $("#tax-bayar-label").html("Tax Bayar "+res.credit_card_tax+" %");
+                $("#tax_bayar_procentage").val(res.tax);
+                $("#tax-bayar-label").html("Tax Bayar "+res.tax+" %");
             }
         })
     }

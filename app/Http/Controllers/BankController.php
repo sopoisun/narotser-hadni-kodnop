@@ -23,7 +23,7 @@ class BankController extends Controller
             return view(config('app.template').'.error.403');
         }
 
-        $data = ['banks' => Bank::where('active', 1)->get()];
+        $data = ['banks' => Bank::with('tax')->where('active', 1)->get()];
         return view(config('app.template').'.bank.table', $data);
     }
 
@@ -51,11 +51,14 @@ class BankController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'nama_bank' => 'required',
-            'credit_card_tax' => 'required|numeric',
+            'tax_debit' => 'required|numeric',
+            'tax_credit_card' => 'required|numeric',
         ], [
             'nama.required' => 'Nama bank tidak boleh kosong.',
-            'credit_card_tax.required' => 'Pajak kartu kredit tidak boleh kosong.',
-            'credit_card_tax.numeric' => 'Pajak kartu kredit harus angka.',
+            'tax_debit.required' => 'Pajak debit tidak boleh kosong.',
+            'tax_debit.numeric' => 'Pajak debit harus angka.',
+            'tax_credit_card.required' => 'Pajak kartu kredit tidak boleh kosong.',
+            'tax_credit_card.numeric' => 'Pajak kartu kredit harus angka.',
         ]);
 
         if($validator->fails()){
@@ -64,7 +67,22 @@ class BankController extends Controller
                 ->withInput();
         }
 
-        if( Bank::create($request->all()) ){
+        $bank = Bank::create($request->all());
+
+        if( $bank ){
+            \App\BankTax::insert([
+                [
+                    'bank_id' => $bank->id,
+                    'type' => 'debit',
+                    'tax' => $request->get('tax_debit'),
+                ],
+                [
+                    'bank_id' => $bank->id,
+                    'type' => 'credit_card',
+                    'tax' => $request->get('tax_credit_card'),
+                ],
+            ]);
+
             return redirect('/bank')->with('succcess', 'Sukses simpan data bank.');
         }
 
@@ -100,6 +118,13 @@ class BankController extends Controller
             return view(config('app.template').'.error.404');
         }
 
+        $bank->load('tax');
+
+        foreach($bank->tax as $bt){
+            $type = 'tax_'.$bt->type;
+            $bank->$type = $bt->tax;
+        }
+
         $data = ['bank' => $bank];
         return view(config('app.template').'.bank.update', $data);
     }
@@ -115,11 +140,14 @@ class BankController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'nama_bank' => 'required',
-            'credit_card_tax' => 'required|numeric',
+            'tax_debit' => 'required|numeric',
+            'tax_credit_card' => 'required|numeric',
         ], [
             'nama.required' => 'Nama bank tidak boleh kosong.',
-            'credit_card_tax.required' => 'Pajak kartu kredit tidak boleh kosong.',
-            'credit_card_tax.numeric' => 'Pajak kartu kredit harus angka.',
+            'tax_debit.required' => 'Pajak debit tidak boleh kosong.',
+            'tax_debit.numeric' => 'Pajak debit harus angka.',
+            'tax_credit_card.required' => 'Pajak kartu kredit tidak boleh kosong.',
+            'tax_credit_card.numeric' => 'Pajak kartu kredit harus angka.',
         ]);
 
         if($validator->fails()){
@@ -129,6 +157,15 @@ class BankController extends Controller
         }
 
         if( Bank::find($id)->update($request->all()) ){
+            $bankTax = \App\BankTax::where('bank_id', $id)->get();
+
+            foreach($bankTax as $bt){
+                $tax = $request->get('tax_'.$bt->type);
+                \App\BankTax::find($bt->id)->update([
+                    'tax' => $tax,
+                ]);
+            }
+
             return redirect('/bank')->with('succcess', 'Sukses ubah data bank.');
         }
 
@@ -159,9 +196,13 @@ class BankController extends Controller
     public function ajaxLoad(Request $request)
     {
         if( $request->get('id') ){
-            return Bank::where('active', 1)->where('id', $request->get('id'))->first();
+            return \App\BankTax::join('banks', 'bank_taxes.bank_id', '=', 'banks.id')
+                ->where('banks.active', 1)
+                    ->where('bank_id', $request->get('id'))
+                        ->where('type', $request->get('type'))
+                            ->first();
         }
 
-        return Bank::where('active', 1)->get();
+        return Bank::with('tax')->where('active', 1)->get();
     }
 }

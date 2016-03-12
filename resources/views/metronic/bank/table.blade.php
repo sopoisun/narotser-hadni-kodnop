@@ -56,6 +56,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Nama Bank</th>
+                                <th>Pajak Debit ( % )</th>
                                 <th>Pajak Kartu Kredit ( % )</th>
                                 <th>Action</th>
                             </tr>
@@ -67,7 +68,9 @@
                             <tr>
                                 <td>{{ $no }}</td>
                                 <td>{{ $bank->nama_bank }}</td>
-                                <td>{{ $bank->credit_card_tax.' %' }}</td>
+                                @foreach($bank->tax as $bankTax)
+                                <td>{{ $bankTax->tax.' %' }}</td>
+                                @endforeach
                                 <td>
                                     @can('bank.update')
                                     <a href="{{ url('/bank/edit/'.$bank->id) }}" class="btn btn-sm yellow"><i class="icon-edit"></i></a>
