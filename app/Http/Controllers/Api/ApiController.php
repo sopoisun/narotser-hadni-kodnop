@@ -132,16 +132,22 @@ class ApiController extends Controller
 
     public function bank()
     {
-        $banks = \App\Bank::where('active', 1)->get();
+        $banks = \App\Bank::with('tax')->where('active', 1)->get();
 
         $data = [];
         foreach($banks as $bank)
         {
-            array_push($data, [
+            $row = [
                 'bank_id' => $bank->id,
                 'nama_bank' => $bank->nama_bank,
-                'credit_card_tax' => $bank->credit_card_tax,
-            ]);
+            ];
+
+            foreach($bank->tax as $bt){
+                $type = 'tax_'.$bt->type;
+                $row[$type] = $bt->tax;
+            }
+
+            array_push($data, $row);
         }
 
         $display['bank'] = $data;
@@ -389,8 +395,7 @@ class ApiController extends Controller
                         'bank_id'   => $request->get('bank_id'),
                     ];
 
-                    $orderBayarBank['tax_procentage'] = ( $request->get('type_bayar') == 'credit_card' ) ?
-                                                            $request->get('tax_bayar_procentage') : 0;
+                    $orderBayarBank['tax_procentage'] = $request->get('tax_bayar_procentage');
                     \App\OrderBayarBank::create($orderBayarBank);
                 }
 

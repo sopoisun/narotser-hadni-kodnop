@@ -511,8 +511,7 @@ class OrderController extends Controller
                         'bank_id'   => $request->get('bank_id'),
                     ];
 
-                    $orderBayarBank['tax_procentage'] = ( $request->get('type_bayar') == 'credit_card' ) ?
-                                                            $request->get('tax_bayar_procentage') : 0;
+                    $orderBayarBank['tax_procentage'] = $request->get('tax_bayar_procentage');
                     OrderBayarBank::create($orderBayarBank);
                 }
 
