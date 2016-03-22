@@ -126,7 +126,8 @@ class PembelianController extends Controller
                     $oldStok    = $bahan->sisa_stok;
                     $inputPrice = $inHarga;
                     $inputStok  = $beliBahan[$bId]['stok'];
-                    $harga      = Pembulatan((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));
+                    //$harga      = Pembulatan((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));
+                    $harga      = ((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));
 
                     if( $harga != $bahan->harga ){
                         //echo "<pre>", print_r(['id' => $bId, 'nama' => $bahan->nama, 'harga' => $harga]), "</pre>";
@@ -170,7 +171,8 @@ class PembelianController extends Controller
                     $oldStok    = $produk->sisa_stok;
                     $inputPrice = $inHarga;
                     $inputStok  = $beliProduk[$pId]['stok'];
-                    $harga      = Pembulatan((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));
+                    //$harga      = Pembulatan((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));
+                    $harga      = ((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));
 
                     if( $harga != $produk->hpp  ){
                         //echo "<pre>", print_r(['id' => $pId, 'nama' => $produk->nama, 'harga' => $harga]), "</pre>";
