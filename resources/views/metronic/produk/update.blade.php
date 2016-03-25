@@ -172,7 +172,7 @@
                     </div>
                     <div class="form-actions">
                         <div class="col-md-offset-3 col-md-8">
-                            <button type="submit" class="btn blue">Simpan</button>
+                            <button type="submit" class="btn blue btnSubmit">Simpan</button>
                             {{ Form::hidden('produk_details', null, ['id' => 'produk_details']) }}
                         </div>
                     </div>

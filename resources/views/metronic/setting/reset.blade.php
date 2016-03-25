@@ -176,7 +176,7 @@
                 </div>
                 <div class="form-actions">
                     <div class="col-md-offset-2 col-md-8">
-                        <button type="submit" class="btn yellow">Reset Aplikasi</button>
+                        <button type="submit" class="btn yellow btnSubmit">Reset Aplikasi</button>
                     </div>
                 </div>
                 {!! Form::close() !!}

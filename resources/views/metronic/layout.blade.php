@@ -819,6 +819,10 @@
             // initiate layout and plugins
             App.init();
 
+            $(".btnSubmit").click(function(){
+              $(this).addClass("disabled");
+            });
+
             toastr.options.closeButton = true;
             toastr.options.positionClass = "toast-bottom-right";
             @if(Session::has('succcess'))

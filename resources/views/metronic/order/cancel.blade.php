@@ -41,6 +41,7 @@
     });
 
     $("#btnCancelOrder").click(function(e){
+        $(this).addClass('disabled');
         $.ajax({
             url: "{{ url('/ajax/order/'.$order_id.'/cancel') }}",
             type: "POST",

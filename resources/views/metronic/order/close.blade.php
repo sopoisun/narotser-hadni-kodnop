@@ -238,7 +238,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="col-md-offset-3 col-md-9">
-                                            <button type="submit" class="btn red" id="btnSaveitem">Simpan Pembayaran</button>
+                                            <button type="submit" class="btn red btnSubmit" id="btnSaveitem">Simpan Pembayaran</button>
                                         </div>
                                     </div>
                                     <div class="col-md-6">

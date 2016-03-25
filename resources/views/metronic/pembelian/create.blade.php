@@ -119,7 +119,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="col-md-offset-3 col-md-9">
-                                    <button type="submit" class="btn red">Simpan Pembelian</button>
+                                    <button type="submit" class="btn red btnSubmit">Simpan Pembelian</button>
                                     {{ Form::hidden('barangs', null, ['id' => 'barangs']) }}
                                 </div>
                             </div>

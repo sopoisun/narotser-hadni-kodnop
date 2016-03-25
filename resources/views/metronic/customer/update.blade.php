@@ -88,7 +88,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="col-md-offset-3 col-md-9">
-                                    <button type="submit" class="btn yellow">Simpan Data Customer</button>
+                                    <button type="submit" class="btn yellow btnSubmit">Simpan Data Customer</button>
                                 </div>
                             </div>
                             <div class="col-md-6"></div>

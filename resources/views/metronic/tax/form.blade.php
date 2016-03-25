@@ -11,5 +11,5 @@
     </div>
 </div>
 <div class="form-actions">
-    <button type="submit" class="btn yellow">Simpan</button>
+    <button type="submit" class="btn yellow btnSubmit">Simpan</button>
 </div>

@@ -89,7 +89,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="col-md-offset-3 col-md-9">
-                                    <button type="submit" class="btn red">Simpan Adjustment</button>
+                                    <button type="submit" class="btn red btnSubmit">Simpan Adjustment</button>
                                     {{ Form::hidden('adjustment_reduction', null, ['id' => 'adjustment_reduction']) }}
                                     {{ Form::hidden('adjustment_increase', null, ['id' => 'adjustment_increase']) }}
                                 </div>

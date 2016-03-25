@@ -37,6 +37,7 @@
     });
 
     $("#btnReturnItem").click(function(e){
+        $(this).addClass('disabled');
         $.ajax({
             url: "{{ url('/ajax/order/detail/return') }}",
             type: "POST",

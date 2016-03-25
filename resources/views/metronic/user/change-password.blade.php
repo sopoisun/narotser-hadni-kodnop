@@ -77,7 +77,7 @@
                 </div>
                 <div class="form-actions">
                     <div class="col-md-offset-2 col-md-8">
-                        <button type="submit" class="btn yellow">Simpan Perubahan</button>
+                        <button type="submit" class="btn yellow btnSubmit">Simpan Perubahan</button>
                     </div>
                 </div>
                 {!! Form::close() !!}

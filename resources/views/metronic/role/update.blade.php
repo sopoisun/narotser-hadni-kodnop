@@ -94,7 +94,7 @@
                 </div>
                 <div class="form-actions">
                     <div class="col-md-offset-2 col-md-8">
-                        <button type="submit" class="btn yellow">Simpan Role</button>
+                        <button type="submit" class="btn yellow btnSubmit">Simpan Role</button>
                     </div>
                 </div>
                 {!! Form::close() !!}

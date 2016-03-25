@@ -84,6 +84,7 @@
     })
 
     $("#btnMergeOrder").click(function(e){
+        $(this).addClass('disabled');
         var order_id = $("#order_id").val();
         if( order_id != "" ){
             var _use_place = $("#use_place").is(":checked") ? 1 : 0;

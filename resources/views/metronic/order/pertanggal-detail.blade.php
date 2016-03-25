@@ -226,7 +226,7 @@
                                     <div class="col-md-6">
                                         <div class="col-md-offset-3 col-md-9">
                                             @can('order.update')
-                                            <button type="submit" class="btn red" id="btnSaveitem">Simpan Pembayaran</button>
+                                            <button type="submit" class="btn red btnSubmit" id="btnSaveitem">Simpan Pembayaran</button>
                                             <a href="{{ url('/order/'.$id.'/rechange') }}" class="btn yellow" onclick="return confirm('Atur Ulang Order ??')">Rechange Order</a>
                                             @endcan
                                         </div>

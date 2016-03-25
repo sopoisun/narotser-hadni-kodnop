@@ -103,7 +103,7 @@
                 </div>
                 <div class="form-actions">
                     <div class="col-md-offset-2 col-md-8">
-                        <button type="submit" class="btn yellow">Simpan User</button>
+                        <button type="submit" class="btn yellow btnSubmit">Simpan User</button>
                     </div>
                 </div>
                 {!! Form::close() !!}
@@ -127,7 +127,7 @@ var karyawanSources = new Bloodhound({
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     prefetch: {
         url: "{{ url('/ajax/karyawan?foruser=Ya') }}",
-        cache: false,        
+        cache: false,
     },
     remote: {
         url: "{{ url('/ajax/karyawan?foruser=Ya&') }}?q=%QUERY",

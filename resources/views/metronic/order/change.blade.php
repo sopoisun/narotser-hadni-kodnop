@@ -87,7 +87,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="col-md-offset-3 col-md-9">
-                                    <button type="submit" class="btn red" id="btnSaveOrder">Simpan Order</button>
+                                    <button type="submit" class="btn red btnSubmit" id="btnSaveOrder">Simpan Order</button>
                                     {{ Form::hidden('order_details', null, ['id' => 'order_details']) }}
                                 </div>
                             </div>

@@ -84,7 +84,7 @@
                 </div>
                 <div class="form-actions">
                     <div class="col-md-offset-2 col-md-8">
-                        <button type="submit" class="btn yellow">Simpan User</button>
+                        <button type="submit" class="btn yellow btnSubmit">Simpan User</button>
                     </div>
                 </div>
                 {!! Form::close() !!}
