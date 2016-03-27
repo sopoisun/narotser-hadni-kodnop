@@ -711,7 +711,7 @@ class OrderController extends Controller
                 $denied = true;
             }
         }*/
-        $denied = true; // allow transaction with >=0 stok
+        $denied = false; // allow transaction with >=0 stok
 
         if( !$denied ){
             $saveSession = $request->only(['id', 'qty', 'harga', 'note']); // id as produk_id
