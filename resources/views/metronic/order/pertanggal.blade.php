@@ -95,7 +95,8 @@
                                 <th>#</th>
                                 <th>No. Nota</th>
                                 <th>Status</th>
-                                <th>Karyawan</th>
+                                <th>Kasir</th>
+                                <th>Waiters</th>
                                 <th>Act</th>
                             </tr>
                         </thead>
@@ -108,6 +109,7 @@
                                 <td>{{ $no }}</td>
                                 <td>{{ $order['nota'] }}</td>
                                 <td>{{ $order['state'] }}</td>
+                                <td>{{ $order['state'] == 'Closed' ?  $order['bayar']['karyawan']['nama'] : '--' }}</td>
                                 <td>{{ $order['karyawan']['nama'] }}</td>
                                 <td>
                                     @can('order.list.detail')

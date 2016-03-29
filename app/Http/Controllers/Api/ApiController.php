@@ -383,7 +383,7 @@ class ApiController extends Controller
         if( \App\OrderTax::create($orderTax) ){
             $orderBayar = [
                 'order_id'      => $id,
-                'karyawan_id'   => ( Auth::check() ? Auth::guard('api')->user()->karyawan->id : '1' ),
+                'karyawan_id'   => ( Auth::guard('api')->check() ? Auth::guard('api')->user()->karyawan->id : '1' ),
                 'service_cost'  => $request->get('service_cost'), //setting()->service_cost,
                 'diskon'        => ( $request->get('diskon') != '' ? $request->get('diskon') : 0 ),
                 'bayar'         => $request->get('bayar'),

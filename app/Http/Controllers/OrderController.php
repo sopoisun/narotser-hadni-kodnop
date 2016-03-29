@@ -538,7 +538,7 @@ class OrderController extends Controller
 
         $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
 
-        $orders = Order::with('karyawan')->where(DB::raw('SUBSTRING(tanggal, 1, 10)'), $tanggal)->get();
+        $orders = Order::with(['karyawan', 'bayar.karyawan'])->where(DB::raw('SUBSTRING(tanggal, 1, 10)'), $tanggal)->get();
 
         $data = [
             'tanggal' => Carbon::parse($tanggal),
