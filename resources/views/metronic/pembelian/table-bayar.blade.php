@@ -198,6 +198,9 @@
     $("#nominal").on('keyup', function(){
         if( $(this).val() != "" ){
             sisa = parseInt($("#harus_dibayar").val()) - parseInt($(this).val());
+            if( sisa < 0 ){
+                sisa = 0;
+            }
             $("#sisa").val(sisa);
         }else{
             $("#sisa").val("");

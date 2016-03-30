@@ -25,7 +25,7 @@ class PembelianBayarRequest extends Request
     {
         return [
             'tanggal' => 'required|date',
-            'nominal' => 'required|integer|min:1'
+            'nominal' => 'required|integer|min:1|less_than_eq:harus_dibayar'
         ];
     }
 

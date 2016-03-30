@@ -25,7 +25,7 @@ class PembelianRequest extends Request
     {
         return [
             'tanggal' => 'required|date',
-            'bayar' => 'required|integer',
+            'bayar' => 'required|integer|less_than_eq:total',
             'total' => 'required|integer|min:1',
         ];
     }
@@ -37,6 +37,7 @@ class PembelianRequest extends Request
             'tanggal.date' => 'format tanggal salah.',
             'bayar.required' => 'Pembayaran tidak boleh kosong.',
             'bayar.integer' => 'Input harus angka.',
+            'bayar.less_than_eq' => 'Pembayaran harus <= total.',
             'total.required' => 'Total tidak boleh kosong.',
             'Total.integer' => 'Input harus angka',
             'total.min' => 'Total tidak boleh 0',
