@@ -27,7 +27,7 @@ class BahanRequest extends Request
             'nama'      => 'required',
             'satuan'    => 'required',
             'satuan_beli' => 'required',
-            //'harga'     => 'required|numeric',
+            'harga'     => 'numeric',
             'qty_warning' => 'required|numeric',
         ];
     }
@@ -39,7 +39,7 @@ class BahanRequest extends Request
             'satuan.required'       => 'Satuan tidak boleh kosong.',
             'satuan_beli.required'  => 'Satuan pembelian tidak boleh kosong.',
             //'harga.required'        => 'Harga tidak boleh kosong.',
-            //'harga.numeric'         => 'Harga harus angka.',
+            'harga.numeric'         => 'Harga harus angka.',
             'qty_warning.required'   => 'Qty Warning tidak boleh kosong.',
             'qty_warning.numeric'   => 'Qty Warning harus angka.',
         ];

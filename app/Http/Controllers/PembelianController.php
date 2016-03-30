@@ -11,6 +11,7 @@ use App\Http\Requests\PembelianBayarRequest;
 use App\Pembelian;
 use App\PembelianDetail;
 use App\PembelianBayar;
+use Carbon\Carbon;
 use Auth;
 use DB;
 use Gate;
@@ -64,7 +65,7 @@ class PembelianController extends Controller
         return view(config('app.template').'.pembelian.create');
     }
 
-    public function store(PembelianRequest $request)
+    public function preview(PembelianRequest $request)
     {
         $denied = false;
 
@@ -82,6 +83,55 @@ class PembelianController extends Controller
         if( $denied ){
             return redirect()->back()
                 ->withInput()->withErrors(['no_details' => 'Tidak ada barang yang dibeli.']);
+        }
+
+        $request->session()->put('info_pembelian', $request->all());
+
+        // Bahan
+        $itemBahan = [];
+        if( count($beliBahan) ){
+            $bahans = \App\Bahan::whereIn('id', array_keys($beliBahan))->get();
+            foreach($bahans as $bahan){
+                $_id = $bahan->id;
+                array_push($itemBahan, $beliBahan[$_id] + ['nama' => $bahan->nama, 'satuan_stok' => $bahan->satuan]);
+            }
+        }
+        // Produk
+        $itemProduk = [];
+        if( count($beliProduk) ){
+            $produks = \App\Produk::whereIn('id', array_keys($beliProduk))->get();
+            foreach($produks as $produk){
+                $_id = $produk->id;
+                array_push($itemProduk, $beliProduk[$_id] + ['nama' => $produk->nama, 'satuan_stok' => $produk->satuan]);
+            }
+        }
+
+        $data = [
+            'items'  => array_merge($itemBahan, $itemProduk),
+            'info'   => $request->session()->get('info_pembelian')
+        ];
+
+        return view(config('app.template').'.pembelian.preview', $data);
+    }
+
+    public function store(Request $request)
+    {
+        $denied = false;
+
+        if( !$request->session()->has('data_pembelian') ){
+            $denied = true;
+        }else{
+            $beliBahan = $request->session()->has('data_pembelian.bahan') ? $request->session()->get('data_pembelian.bahan') : [];
+            $beliProduk = $request->session()->has('data_pembelian.produk') ? $request->session()->get('data_pembelian.produk') : [];
+
+            if( empty($beliBahan) && empty($beliProduk) ){
+                $denied = true;
+            }
+        }
+
+        if( $denied ){
+            return redirect('pembelian/add')->withInput()
+                ->withErrors(['no_details' => 'Tidak ada barang yang dibeli.']);
         }
 
         // Pembelian
@@ -201,6 +251,7 @@ class PembelianController extends Controller
         PembelianDetail::insert($temp);
 
         $request->session()->forget('data_pembelian');
+        $request->session()->forget('info_pembelian');
 
         return redirect('/pembelian')->with('succcess', 'Sukses simpan data pembelian.');
     }

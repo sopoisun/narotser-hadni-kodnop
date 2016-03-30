@@ -65,7 +65,7 @@
                             <tr>
                                 <td>{{ $no }}</td>
                                 <td>{{ ucfirst($detail->type) }}</td>
-                                <td>{{ $detail->bahan != null ? $detail->bahan->nama : $detail->produk->nama }}</td>
+                                <td>{{ $detail->type == 'bahan' ? $detail->bahan->nama : $detail->produk->nama }}</td>
                                 <td>{{ $detail->qty.' '.$detail->satuan }}</td>
                                 <td>{{ $detail->stok }}</td>
                                 <td style="text-align:right;">{{ number_format($detail->harga, 0, ',', '.') }}</td>

@@ -48,7 +48,7 @@
                 </div>
             </div>
             <div class="portlet-body form">
-                {!! Form::open(['role' => 'form', 'class' => 'form-horizontal', 'id' => 'formpembelian']) !!}
+                {!! Form::open(['role' => 'form', 'class' => 'form-horizontal', 'id' => 'formpembelian', 'url' => 'adjustment/preview']) !!}
                     <div class="form-body">
                         <br />
                         <div class="row">

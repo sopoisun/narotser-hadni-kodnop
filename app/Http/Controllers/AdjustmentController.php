@@ -63,7 +63,7 @@ class AdjustmentController extends Controller
         return view(config('app.template').'.adjustment.create', $data);
     }
 
-    public function store(AdjustmentRequest $request)
+    public function preview(AdjustmentRequest $request)
     {
         $denied = false;
         if( !$request->session()->has('data_adjustment') ){
@@ -89,6 +89,100 @@ class AdjustmentController extends Controller
         if( $denied ){
             return redirect()->back()
                 ->withInput()->withErrors(['no_details' => 'Tidak ada barang yang di adjustment.']);
+        }
+
+        $request->session()->put('info_adjustment', $request->all());
+
+        $bahanIds = array_merge(array_keys($data_adjustment_reduction_bahan), array_keys($data_adjustment_increase_bahan));
+        $produkIds = array_merge(array_keys($data_adjustment_reduction_produk), array_keys($data_adjustment_increase_produk));
+
+        $dBahans = [];
+        if( count($bahanIds) ){
+            $dBahans = \App\Bahan::whereIn('id', $bahanIds)->get();
+            $temp = [];
+            foreach($dBahans as $bahan){
+                $_id = $bahan->id;
+                $temp[$_id] = $bahan;
+            }
+            $dBahans = $temp;
+
+            // Bahan
+            # Reduction
+            $temp = [];
+            foreach(array_keys($data_adjustment_reduction_bahan) as $val){
+                $temp[$val] = $data_adjustment_reduction_bahan[$val] + ['nama' => $dBahans[$val]['nama'], 'satuan' => $dBahans[$val]['satuan']];
+            }
+            $data_adjustment_reduction_bahan = $temp;
+            # Increase
+            $temp = [];
+            foreach(array_keys($data_adjustment_increase_bahan) as $val){
+                $temp[$val] = $data_adjustment_increase_bahan[$val] + ['nama' => $dBahans[$val]['nama'], 'satuan' => $dBahans[$val]['satuan']];
+            }
+            $data_adjustment_increase_bahan = $temp;
+        }
+
+        $dProduks = [];
+        if( count($produkIds) ){
+            $dProduks = \App\Produk::whereIn('id', $produkIds)->get();
+            $temp = [];
+            foreach($dProduks as $produk){
+                $_id = $produk->id;
+                $temp[$_id] = $produk;
+            }
+            $dProduks = $temp;
+
+            // Produk
+            # Reduction
+            $temp = [];
+            foreach(array_keys($data_adjustment_reduction_produk) as $val){
+                $temp[$val] = $data_adjustment_reduction_produk[$val] + ['nama' => $dProduks[$val]['nama'], 'satuan' => $dProduks[$val]['satuan']];
+            }
+            $data_adjustment_reduction_produk = $temp;
+            # Increase
+            $temp = [];
+            foreach(array_keys($data_adjustment_increase_produk) as $val){
+                $temp[$val] = $data_adjustment_increase_produk[$val] + ['nama' => $dProduks[$val]['nama'], 'satuan' => $dProduks[$val]['satuan']];
+            }
+            $data_adjustment_increase_produk = $temp;
+        }
+
+        $data = [
+            'items' => [
+                'reduction' => array_merge($data_adjustment_reduction_bahan, $data_adjustment_reduction_produk),
+                'increase' => array_merge($data_adjustment_increase_bahan, $data_adjustment_increase_produk)
+            ],
+            'info'  => $request->session()->get('info_adjustment'),
+        ];
+
+        return view(config('app.template').'.adjustment.preview', $data);
+    }
+
+    public function store(Request $request)
+    {
+        $denied = false;
+        if( !$request->session()->has('data_adjustment') ){
+            $denied = true;
+        }else{
+            // Reduction ( Pengurangan )
+            $data_adjustment_reduction          = $request->session()->get('data_adjustment.reduction');
+            $data_adjustment_reduction_bahan    = isset($data_adjustment_reduction['bahan']) ? $data_adjustment_reduction['bahan'] : [];
+            $data_adjustment_reduction_produk   = isset($data_adjustment_reduction['produk']) ? $data_adjustment_reduction['produk'] : [];
+
+            // Increase ( Penambahan )
+            $data_adjustment_increase           = $request->session()->get('data_adjustment.increase');
+            $data_adjustment_increase_bahan     = isset($data_adjustment_increase['bahan']) ? $data_adjustment_increase['bahan'] : [];
+            $data_adjustment_increase_produk    = isset($data_adjustment_increase['produk']) ? $data_adjustment_increase['produk'] : [];
+
+
+            if( empty($data_adjustment_reduction_bahan) && empty($data_adjustment_reduction_produk)
+                && empty($data_adjustment_increase_bahan) && empty($data_adjustment_increase_produk) ){
+                $denied = true;
+            }
+        }
+
+        if( $denied ){
+            return redirect('adjustment/add')->withInput()
+                ->withErrors(['no_details' => 'Tidak ada barang yang di adjustment.']);
         }
 
         // Adjustment

@@ -122,7 +122,8 @@ Route::group(['middleware' => ['web']], function () {
         // Pembelian
         Route::get('/pembelian', 'PembelianController@index');
         Route::get('/pembelian/add', 'PembelianController@create');
-        Route::post('/pembelian/add', 'PembelianController@store');
+        Route::post('/pembelian/preview', 'PembelianController@preview');
+        Route::post('/pembelian/save', 'PembelianController@store');
         Route::get('/pembelian/detail/{id}', 'PembelianController@detail');
         Route::get('/pembelian/bayar/{id}', 'PembelianController@bayar');
         Route::post('/pembelian/bayar/{id}', 'PembelianController@bayarStore');
@@ -131,7 +132,8 @@ Route::group(['middleware' => ['web']], function () {
         // Adjustment
         Route::get('/adjustment', 'AdjustmentController@index');
         Route::get('/adjustment/add', 'AdjustmentController@create');
-        Route::post('/adjustment/add', 'AdjustmentController@store');
+        Route::post('/adjustment/preview', 'AdjustmentController@preview');
+        Route::post('/adjustment/save', 'AdjustmentController@store');
         Route::get('/adjustment/detail/{id}', 'AdjustmentController@detail');
         Route::get('/adjustment/show', 'AdjustmentController@showSession');
         Route::get('/adjustment/test', 'AdjustmentController@showTest');

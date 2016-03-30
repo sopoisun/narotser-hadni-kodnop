@@ -50,13 +50,20 @@
                                 <th>Nama</th>
                                 <th>Harga</th>
                                 <th>Qty</th>
+                                <th>Subtotal</th>
                                 <th>Keterangan</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {{--*/ $no = 0; /*--}}
+                            {{--*/
+                                $no = 0;
+                                $total = 0;
+                            /*--}}
                             @foreach(collect($details)->where('state', 'increase') as $detail)
-                            {{--*/ $no++; /*--}}
+                            {{--*/
+                                $no++;
+                                $total += $detail->harga*$detail->qty;
+                            /*--}}
                             <tr>
                                 <td>{{ $no }}</td>
                                 <td>{{ ucfirst($detail->type) }}</td>
@@ -64,9 +71,16 @@
                                 {{--*/ $satuan = ( $detail->type == "bahan" ) ? $detail->bahan->satuan : $detail->produk->satuan  /*--}}
                                 <td style="text-align:right;">{{ number_format($detail->harga, 0, ',', '.') }}</td>
                                 <td>{{ $detail->qty.' '.$satuan }}</td>
+                                <td style="text-align:right;">{{ number_format($detail->harga*$detail->qty, 0, ',', '.') }}</td>
                                 <td>{{ $detail->keterangan }}</td>
                             </tr>
                             @endforeach
+                            <tr>
+                                <td></td>
+                                <td colspan="4">Total</td>
+                                <td style="text-align:right;">{{ number_format($total, 0, ',', '.') }}</td>
+                                <td></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -101,13 +115,20 @@
                                 <th>Nama</th>
                                 <th>Harga</th>
                                 <th>Qty</th>
+                                <th>Subtotal</th>
                                 <th>Keterangan</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {{--*/ $no = 0; /*--}}
+                            {{--*/
+                                $no = 0;
+                                $total = 0;
+                            /*--}}
                             @foreach(collect($details)->where('state', 'reduction') as $detail)
-                            {{--*/ $no++; /*--}}
+                            {{--*/
+                                $no++;
+                                $total += $detail->harga*$detail->qty;
+                            /*--}}
                             <tr>
                                 <td>{{ $no }}</td>
                                 <td>{{ ucfirst($detail->type) }}</td>
@@ -115,9 +136,16 @@
                                 {{--*/ $satuan = ( $detail->type == "bahan" ) ? $detail->bahan->satuan : $detail->produk->satuan  /*--}}
                                 <td style="text-align:right;">{{ number_format($detail->harga, 0, ',', '.') }}</td>
                                 <td>{{ $detail->qty.' '.$satuan }}</td>
+                                <td style="text-align:right;">{{ number_format($detail->harga*$detail->qty, 0, ',', '.') }}</td>
                                 <td>{{ $detail->keterangan }}</td>
                             </tr>
                             @endforeach
+                            <tr>
+                                <td></td>
+                                <td colspan="4">Total</td>
+                                <td style="text-align:right;">{{ number_format($total, 0, ',', '.') }}</td>
+                                <td></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
