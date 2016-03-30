@@ -293,6 +293,7 @@ class AdjustmentController extends Controller
         AdjustmentDetail::insert($details);
 
         $request->session()->forget('data_adjustment');
+        $request->session()->forget('info_adjustment');
 
         return redirect('/adjustment')->with('succcess', 'Sukses simpan adjustment bahan / produk.');
     }
