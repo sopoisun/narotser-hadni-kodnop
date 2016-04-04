@@ -690,7 +690,7 @@ class OrderController extends Controller
         $qty        = $request->get('qty');
         $produk = Produk::with('detail')->find($produkId);
 
-        /*$denied = false;
+        $denied = false; // allow transaction with >=0 stok
         if( $produk->detail->count() ){
             $tempBahan = [];
             foreach( $produk->detail as $pd ){
@@ -710,8 +710,7 @@ class OrderController extends Controller
             if( $produk->sisa_stok < $qty ){
                 $denied = true;
             }
-        }*/
-        $denied = false; // allow transaction with >=0 stok
+        }
 
         if( !$denied ){
             $saveSession = $request->only(['id', 'qty', 'harga', 'note']); // id as produk_id

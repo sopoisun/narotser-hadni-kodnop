@@ -178,7 +178,7 @@ class ApiController extends Controller
     {
         \Debugbar::disable();
 
-        return 1; // allow transaction with >=0 stok
+        //return 1; // allow transaction with >=0 stok
 
         $produkId   = $request->get('id');
         $qty        = $request->get('qty') ? $request->get('qty') : 1;
