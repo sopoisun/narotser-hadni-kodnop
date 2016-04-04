@@ -105,7 +105,7 @@
                                 <th>Nama Akun</th>
                                 <th>Type</th>
                                 <th>Nominal</th>
-                                <th>Keterangan</th>
+                                <!--<th>Keterangan</th>-->
                                 <th>Act</th>
                             </tr>
                         </thead>
@@ -116,17 +116,22 @@
                             {{--*/ $no++; /*--}}
                             <tr>
                                 <td>{{ $no }}</td>
-                                <td>{{ $saldo->account->nama_akun }}</td>
-                                <td>{{ $types[$saldo->type] }}</td>
-                                <td style="text-align:right;">{{ number_format($saldo->nominal, 0, ',', '.') }}</td>
                                 <td>
                                     {{--*/
+                                        $txt = $saldo->account->nama_akun;
+
                                         if( $saldo->account->relation != null ){
                                             $relation = $saldo->account->relation;
-                                            echo ( $saldo->$relation->nama_bank ) ? $saldo->$relation->nama_bank : $saldo->$relation->nama ;
+                                            $txt .= " ";
+                                            $txt .= ( $saldo->$relation->nama_bank ) ? $saldo->$relation->nama_bank : $saldo->$relation->nama ;
                                         }
+
+                                        echo $txt;
                                     /*--}}
                                 </td>
+                                <td>{{ $types[$saldo->type] }}</td>
+                                <td style="text-align:right;">{{ number_format($saldo->nominal, 0, ',', '.') }}</td>
+                                <!--<td></td>-->
                                 <td>
                                     @can('account.saldo.update')
                                     <a href="{{ url('/account/saldo/edit/'.$saldo->id) }}" class="btn btn-sm yellow"><i class="icon-edit"></i></a>
