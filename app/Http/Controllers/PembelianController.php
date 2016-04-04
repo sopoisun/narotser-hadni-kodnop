@@ -161,6 +161,7 @@ class PembelianController extends Controller
             foreach($bahans as $bahan){
                 $bId        = $bahan->id;
                 $inHarga    = $beliBahan[$bId]['harga'] / $beliBahan[$bId]['stok'];
+                $inStok     = $beliBahan[$bId]['stok'];
 
                 if( $bahan->harga != $inHarga ){
                     $sum = [];
@@ -177,7 +178,7 @@ class PembelianController extends Controller
                     $inputPrice = $inHarga;
                     $inputStok  = $beliBahan[$bId]['stok'];
                     //$harga      = Pembulatan((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));
-                    $harga      = ((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));*/
+                    //$harga      = ((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));*/
 
                     if( $harga != $bahan->harga ){
                         //echo "<pre>", print_r(['id' => $bId, 'nama' => $bahan->nama, 'harga' => $harga]), "</pre>";
@@ -186,9 +187,9 @@ class PembelianController extends Controller
                             'type'              => 'bahan',
                             'relation_id'       => $bId,
                             'old_price'         => $bahan->harga,
-                            'old_stok'          => $oldStok,
+                            'old_stok'          => $bahan->sisa_stok,
                             'input_price'       => $inHarga,
-                            'input_stok'        => $inputStok,
+                            'input_stok'        => $inStok,
                             'average_with_round'=> $harga,
                             'action'            => "Pembelian #".$pembelian->id,
                         ]);
@@ -206,6 +207,7 @@ class PembelianController extends Controller
             foreach($produks as $produk){
                 $pId        = $produk->id;
                 $inHarga    = $beliProduk[$pId]['harga'] / $beliProduk[$pId]['stok'];
+                $inStok     = $beliProduk[$pId]['stok'];
 
                 if( $produk->hpp != $inHarga ){
                     $sum = [];
@@ -231,9 +233,9 @@ class PembelianController extends Controller
                             'type'              => 'produk',
                             'relation_id'       => $pId,
                             'old_price'         => $produk->hpp,
-                            'old_stok'          => $oldStok,
+                            'old_stok'          => $produk->sisa_stok,
                             'input_price'       => $inHarga,
-                            'input_stok'        => $inputStok,
+                            'input_stok'        => $inStok,
                             'average_with_round'=> $harga,
                             'action'            => "Pembelian #".$pembelian->id,
                         ]);

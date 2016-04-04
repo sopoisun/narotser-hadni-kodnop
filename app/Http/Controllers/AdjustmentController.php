@@ -217,7 +217,7 @@ class AdjustmentController extends Controller
                     $inputPrice = $data_adjustment_increase_bahan[$bId]['harga'];
                     $inputStok  = $data_adjustment_increase_bahan[$bId]['qty'];
                     //$harga      = Pembulatan((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));
-                    $harga      = ((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));*/
+                    //$harga      = ((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));*/
 
                     if( $harga != $bahan->harga ){
                         \App\Bahan::find($bId)->update(['harga' => $harga]);
@@ -225,9 +225,9 @@ class AdjustmentController extends Controller
                             'type'              => 'bahan',
                             'relation_id'       => $bId,
                             'old_price'         => $bahan->harga,
-                            'old_stok'          => $oldStok,
+                            'old_stok'          => $bahan->sisa_stok,
                             'input_price'       => $data_adjustment_increase_bahan[$bId]['harga'],
-                            'input_stok'        => $inputStok,
+                            'input_stok'        => $data_adjustment_increase_bahan[$bId]['qty'],
                             'average_with_round'=> $harga,
                             'action'            => "Adjustment Increase #".$adjustment->id,
                         ]);
@@ -260,7 +260,7 @@ class AdjustmentController extends Controller
                     $inputPrice = $data_adjustment_increase_produk[$pId]['harga'];
                     $inputStok  = $data_adjustment_increase_produk[$pId]['qty'];
                     //$harga      = Pembulatan((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));
-                    $harga      = ((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));*/
+                    //$harga      = ((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));*/
 
                     if( $harga != $produk->hpp  ){
                         \App\Produk::find($pId)->update(['hpp' => $harga]);
@@ -268,9 +268,9 @@ class AdjustmentController extends Controller
                             'type'              => 'produk',
                             'relation_id'       => $pId,
                             'old_price'         => $produk->hpp,
-                            'old_stok'          => $oldStok,
+                            'old_stok'          => $produk->sisa_stok,
                             'input_price'       => $data_adjustment_increase_produk[$pId]['harga'],
-                            'input_stok'        => $inputStok,
+                            'input_stok'        => $data_adjustment_increase_produk[$pId]['qty'],
                             'average_with_round'=> $harga,
                             'action'            => "Adjustment Increase #".$adjustment->id,
                         ]);
