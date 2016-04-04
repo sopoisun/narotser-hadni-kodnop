@@ -439,10 +439,10 @@ class ApiController extends Controller
                 'no'        => $i,
                 'id'        => $order->id,
                 'nota'      => $order->nota,
+                'place'     => $place,
                 'status'    => $order->state,
                 'karyawan'  => $order->karyawan->nama,
                 'karyawan_id' => $order->karyawan_id,
-                'place'     => $place,
             ]);
         }
 
