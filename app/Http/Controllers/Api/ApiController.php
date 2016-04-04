@@ -419,13 +419,22 @@ class ApiController extends Controller
     {
         $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
 
-        $orders = Order::with('karyawan')->where(DB::raw('SUBSTRING(tanggal, 1, 10)'), $tanggal)->get();
+        $orders = Order::with(['karyawan', 'place.place'])->where(DB::raw('SUBSTRING(tanggal, 1, 10)'), $tanggal)->get();
 
         $data = [];
         $i = 0;
         foreach($orders as $order)
         {
             $i++;
+
+            $place = "";
+
+            foreach($order->place as $p){
+                $place .= $p->place->nama.", ";
+            }
+
+            $place = rtrim($place, ", ");
+
             array_push($data, [
                 'no'        => $i,
                 'id'        => $order->id,
@@ -433,6 +442,7 @@ class ApiController extends Controller
                 'status'    => $order->state,
                 'karyawan'  => $order->karyawan->nama,
                 'karyawan_id' => $order->karyawan_id,
+                'place'     => $place,
             ]);
         }
 

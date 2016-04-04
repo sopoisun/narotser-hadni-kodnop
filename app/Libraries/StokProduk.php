@@ -49,8 +49,8 @@ class StokProduk extends Fpdf{
             $this->Cell(10, 8, $no, 1, 0, 'C');
             $this->Cell(80, 8, $v['nama'], 1, 0);
             $this->Cell(35, 8, number_format($v['hpp'], 0, ',', '.'), 1, 0, 'R');
-            $this->Cell(30, 8, $v['sisa_stok']." ".$v['satuan'], 1, 0, 'C');
-            $this->Cell(35, 8, number_format(($v['hpp']*$v['sisa_stok']), 0, ',', '.'), 1, 1, 'R');
+            $this->Cell(30, 8, round($v['sisa_stok'], 2)." ".$v['satuan'], 1, 0, 'C');
+            $this->Cell(35, 8, number_format(($v['hpp']*round($v['sisa_stok'], 2)), 0, ',', '.'), 1, 1, 'R');
         }
 
         $this->Cell(10, 8, "", 1, 0, 'C');

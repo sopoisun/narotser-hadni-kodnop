@@ -76,9 +76,9 @@
                             <tr {!! $txt !!}>
                                 <td>{{ $no }}</td>
                                 <td>{{ $bahan->nama }}</td>
-                                <td>{{ $bahan->sisa_stok.' '.$bahan->satuan }}</td>
+                                <td>{{ round($bahan->sisa_stok, 2).' '.$bahan->satuan }}</td>
                                 <td style="text-align:right;">{{ number_format($bahan->harga, 0, ",", ".") }}</td>
-                                <td style="text-align:right;">{{ number_format($bahan->harga*$bahan->sisa_stok, 0, ",", ".") }}</td>
+                                <td style="text-align:right;">{{ number_format($bahan->harga*round($bahan->sisa_stok, 2), 0, ",", ".") }}</td>
                             </tr>
                             @endforeach
                             <tr style="font-weight:bold;">
