@@ -124,7 +124,7 @@
                             <tr>
                                 <td>{{ $no }}</td>
                                 <td>{{ $d->nama }}</td>
-                                <td>{{ $d->sisa_stok }}</td>
+                                <td>{{ round($d->sisa_stok, 2) }}</td>
                             </tr>
                             @endforeach
                             @else
@@ -173,7 +173,7 @@
                             <tr>
                                 <td>{{ $no }}</td>
                                 <td>{{ $d->nama }}</td>
-                                <td>{{ $d->sisa_stok }}</td>
+                                <td>{{ round($d->sisa_stok, 2) }}</td>
                             </tr>
                             @endforeach
                             @else
