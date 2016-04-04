@@ -149,7 +149,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="harga" class="col-md-3 control-label">Harga</label>
+                                <label for="harga" class="col-md-3 control-label">Ttl Harga</label>
                                 <div class="col-md-8">
                                 {{ Form::text('harga', null, ['class' => 'form-control number', 'id' => 'harga']) }}
                                 </div>

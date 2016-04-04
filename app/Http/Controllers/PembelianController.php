@@ -160,8 +160,8 @@ class PembelianController extends Controller
 
             foreach($bahans as $bahan){
                 $bId        = $bahan->id;
-                $inHarga    = $beliBahan[$bId]['harga'] / $beliBahan[$bId]['stok'];
                 $inStok     = $beliBahan[$bId]['stok'];
+                $inHarga    = $beliBahan[$bId]['harga'] / $inStok;
 
                 if( $bahan->harga != $inHarga ){
                     $sum = [];
@@ -172,13 +172,6 @@ class PembelianController extends Controller
                         array_push($sum, $inHarga);
                     }
                     $harga = collect($sum)->avg();
-
-                    /*$oldPrice   = $bahan->harga;
-                    $oldStok    = $bahan->sisa_stok;
-                    $inputPrice = $inHarga;
-                    $inputStok  = $beliBahan[$bId]['stok'];
-                    //$harga      = Pembulatan((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));
-                    //$harga      = ((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));*/
 
                     if( $harga != $bahan->harga ){
                         //echo "<pre>", print_r(['id' => $bId, 'nama' => $bahan->nama, 'harga' => $harga]), "</pre>";
@@ -206,8 +199,8 @@ class PembelianController extends Controller
                 ->get();
             foreach($produks as $produk){
                 $pId        = $produk->id;
-                $inHarga    = $beliProduk[$pId]['harga'] / $beliProduk[$pId]['stok'];
                 $inStok     = $beliProduk[$pId]['stok'];
+                $inHarga    = $beliProduk[$pId]['harga'] / $inStok;
 
                 if( $produk->hpp != $inHarga ){
                     $sum = [];
@@ -218,13 +211,6 @@ class PembelianController extends Controller
                         array_push($sum, $inHarga);
                     }
                     $harga = collect($sum)->avg(); // HPP
-
-                    /*$oldPrice   = $produk->hpp;
-                    $oldStok    = $produk->sisa_stok;
-                    $inputPrice = $inHarga;
-                    $inputStok  = $beliProduk[$pId]['stok'];
-                    //$harga      = Pembulatan((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));
-                    $harga      = ((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));*/
 
                     if( $harga != $produk->hpp  ){
                         //echo "<pre>", print_r(['id' => $pId, 'nama' => $produk->nama, 'harga' => $harga]), "</pre>";

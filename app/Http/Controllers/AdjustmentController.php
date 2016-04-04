@@ -200,24 +200,19 @@ class AdjustmentController extends Controller
                 ->get();
 
             foreach($bahans as $bahan){
-                $bId = $bahan->id;
+                $bId        = $bahan->id;
+                $inStok     = $data_adjustment_increase_bahan[$bId]['qty'];
+                $inHarga    = $data_adjustment_increase_bahan[$bId]['harga'] / $inStok;
 
-                if( $bahan->harga != $data_adjustment_increase_bahan[$bId]['harga'] ){
+                if( $bahan->harga != $inHarga ){
                     $sum = [];
                     for($i=0; $i<$bahan->sisa_stok; $i++){
                         array_push($sum, $bahan->harga);
                     }
-                    for($i=0; $i<$data_adjustment_increase_bahan[$bId]['qty']; $i++){
-                        array_push($sum, $data_adjustment_increase_bahan[$bId]['harga']);
+                    for($i=0; $i<$inStok; $i++){
+                        array_push($sum, $inHarga);
                     }
                     $harga = collect($sum)->avg();
-
-                    /*$oldPrice   = $bahan->harga;
-                    $oldStok    = $bahan->sisa_stok;
-                    $inputPrice = $data_adjustment_increase_bahan[$bId]['harga'];
-                    $inputStok  = $data_adjustment_increase_bahan[$bId]['qty'];
-                    //$harga      = Pembulatan((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));
-                    //$harga      = ((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));*/
 
                     if( $harga != $bahan->harga ){
                         \App\Bahan::find($bId)->update(['harga' => $harga]);
@@ -226,8 +221,8 @@ class AdjustmentController extends Controller
                             'relation_id'       => $bId,
                             'old_price'         => $bahan->harga,
                             'old_stok'          => $bahan->sisa_stok,
-                            'input_price'       => $data_adjustment_increase_bahan[$bId]['harga'],
-                            'input_stok'        => $data_adjustment_increase_bahan[$bId]['qty'],
+                            'input_price'       => $inHarga,
+                            'input_stok'        => $inStok,
                             'average_with_round'=> $harga,
                             'action'            => "Adjustment Increase #".$adjustment->id,
                         ]);
@@ -243,24 +238,19 @@ class AdjustmentController extends Controller
                 ->orderBy('produks.id')
                 ->get();
             foreach($produks as $produk){
-                $pId = $produk->id;
+                $pId        = $produk->id;
+                $inStok     = $data_adjustment_increase_produk[$pId]['qty'];
+                $inHarga    = $data_adjustment_increase_produk[$pId]['harga'] / $inStok;
 
-                if( $produk->hpp != $data_adjustment_increase_produk[$pId]['harga'] ){
+                if( $produk->hpp != $inHarga ){
                     $sum = [];
                     for($i=0; $i<$produk->sisa_stok; $i++){
                         array_push($sum, $produk->hpp);
                     }
-                    for($i=0; $i<$data_adjustment_increase_produk[$pId]['qty']; $i++){
-                        array_push($sum, $data_adjustment_increase_produk[$pId]['harga']);
+                    for($i=0; $i<$inStok; $i++){
+                        array_push($sum, $inHarga);
                     }
                     $harga = collect($sum)->avg(); // HPP
-
-                    /*$oldPrice   = $produk->hpp;
-                    $oldStok    = $produk->sisa_stok;
-                    $inputPrice = $data_adjustment_increase_produk[$pId]['harga'];
-                    $inputStok  = $data_adjustment_increase_produk[$pId]['qty'];
-                    //$harga      = Pembulatan((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));
-                    //$harga      = ((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));*/
 
                     if( $harga != $produk->hpp  ){
                         \App\Produk::find($pId)->update(['hpp' => $harga]);
@@ -269,8 +259,8 @@ class AdjustmentController extends Controller
                             'relation_id'       => $pId,
                             'old_price'         => $produk->hpp,
                             'old_stok'          => $produk->sisa_stok,
-                            'input_price'       => $data_adjustment_increase_produk[$pId]['harga'],
-                            'input_stok'        => $data_adjustment_increase_produk[$pId]['qty'],
+                            'input_price'       => $inHarga,
+                            'input_stok'        => $inStok,
                             'average_with_round'=> $harga,
                             'action'            => "Adjustment Increase #".$adjustment->id,
                         ]);
@@ -288,6 +278,7 @@ class AdjustmentController extends Controller
         foreach($data_adjustment as $da){
             $temp = $da;
             $temp['adjustment_id'] = $adjustment->id;
+            $temp['harga'] = ( $temp['harga'] / $temp['qty'] );
             array_push($details, $temp);
         }
         AdjustmentDetail::insert($details);
@@ -332,9 +323,9 @@ class AdjustmentController extends Controller
                 $data   = $request->only(['type', 'state', 'relation_id', 'harga', 'qty']) + ['keterangan' => $request->get('item_keterangan')];
                 $dataAdjustment[$id] = $data;
                 $request->session()->put('data_adjustment.'.$request->get('state').'.'.$request->get('type'), $dataAdjustment);
-                // add subtotal
-                $subtotal   = number_format($data['harga'] * $data['qty'], 0, ',', '.');
-                $data       = $data + ['subtotal' => $subtotal];
+                // push @harga and subtotal with currency format
+                $data['subtotal']   = number_format($data['harga'], 0, ',', '.'); // get subtotal from $harga
+                $data['harga']      = number_format(($data['harga'] / $data['qty']), 0, ',', '.'); // get @harga from devision $harga by $qty
                 return $data;
             }
         }else{

@@ -61,13 +61,14 @@
                             {{--*/
                                 $no++;
                                 $total += $detail->harga;
+                                $satuan_stok = $detail->type == 'bahan' ? $detail->bahan->satuan : $detail->produk->satuan;
                             /*--}}
                             <tr>
                                 <td>{{ $no }}</td>
                                 <td>{{ ucfirst($detail->type) }}</td>
                                 <td>{{ $detail->type == 'bahan' ? $detail->bahan->nama : $detail->produk->nama }}</td>
                                 <td>{{ $detail->qty.' '.$detail->satuan }}</td>
-                                <td>{{ $detail->stok }}</td>
+                                <td>{{ $detail->stok.' '.$satuan_stok }}</td>
                                 <td style="text-align:right;">{{ number_format($detail->harga, 0, ',', '.') }}</td>
                             </tr>
                             @endforeach
