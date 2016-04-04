@@ -203,21 +203,21 @@ class AdjustmentController extends Controller
                 $bId = $bahan->id;
 
                 if( $bahan->harga != $data_adjustment_increase_bahan[$bId]['harga'] ){
-                    /*$sum = [];
+                    $sum = [];
                     for($i=0; $i<$bahan->sisa_stok; $i++){
                         array_push($sum, $bahan->harga);
                     }
                     for($i=0; $i<$data_adjustment_increase_bahan[$bId]['qty']; $i++){
                         array_push($sum, $data_adjustment_increase_bahan[$bId]['harga']);
                     }
-                    $harga = Pembulatan(collect($sum)->avg());*/
+                    $harga = collect($sum)->avg();
 
-                    $oldPrice   = $bahan->harga;
+                    /*$oldPrice   = $bahan->harga;
                     $oldStok    = $bahan->sisa_stok;
                     $inputPrice = $data_adjustment_increase_bahan[$bId]['harga'];
                     $inputStok  = $data_adjustment_increase_bahan[$bId]['qty'];
                     //$harga      = Pembulatan((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));
-                    $harga      = ((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));
+                    $harga      = ((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));*/
 
                     if( $harga != $bahan->harga ){
                         \App\Bahan::find($bId)->update(['harga' => $harga]);
@@ -246,21 +246,21 @@ class AdjustmentController extends Controller
                 $pId = $produk->id;
 
                 if( $produk->hpp != $data_adjustment_increase_produk[$pId]['harga'] ){
-                    /*$sum = [];
+                    $sum = [];
                     for($i=0; $i<$produk->sisa_stok; $i++){
                         array_push($sum, $produk->hpp);
                     }
                     for($i=0; $i<$data_adjustment_increase_produk[$pId]['qty']; $i++){
                         array_push($sum, $data_adjustment_increase_produk[$pId]['harga']);
                     }
-                    $harga = Pembulatan(collect($sum)->avg()); // HPP*/
+                    $harga = collect($sum)->avg(); // HPP
 
-                    $oldPrice   = $produk->hpp;
+                    /*$oldPrice   = $produk->hpp;
                     $oldStok    = $produk->sisa_stok;
                     $inputPrice = $data_adjustment_increase_produk[$pId]['harga'];
                     $inputStok  = $data_adjustment_increase_produk[$pId]['qty'];
                     //$harga      = Pembulatan((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));
-                    $harga      = ((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));
+                    $harga      = ((($oldPrice*$oldStok)+($inputPrice*$inputStok))/($oldStok+$inputStok));*/
 
                     if( $harga != $produk->hpp  ){
                         \App\Produk::find($pId)->update(['hpp' => $harga]);
