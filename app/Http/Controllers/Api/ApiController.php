@@ -179,7 +179,7 @@ class ApiController extends Controller
         $produkId   = $request->get('id');
         $qty        = $request->get('qty') ? $request->get('qty') : 1;
         $produk     = Produk::with('detail.bahan')->where('active', 1)->where('id', $produkId)->first();
-        $display    = [];
+        $data       = [];
 
         if( $produk->detail->count() ){
             $tempBahan = [];
@@ -203,7 +203,7 @@ class ApiController extends Controller
                     $txt = "Tidak Cukup";
                 }
 
-                $display[] = ["no" => $i] + $tempBahan[$bId] + ["stok" => $bahan->sisa_stok, "state" => $txt];
+                $data[] = ["no" => $i] + $tempBahan[$bId] + ["stok" => $bahan->sisa_stok, "state" => $txt];
             }
         }else{
             $temp = [
@@ -221,8 +221,10 @@ class ApiController extends Controller
             }
 
             $temp += ["stok" => $produk->sisa_stok, "state" => $txt];
-            $display[] = $temp;
+            $data[] = $temp;
         }
+
+        $display['komposisi_produk'] = $data;
 
         return $display;
     }
