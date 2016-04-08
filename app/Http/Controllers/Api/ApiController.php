@@ -187,9 +187,9 @@ class ApiController extends Controller
                 $bId = $pd['bahan_id'];
                 $tempBahan[$bId] = [
                     'nama'  => $pd['bahan']['nama'],
-                    'qty'   => $pd['qty'],
+                    'qty'   => round($pd['qty'], 2),
                     'req'   => $qty,
-                    'total' => ( $pd['qty'] * $qty ),
+                    'total' => round(( round($pd['qty'], 2) * $qty ), 2),
                 ];
             }
 
@@ -203,7 +203,7 @@ class ApiController extends Controller
                     $txt = "Tidak Cukup";
                 }
 
-                $data[] = ["no" => $i] + $tempBahan[$bId] + ["stok" => $bahan->sisa_stok, "state" => $txt];
+                $data[] = ["no" => $i] + $tempBahan[$bId] + ["stok" => round($bahan->sisa_stok, 2), "state" => $txt];
             }
         }else{
             $temp = [
@@ -220,7 +220,7 @@ class ApiController extends Controller
                 $txt = "Tidak Cukup";
             }
 
-            $temp += ["stok" => $produk->sisa_stok, "state" => $txt];
+            $temp += ["stok" => round($produk->sisa_stok, 2), "state" => $txt];
             $data[] = $temp;
         }
 
