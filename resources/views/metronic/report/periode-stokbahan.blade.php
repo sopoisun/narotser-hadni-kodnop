@@ -125,12 +125,12 @@
                             <tr>
                                 <td>{{ $no }}</td>
                                 <td>{{ $bahan['nama'].' ('.$bahan['satuan'].')' }}</td>
-                                <td style="text-align:center;">{{ $bahan['before'] }}</td>
-                                <td style="text-align:center;">{{ $bahan['pembelian'] }}</td>
-                                <td style="text-align:center;">{{ $bahan['penjualan'] }}</td>
-                                <td style="text-align:center;">{{ $bahan['adjustment_increase'] }}</td>
-                                <td style="text-align:center;">{{ $bahan['adjustment_reduction'] }}</td>
-                                <td style="text-align:center;">{{ $bahan['sisa'] }}</td>
+                                <td style="text-align:center;">{{ round($bahan['before'], 2) }}</td>
+                                <td style="text-align:center;">{{ round($bahan['pembelian'], 2) }}</td>
+                                <td style="text-align:center;">{{ round($bahan['penjualan'], 2) }}</td>
+                                <td style="text-align:center;">{{ round($bahan['adjustment_increase'], 2) }}</td>
+                                <td style="text-align:center;">{{ round($bahan['adjustment_reduction'], 2) }}</td>
+                                <td style="text-align:center;">{{ round($bahan['sisa'], 2) }}</td>
                             </tr>
                             @endforeach
                         </tbody>

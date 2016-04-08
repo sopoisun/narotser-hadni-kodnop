@@ -57,6 +57,7 @@
                                 <th>#</th>
                                 <th>Nama Bahan</th>
                                 <th>Satuan</th>
+                                <th>Qty Warning</th>
                                 <th>Harga</th>
                                 <th>Action</th>
                             </tr>
@@ -69,6 +70,7 @@
                                 <td>{{ $no }}</td>
                                 <td>{{ $bahan->nama }}</td>
                                 <td>{{ $bahan->satuan }}</td>
+                                <td>{{ $bahan->qty_warning }}</td>
                                 <td>{{ number_format($bahan->harga, 0, ",", ".") }}</td>
                                 <td>
                                     @can('bahan.update')

@@ -50,12 +50,12 @@ class MutasiStok extends Fpdf{
 
             $this->Cell(10, 8, $no, 1, 0, 'C');
             $this->Cell(60, 8, $v['nama'].' ('.$v['satuan'].')', 1, 0);
-            $this->Cell(20, 8, $v['before'], 1, 0, 'C');
-            $this->Cell(20, 8, $v['pembelian'], 1, 0, 'C');
-            $this->Cell(20, 8, $v['penjualan'], 1, 0, 'C');
-            $this->Cell(20, 8, $v['adjustment_increase'], 1, 0, 'C');
-            $this->Cell(20, 8, $v['adjustment_reduction'], 1, 0, 'C');
-            $this->Cell(20, 8, $v['sisa'], 1, 1, 'C');
+            $this->Cell(20, 8, round($v['before'], 2), 1, 0, 'C');
+            $this->Cell(20, 8, round($v['pembelian'], 2), 1, 0, 'C');
+            $this->Cell(20, 8, round($v['penjualan'], 2), 1, 0, 'C');
+            $this->Cell(20, 8, round($v['adjustment_increase'], 2), 1, 0, 'C');
+            $this->Cell(20, 8, round($v['adjustment_reduction'], 2), 1, 0, 'C');
+            $this->Cell(20, 8, round($v['sisa'], 2), 1, 1, 'C');
         }
 
         $this->Output();

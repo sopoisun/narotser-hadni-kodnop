@@ -174,6 +174,59 @@ class ApiController extends Controller
         return $display;
     }
 
+    public function composite(Request $request)
+    {
+        $produkId   = $request->get('id');
+        $qty        = $request->get('qty') ? $request->get('qty') : 1;
+        $produk     = Produk::with('detail.bahan')->where('active', 1)->where('id', $produkId)->first();
+        $display    = [];
+
+        if( $produk->detail->count() ){
+            $tempBahan = [];
+            foreach( $produk->detail as $pd ){
+                $bId = $pd['bahan_id'];
+                $tempBahan[$bId] = [
+                    'nama'  => $pd['bahan']['nama'],
+                    'qty'   => $pd['qty'],
+                    'req'   => $qty,
+                    'total' => ( $pd['qty'] * $qty ),
+                ];
+            }
+
+            $bahans = \App\Bahan::stok()->whereIn('bahans.id', array_keys($tempBahan))->get();
+            $i = 0;
+            foreach($bahans as $bahan){
+                $i++;
+                $bId = $bahan->id;
+                $txt = "Cukup";
+                if( $bahan->sisa_stok < $tempBahan[$bId]["total"] ){
+                    $txt = "Tidak Cukup";
+                }
+
+                $display[] = ["no" => $i] + $tempBahan[$bId] + ["stok" => $bahan->sisa_stok, "state" => $txt];
+            }
+        }else{
+            $temp = [
+                'no'    => 1,
+                'nama'  => $produk['nama'],
+                'qty'   => 1,
+                'req'   => $qty,
+                'total' => $qty,
+            ];
+
+            $produk = Produk::stok()->find($produkId);
+            $txt = "Cukup";
+            if( $produk->sisa_stok < $qty ){
+                $txt = "Tidak Cukup";
+            }
+
+            $temp += ["stok" => $produk->sisa_stok, "state" => $txt];
+            $display[] = $temp;
+        }
+
+        return $display;
+    }
+
     public function checkStok(Request $request)
     {
         \Debugbar::disable();

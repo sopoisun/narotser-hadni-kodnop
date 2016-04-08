@@ -377,6 +377,7 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function(){
         Route::get('/customer', 'ApiController@customer');
         Route::get('/produk', 'ApiController@produk');
         Route::get('/produk/stok', 'ApiController@checkStok');
+        Route::get('/produk/composite', 'ApiController@composite');
         Route::get('/place', 'ApiController@place');
         Route::get('/setting', 'ApiController@setting');
         Route::get('/transaksi', 'ApiController@transaksi');
