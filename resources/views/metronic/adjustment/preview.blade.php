@@ -123,7 +123,7 @@
                     @foreach($items['increase'] as $item)
                     {{--*/
                         $no++;
-                        $total += $item['harga']*$item['qty'];
+                        $total += $item['harga'];
                     /*--}}
                     <tr>
                         <td>{{ $no }}</td>
