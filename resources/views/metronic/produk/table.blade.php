@@ -73,12 +73,15 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {{--*/ $no = 0; /*--}}
+                            {{--*/
+                                $no = 0;
+                                $labaProcentageWarning = setting()->laba_procentage_warning;
+                            /*--}}
                             @foreach($produks as $produk)
                             {{--*/
                                 $no++;
                                 $txt = '';
-                                if( setting()->laba_procentage_warning > $produk->laba_procentage ){
+                                if( $labaProcentageWarning > $produk->laba_procentage ){
                                     $txt = 'class="danger"';
                                 }
                             /*--}}

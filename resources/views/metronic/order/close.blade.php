@@ -38,6 +38,10 @@
     <li class=""><a href="#tab_produks" data-toggle="tab">Daftar Produk</a></li>
 </ul>
 
+{{--*/
+    $settingServiceCost = setting()->service_cost;
+/*--}}
+
 <div  class="tab-content">
     <div class="tab-pane fade active in" id="tab_new_order">
         <div class="row">
@@ -90,7 +94,7 @@
                                         <div class="form-group">
                                             <label for="service_cost" class="col-md-3 control-label">Srv Cost</label>
                                             <div class="col-md-8">
-                                                {{--*/ $service_cost = old('service_cost')  ? old('service_cost') : setting()->service_cost; /*--}}
+                                                {{--*/ $service_cost = old('service_cost')  ? old('service_cost') : $settingServiceCost; /*--}}
                                                 {{ Form::text('service_cost', $service_cost, ['class' => 'form-control number', 'id' => 'service_cost',  'readonly' => 'readonly']) }}
                                             </div>
                                         </div>
@@ -397,7 +401,7 @@
     $("#bayar").on('keyup', HitungKembalian);
     $("#cmb_service_cost").change(function(){
         if($(this).val() == 'Ya'){
-            $("#service_cost").val("{{ setting()->service_cost }}");
+            $("#service_cost").val("{{ $settingServiceCost }}");
         }else{
             $("#service_cost").val("0");
         }
