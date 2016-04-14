@@ -454,7 +454,7 @@
                 if (id !== "") {
                     var row = $(element).parent().parent();
                     //console.log(row.attr('id')+" "+id)
-                    var subtotal = (typeof oldData.subtotal !== 'undefined') ? oldData.subtotal : (oldData.harga * oldData.qty);
+                    var subtotal = (typeof oldData.subtotal !== 'undefined') ? oldData.subtotal : (Math.round(oldData.harga * oldData.qty));
                     row.find('td:eq(3)').text(oldData.satuan);
                     row.find('td:eq(4)').text(oldData.harga);
                     row.find('td:eq(5)').text(subtotal);
@@ -483,7 +483,7 @@
             row.find('td:eq(3)').text(data.satuan);
             row.find('td:eq(4)').text(data.harga);
             if( qty != "" ){
-                row.find('td:eq(5)').text( data.harga * qty );
+                row.find('td:eq(5)').text( Math.round(data.harga * qty) );
             }
             TotalBiayaProduksi();
         });
@@ -503,7 +503,7 @@
             var harga = row.find('td:eq(4)').text();
             var subtotal = row.find('td:eq(5)');
             if( val != '' ){
-                subtotal.text(harga*val);
+                subtotal.text(Math.round(harga*val));
             }else{
                 subtotal.empty();
             }

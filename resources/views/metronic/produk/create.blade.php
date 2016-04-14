@@ -437,7 +437,7 @@
                     var row = $(element).parent().parent();
                     row.find('td:eq(3)').text(oldData.satuan);
                     row.find('td:eq(4)').text(oldData.harga);
-                    row.find('td:eq(5)').text(oldData.subtotal);
+                    row.find('td:eq(5)').text(Math.round(oldData.subtotal));
                     var selected = {
                         id: oldData.bahan_id,
                         nama: oldData.bahan_text
@@ -463,7 +463,7 @@
             row.find('td:eq(3)').text(data.satuan);
             row.find('td:eq(4)').text(data.harga);
             if( qty != "" ){
-                row.find('td:eq(5)').text( data.harga * qty );
+                row.find('td:eq(5)').text( Math.round(data.harga * qty) );
             }
             TotalBiayaProduksi();
         });
@@ -483,7 +483,7 @@
             var harga = row.find('td:eq(4)').text();
             var subtotal = row.find('td:eq(5)');
             if( val != '' ){
-                subtotal.text(harga*val);
+                subtotal.text(Math.round(harga*val));
             }else{
                 subtotal.empty();
             }
