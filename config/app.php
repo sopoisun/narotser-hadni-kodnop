@@ -163,6 +163,7 @@ return [
         Collective\Html\HtmlServiceProvider::class,
 
         rizalafani\fpdflaravel\FpdfServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
     ],
 
     /*
@@ -215,6 +216,7 @@ return [
         'Uuid'      => Webpatser\Uuid\Uuid::class,
 
         'FPDF'      => rizalafani\fpdflaravel\FpdfFacade::class,
+        'Excel'     => Maatwebsite\Excel\Facades\Excel::class,
     ],
 
 ];
