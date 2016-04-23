@@ -319,6 +319,11 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/user/role/delete/{id}', 'RoleController@destroy');
 
         Route::group(['prefix' => 'ajax'], function(){
+            // Dashboard
+            Route::get('/dashboard-chart', 'DashboardController@Chart');
+            Route::get('/dashboard-price', 'DashboardController@PriceTreshold');
+            Route::get('/dashboard-produk', 'DashboardController@ProdukStok');
+            Route::get('/dashboard-bahan', 'DashboardController@BahanStok');
             // Karyawan
             Route::get('/karyawan', 'KaryawanController@ajaxLoad');
             // Supplier

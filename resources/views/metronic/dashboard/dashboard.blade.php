@@ -1,5 +1,25 @@
 @extends('metronic.layout')
 
+@section('css_section')
+<style>
+.dashboard-spinner{
+    width: 100%;
+    height: 50px;
+    background-image: url('assets/metronic/img/dashboard-spinner.gif');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.dashboard-spinner-big{
+    width: 100%;
+    height: 150px;
+    background-image: url('assets/metronic/img/dashboard-spinner-big.gif');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+</style>
+@stop
+
 @section('content')
 <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
 <!-- BEGIN PAGE HEADER-->
@@ -34,6 +54,7 @@
             </div>
             <div class="portlet-body">
                 <canvas id="canvas" style="width:100%;" height="100"></canvas>
+                <!--<div class="dashboard-spinner-big"></div>-->
             </div>
         </div>
     </div>
@@ -51,39 +72,8 @@
                     <a href="javascript:;" class="remove"></a>
                 </div>
             </div>
-            <div class="portlet-body">
-                @if( $produkLabaWarning->count() )
-                <div class="note note-warning">
-                    <h4 class="block">Warning! Segera atur harga jual</h4>
-                    <p>Daftar produk yang prosentase pengambila labanya sudah dibawah ambang batas prosentase.</p>
-                </div>
-                @endif
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Nama Produk</th>
-                                <th>Laba (%)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if( $produkLabaWarning->count() )
-                            {{--*/ $no = 0; /*--}}
-                            @foreach($produkLabaWarning as $d)
-                            {{--*/ $no++; /*--}}
-                            <tr>
-                                <td>{{ $no }}</td>
-                                <td>{{ $d->nama }}</td>
-                                <td>{{ $d->laba_procentage.' %' }}</td>
-                            </tr>
-                            @endforeach
-                            @else
-                            <tr><td colspan="3" style="text-align:center;">No Data Here</td></tr>
-                            @endif
-                        </tbody>
-                    </table>
-                </div>
+            <div class="portlet-body" id="produk-laba">
+                <div class="dashboard-spinner"></div>
             </div>
         </div>
         <!-- END SAMPLE TABLE PORTLET-->
@@ -100,39 +90,8 @@
                     <a href="javascript:;" class="remove"></a>
                 </div>
             </div>
-            <div class="portlet-body">
-                @if( $produkStokWarning->count() )
-                <div class="note note-warning">
-                    <h4 class="block">Warning! Segera isi stok.</h4>
-                    <p>Daftar produk yang stoknya sudah dibawah ambang batas stok.</p>
-                </div>
-                @endif
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Nama Produk</th>
-                                <th>Stok</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if( $produkStokWarning->count() )
-                            {{--*/ $no = 0; /*--}}
-                            @foreach($produkStokWarning as $d)
-                            {{--*/ $no++; /*--}}
-                            <tr>
-                                <td>{{ $no }}</td>
-                                <td>{{ $d->nama }}</td>
-                                <td>{{ round($d->sisa_stok, 2) }}</td>
-                            </tr>
-                            @endforeach
-                            @else
-                            <tr><td colspan="3" style="text-align:center;">No Data Here</td></tr>
-                            @endif
-                        </tbody>
-                    </table>
-                </div>
+            <div class="portlet-body" id="produk-stok">
+                <div class="dashboard-spinner"></div>
             </div>
         </div>
         <!-- END SAMPLE TABLE PORTLET-->
@@ -149,39 +108,8 @@
                     <a href="javascript:;" class="remove"></a>
                 </div>
             </div>
-            <div class="portlet-body">
-                @if( $bahanStokWarning->count() )
-                <div class="note note-warning">
-                    <h4 class="block">Warning! Segera isi stok.</h4>
-                    <p>Daftar bahan yang stoknya sudah dibawah ambang batas stok.</p>
-                </div>
-                @endif
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Nama Bahan</th>
-                                <th>Stok</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if( $bahanStokWarning->count() )
-                            {{--*/ $no = 0; /*--}}
-                            @foreach($bahanStokWarning as $d)
-                            {{--*/ $no++; /*--}}
-                            <tr>
-                                <td>{{ $no }}</td>
-                                <td>{{ $d->nama }}</td>
-                                <td>{{ round($d->sisa_stok, 2) }}</td>
-                            </tr>
-                            @endforeach
-                            @else
-                            <tr><td colspan="3" style="text-align:center;">No Data Here</td></tr>
-                            @endif
-                        </tbody>
-                    </table>
-                </div>
+            <div class="portlet-body" id="bahan-stok">
+                <div class="dashboard-spinner"></div>
             </div>
         </div>
         <!-- END SAMPLE TABLE PORTLET-->
@@ -196,25 +124,62 @@
 
 @section('js_section')
 <script>
-var lineChartData = {
-    labels: {!! json_encode($grafik['label']) !!},
-    datasets: [{
-        label: "Mutasi Masuk",
-        fillColor: "rgba(0, 153, 255, 0.2)",
-        strokeColor: "rgba(0, 138, 230, 1)",
-        pointColor: "rgba(0, 138, 230, 1)",
-        pointStrokeColor: "#fff",
-        pointHighlightFill: "#fff",
-        pointHighlightStroke: "rgba(0, 0, 255, 1)",
-        data: {{ json_encode($grafik['data']) }}
-    }]
-}
+$.ajax({
+    url: "{{ url('/ajax/dashboard-chart') }}",
+    type: "GET",
+    success: function(res){
+        var lineChartData = {
+            labels: res.label,
+            datasets: [{
+                label: "Mutasi Masuk",
+                fillColor: "rgba(0, 153, 255, 0.2)",
+                strokeColor: "rgba(0, 138, 230, 1)",
+                pointColor: "rgba(0, 138, 230, 1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(0, 0, 255, 1)",
+                data: res.data
+            }]
+        }
 
-window.onload = function() {
-    var ctx = $("#canvas").get(0).getContext("2d");
-    window.myLine = new Chart(ctx).Line(lineChartData, {
-        responsive: true
-    });
-}
+        var ctx = $("#canvas").get(0).getContext("2d");
+        var chart = new Chart(ctx).Line(lineChartData, {
+            responsive: true
+        });
+    }
+});
+
+$.ajax({
+    url: "{{ url('/ajax/dashboard-price') }}",
+    type: "GET",
+    success: function(res){
+        $("#produk-laba").html(res);
+    }
+});
+
+$.ajax({
+    url: "{{ url('/ajax/dashboard-price') }}",
+    type: "GET",
+    success: function(res){
+        $("#produk-laba").html(res).fadeIn();
+    }
+});
+
+$.ajax({
+    url: "{{ url('/ajax/dashboard-produk') }}",
+    type: "GET",
+    success: function(res){
+        $("#produk-stok").html(res).fadeIn();
+    }
+});
+
+$.ajax({
+    url: "{{ url('/ajax/dashboard-bahan') }}",
+    type: "GET",
+    success: function(res){
+        $("#bahan-stok").html(res).fadeIn();
+    }
+});
+
 </script>
 @stop

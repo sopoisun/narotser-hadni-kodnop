@@ -513,7 +513,9 @@ class ApiController extends Controller
 
             $orderDetails = OrderDetail::with('order')->leftJoin('order_detail_returns', 'order_details.id', '=', 'order_detail_returns.order_detail_id')
                 ->join('produks', 'order_details.produk_id', '=', 'produks.id')
-                ->where('order_details.order_id', $id)->select([
+                ->where('order_details.order_id', $id)
+                ->having('qty', '>', 0)
+                ->select([
                     'order_details.id', 'order_details.produk_id', 'produks.nama', 'order_details.harga_jual',
                     'order_details.qty as qty_ori', DB::raw('ifnull(order_detail_returns.qty, 0) as qty_return'),
                     DB::raw('(order_details.qty - ifnull(order_detail_returns.qty, 0))qty'),

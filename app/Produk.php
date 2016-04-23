@@ -70,14 +70,14 @@ class Produk extends Model
                 }
             )
             ->leftJoin(
-                DB::raw("(SELECT order_details.`produk_id`,SUM(order_details.`qty` - IFNULL(order_detail_returns.`qty`, 0))qty
-                    FROM order_details
+                DB::raw("(SELECT produks.`id` AS produk_id, SUM(order_details.`qty` - IFNULL(order_detail_returns.`qty`, 0)) qty
+                    FROM produks
+                    LEFT JOIN produk_details ON produks.`id` = produk_details.`produk_id`
+                    LEFT JOIN order_details ON produks.`id` = order_details.`produk_id`
                     LEFT JOIN order_detail_returns ON order_details.`id` = order_detail_returns.`order_detail_id`
-                    LEFT JOIN order_detail_bahans ON order_details.`id` = order_detail_bahans.`order_detail_id`
                     INNER JOIN orders ON order_details.`order_id` = orders.`id`
-                    WHERE order_detail_bahans.`id` IS NULL
-                    AND orders.`state` = 'Closed'
-                    GROUP BY order_details.`produk_id`) penjualan"),
+                    WHERE produk_details.`id` IS NULL AND orders.`state` = 'Closed'
+                    GROUP BY produks.`id`) penjualan"),
                 function($join){
                     $join->on('produks.id', '=', 'penjualan.produk_id');
                 }
@@ -115,50 +115,9 @@ class Produk extends Model
                     $join->on('produks.id', '=', 'produk_temp.id');
                 }
             )
-            ->leftJoin(DB::raw("(SELECT pembelian_details.`relation_id`, SUM(pembelian_details.`stok`)stok
-                    FROM pembelian_details WHERE pembelian_details.`type` = 'produk'
-                    GROUP BY pembelian_details.`relation_id`)temp_pembelian"),
-                    function($join){
-                        $join->on('produks.id', '=', 'temp_pembelian.relation_id');
-                    }
-            )
-            ->leftJoin(DB::raw("(SELECT adjustment_details.`relation_id`, SUM(adjustment_details.`qty`)AS qty
-                    FROM adjustment_details WHERE adjustment_details.`state`= 'increase'
-                    AND adjustment_details.`type` = 'produk'
-                    GROUP BY adjustment_details.`relation_id`)as adjustment_increase"),
-                function($join){
-                    $join->on('produks.id', '=', 'adjustment_increase.relation_id');
-                }
-            )
-            ->leftJoin(DB::raw("(SELECT adjustment_details.`relation_id`, SUM(adjustment_details.`qty`)AS qty
-                    FROM adjustment_details WHERE adjustment_details.`state`= 'reduction'
-                    AND adjustment_details.`type` = 'produk'
-                    GROUP BY adjustment_details.`relation_id`)as adjustment_reduction"),
-                function($join){
-                    $join->on('produks.id', '=', 'adjustment_reduction.relation_id');
-                }
-            )
-            ->leftJoin(
-                DB::raw("(SELECT order_details.`produk_id`,SUM(order_details.`qty` - IFNULL(order_detail_returns.`qty`, 0))qty
-                    FROM order_details
-                    LEFT JOIN order_detail_returns ON order_details.`id` = order_detail_returns.`order_detail_id`
-                    LEFT JOIN order_detail_bahans ON order_details.`id` = order_detail_bahans.`order_detail_id`
-                    INNER JOIN orders ON order_details.`order_id` = orders.`id`
-                    WHERE order_detail_bahans.`id` IS NULL
-                    AND orders.`state` = 'Closed'
-                    GROUP BY order_details.`produk_id`) penjualan"),
-                function($join){
-                    $join->on('produks.id', '=', 'penjualan.produk_id');
-                }
-            )
             ->select([
                 'produk_temp.*',
                 DB::raw('produk_kategoris.nama as nama_kategori'),
-                DB::raw('ifnull(temp_pembelian.stok, 0)as stok_pembelian'),
-                DB::raw('ifnull(penjualan.qty, 0)as penjualan_stok'),
-                DB::raw('ifnull(adjustment_increase.qty, 0)as adjustment_increase_stok'),
-                DB::raw('ifnull(adjustment_reduction.qty, 0)as adjustment_reduction_stok'),
-                DB::raw('(( ifnull(temp_pembelian.stok, 0) + ifnull(adjustment_increase.qty, 0) ) - ( ifnull(penjualan.qty, 0) + ifnull(adjustment_reduction.qty, 0) ))sisa_stok'),
             ])
             ->where('produks.active', 1)
             ->groupBy('produks.id');

@@ -67,7 +67,6 @@
                                 <th>Harga</th>
                                 @can('produk.stok')
                                 <th>Pros. Laba</th>
-                                <th>Stok</th>
                                 <th>Action</th>
                                 @endcan
                             </tr>
@@ -99,7 +98,6 @@
                                 <td style="text-align:right;">{{ number_format(Pembulatan($produk->harga_jual), 0, ",", ".") }}</td>
                                 @can('produk.stok')
                                 <td>{{ $produk->laba_procentage.' %' }}</td>
-                                <td>{{ $produk->sisa_stok }}</td>
                                 <td>
                                     @can('produk.update')
                                     <a href="{{ url('/produk/edit/'.$produk->id) }}" class="btn btn-sm yellow"><i class="icon-edit"></i></a>

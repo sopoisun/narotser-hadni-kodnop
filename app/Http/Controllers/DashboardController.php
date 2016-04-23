@@ -14,23 +14,11 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $setting = \App\Setting::first();
+        return view(config('app.template').'.dashboard.dashboard');
+    }
 
-        // Produk harga jual dibawah ambang batas prosentase laba
-        $produkLabaWarning = Produk::allWithStokAndPrice()
-                    ->having('laba_procentage', '<', $setting->laba_procentage_warning)
-                        ->get();
-
-        // Produk stok dibawah ambang batas stok
-        $produkStokWarning = Produk::stok()->get()->filter(function($item){
-            return $item->sisa_stok < $item->qty_warning;
-        });
-
-        // Bahan stok dibawah ambang batas stok
-        $bahanStokWarning = Bahan::stok()->get()->filter(function($item){
-            return $item->sisa_stok < $item->qty_warning;
-        });
-
+    public function Chart()
+    {
         $yesterday  = Carbon::now();
         $start      = $yesterday->copy()->addDays(-7);
         $end        = $yesterday->copy();
@@ -63,16 +51,55 @@ class DashboardController extends Controller
             $dataLastWeek[] = $val;
         }
 
+        return [
+            'label'         => $dataLabelLastWeek,
+            'data'          => $dataLastWeek,
+        ];
+    }
+
+    public function PriceTreshold()
+    {
+        $setting = setting();
+
+        // Produk harga jual dibawah ambang batas prosentase laba
+        $produkLabaWarning = Produk::allWithStokAndPrice()
+                    ->having('laba_procentage', '<', $setting->laba_procentage_warning)
+                        ->get();
+
         $data = [
-            'grafik'            => [
-                'label'         => $dataLabelLastWeek,
-                'data'          => $dataLastWeek,
-            ],
-            'produkLabaWarning' => $produkLabaWarning,
-            'produkStokWarning' => $produkStokWarning,
-            'bahanStokWarning'  => $bahanStokWarning,
+            'data' => $produkLabaWarning,
         ];
 
-        return view(config('app.template').'.dashboard.dashboard', $data);
+        return view(config('app.template').'.dashboard.price', $data);
+    }
+
+    public function ProdukStok()
+    {
+        // Produk stok dibawah ambang batas stok
+        $produkStokWarning = Produk::stok()->get()->filter(function($item){
+            return $item->sisa_stok < $item->qty_warning;
+        });
+
+        $data = [
+            'data' => $produkStokWarning,
+            'header' => 'Produk',
+        ];
+
+        return view(config('app.template').'.dashboard.stok', $data);
+    }
+
+    public function BahanStok()
+    {
+        // Bahan stok dibawah ambang batas stok
+        $bahanStokWarning = Bahan::stok()->get()->filter(function($item){
+            return $item->sisa_stok < $item->qty_warning;
+        });
+
+        $data = [
+            'data' => $bahanStokWarning,
+            'header' => 'Bahan',
+        ];
+
+        return view(config('app.template').'.dashboard.stok', $data);
     }
 }
