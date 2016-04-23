@@ -111,12 +111,11 @@ class Order extends Model
             )temp_order_places ON orders.`id` = temp_order_places.order_id
             LEFT JOIN (
             	SELECT order_details.id, order_details.`order_id`, order_details.`produk_id`,
-            	IF(order_details.`use_mark_up` = 'Tidak', order_details.`hpp`, SUM(order_detail_bahans.`harga` * ( order_detail_bahans.`qty`)))hpp,
+            	order_details.`hpp`,
             	order_details.`harga_jual`, order_details.`qty` AS qty_ori, IFNULL(order_detail_returns.`qty`, 0)qty_return,
 	            (order_details.`qty` - IFNULL(order_detail_returns.`qty`, 0))qty,
             	order_details.`use_mark_up`, order_details.`mark_up`
             	FROM order_details
-            	LEFT JOIN order_detail_bahans ON order_details.id = order_detail_bahans.`order_detail_id`
                 LEFT JOIN order_detail_returns ON order_details.`id` = order_detail_returns.`order_detail_id`
             	INNER JOIN orders ON order_details.`order_id` = orders.`id`
             	WHERE orders.`tanggal` = '$date'
@@ -190,12 +189,11 @@ class Order extends Model
             )temp_order_places ON orders.`id` = temp_order_places.order_id
             LEFT JOIN (
             	SELECT order_details.id, order_details.`order_id`, order_details.`produk_id`,
-            	IF(order_details.`use_mark_up` = 'Tidak', order_details.`hpp`, SUM(order_detail_bahans.`harga` * ( order_detail_bahans.`qty`)))hpp,
+            	order_details.`hpp`,
             	order_details.`harga_jual`, order_details.`qty` AS qty_ori, IFNULL(order_detail_returns.`qty`, 0)qty_return,
 	            (order_details.`qty` - IFNULL(order_detail_returns.`qty`, 0))qty,
             	order_details.`use_mark_up`, order_details.`mark_up`
             	FROM order_details
-            	LEFT JOIN order_detail_bahans ON order_details.id = order_detail_bahans.`order_detail_id`
                 LEFT JOIN order_detail_returns ON order_details.`id` = order_detail_returns.`order_detail_id`
             	INNER JOIN orders ON order_details.`order_id` = orders.`id`
             	WHERE $condition

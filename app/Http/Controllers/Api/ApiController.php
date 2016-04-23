@@ -319,7 +319,7 @@ class ApiController extends Controller
                 $orderDetail        = [
                     'order_id'      => $order->id,
                     'produk_id'     => $produk->id,
-                    'hpp'           => $produk->hpp,
+                    'hpp'           => CountHpp($produk), //$produk->hpp,
                     'harga_jual'    => $data_order_detail[$id]['harga'],
                     'qty'           => $data_order_detail[$id]['qty'],
                     'use_mark_up'   => $produk->use_mark_up,
@@ -393,7 +393,7 @@ class ApiController extends Controller
                     $orderDetail        = [
                         'order_id'      => $id,
                         'produk_id'     => $produk->id,
-                        'hpp'           => $produk->hpp,
+                        'hpp'           => CountHpp($produk), //$produk->hpp,
                         'harga_jual'    => $data_order_detail[$pId]['harga'],
                         'qty'           => $data_order_detail[$pId]['qty'],
                         'use_mark_up'   => $produk->use_mark_up,

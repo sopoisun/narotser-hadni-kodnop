@@ -101,16 +101,16 @@ class Produk extends Model
     {
         return self::leftJoin('produk_details', 'produks.id', '=', 'produk_details.produk_id')
             ->join('produk_kategoris', 'produks.produk_kategori_id', '=', 'produk_kategoris.id')
-            ->join(DB::raw("(SELECT produks.`id`, produks.`nama`, produks.`use_mark_up`, produks.`qty_warning`, IF(produk_details.`id` IS NULL, 'Tidak', 'Ya')use_bahan,
-                    IF(produks.`use_mark_up` = 'Tidak', produks.`hpp`, SUM(bahans.`harga`*produk_details.`qty`))hpp,
-                    IF(produks.`use_mark_up` = 'Tidak', produks.`harga`, SUM(bahans.`harga`*produk_details.`qty`)+
-                    (SUM(bahans.`harga`*produk_details.`qty`)*(produks.`mark_up`/100)))harga_jual,
-                    IF( produks.`use_mark_up` = 'Tidak', ROUND(((produks.`harga`-produks.`hpp`)/produks.`hpp`)*100),
-                    produks.`mark_up`)laba_procentage
-                    FROM produks
-                    LEFT JOIN produk_details ON produks.`id` = produk_details.`produk_id`
-                    LEFT JOIN bahans ON produk_details.`bahan_id` = bahans.`id`
-                    GROUP BY produks.`id`)as produk_temp"),
+            ->join(DB::raw("(SELECT produks.`id`, produks.`nama`, produks.`use_mark_up`, produks.`mark_up`, produks.`qty_warning`,
+                IF(produk_details.`id` IS NULL, 'Tidak', 'Ya') use_bahan,
+                IF(produk_details.`id` IS NULL, ROUND(produks.`hpp`), ROUND(SUM(bahans.`harga` * produk_details.`qty`))) hpp,
+                IF(produks.`use_mark_up` = 'Tidak', produks.`harga`, IF(produk_details.`id` IS NULL,
+                ROUND(produks.`hpp` + (produks.`hpp`*(produks.`mark_up`/100))),
+                ROUND(SUM(bahans.`harga` * produk_details.`qty`) + (SUM(bahans.`harga` * produk_details.`qty`)*(produks.`mark_up`/100))))) harga_jual,
+                IFNULL(IF(produks.`use_mark_up` = 'Tidak', IF(produk_details.`id` IS NULL,ROUND(((produks.`harga`- produks.`hpp`)/produks.`hpp`)*100),
+                ROUND(((produks.`harga`- SUM(bahans.`harga` * produk_details.`qty`))/SUM(bahans.`harga` * produk_details.`qty`))*100)), produks.`mark_up`)
+                , 0) laba_procentage FROM produks LEFT JOIN produk_details ON produks.`id` = produk_details.`produk_id` LEFT JOIN bahans
+                ON produk_details.`bahan_id` = bahans.`id` GROUP BY produks.`id` )as produk_temp"),
                 function($join){
                     $join->on('produks.id', '=', 'produk_temp.id');
                 }

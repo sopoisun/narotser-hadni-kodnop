@@ -5,9 +5,13 @@ function CountPrice($data)
     if( $data->use_mark_up == 'Tidak' ){
         return $data->harga;
     }else{
-        $hpp = 0;
-        foreach( $data->detail as $dd ){
-            $hpp += ($dd->harga * $dd->qty);
+        if( $data->detail->count() ){
+            $hpp = 0;
+            foreach( $data->detail as $dd ){
+                $hpp += ($dd->harga * $dd->qty);
+            }
+        }else{
+            $hpp = $data->hpp;
         }
 
         $markup         = $data->mark_up / 100;
@@ -15,6 +19,20 @@ function CountPrice($data)
         $harga          = $hpp + $laba;
 
         return Pembulatan($harga);
+    }
+}
+
+function CountHpp($data)
+{
+    if( $data->detail->count() ){
+        $hpp = 0;
+        foreach( $data->detail as $dd ){
+            $hpp += ($dd->harga * $dd->qty);
+        }
+
+        return $hpp;
+    }else{
+        return $data->hpp;
     }
 }
 

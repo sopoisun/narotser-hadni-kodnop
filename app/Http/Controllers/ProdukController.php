@@ -96,12 +96,15 @@ class ProdukController extends Controller
             'use_mark_up', 'mark_up', 'produk_kategori_id', 'qty_warning',
         ]);
 
-        $produkData['hpp']          = ( $request->get('use_mark_up') == 'Tidak' ) ? $request->get('hpp') : 0;
+        $produk_details = json_decode($request->get('produk_details'), true);
+
+        $produkData['hpp']          = ( count($produk_details) == 0 ) ? $request->get('hpp') : 0;
+        $produkData['harga']        = ( $request->get('use_mark_up') == 'Tidak' ) ? $request->get('harga') : 0;
         $produkData['konsinyasi']   = ( !$request->get('konsinyasi') ) ? 'Tidak' : 'Ya';
 
         $produk = Produk::create($produkData);
         $produkDetailData = [];
-        foreach( json_decode($request->get('produk_details')) as $pd){
+        foreach( $produk_details as $pd){
             array_push($produkDetailData, [
                 'produk_id' => $produk->id,
                 'bahan_id' => $pd->bahan_id,
@@ -171,11 +174,13 @@ class ProdukController extends Controller
             'use_mark_up', 'mark_up', 'produk_kategori_id', 'qty_warning',
         ]);
 
-        $produkData['hpp']          = ( $request->get('use_mark_up') == 'Tidak' ) ? $request->get('hpp') : 0;
+        $produkDetailData           = json_decode($request->get('produk_details'), true);
+
+        $produkData['hpp']          = ( count($produkDetailData) == 0 ) ? $request->get('hpp') : 0;
+        $produkData['harga']        = ( $request->get('use_mark_up') == 'Tidak' ) ? $request->get('harga') : 0;
         $produkData['konsinyasi']   = ( !$request->get('konsinyasi') ) ? 'Tidak' : 'Ya';
 
         if( $produk->update($produkData) ){
-            $produkDetailData           = json_decode($request->get('produk_details'), true);
 
             if( count($produkDetailData) ){
                 $produkDetailIds            = array_column($produkDetail, 'bahan_id');
