@@ -96,7 +96,7 @@ class ProdukController extends Controller
             'use_mark_up', 'mark_up', 'produk_kategori_id', 'qty_warning',
         ]);
 
-        $produk_details = json_decode($request->get('produk_details'), true);
+        $produk_details = json_decode($request->get('produk_details'));
 
         $produkData['hpp']          = ( count($produk_details) == 0 ) ? $request->get('hpp') : 0;
         $produkData['harga']        = ( $request->get('use_mark_up') == 'Tidak' ) ? $request->get('harga') : 0;
