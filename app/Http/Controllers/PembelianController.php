@@ -90,19 +90,59 @@ class PembelianController extends Controller
         // Bahan
         $itemBahan = [];
         if( count($beliBahan) ){
-            $bahans = \App\Bahan::whereIn('id', array_keys($beliBahan))->get();
+            $bahans = \App\Bahan::stok()->whereIn('bahans.id', array_keys($beliBahan))->get();
             foreach($bahans as $bahan){
-                $_id = $bahan->id;
-                array_push($itemBahan, $beliBahan[$_id] + ['nama' => $bahan->nama, 'satuan_stok' => $bahan->satuan]);
+                $_id        = $bahan->id;
+                $inStok     = $beliBahan[$_id]['stok'];
+                $inHarga    = $beliBahan[$_id]['harga'] / $inStok;
+
+                /* Get Avg Price */
+                $sum = [];
+                for($i=0; $i<$bahan->sisa_stok; $i++){
+                    array_push($sum, $bahan->harga);
+                }
+                for($i=0; $i<$inStok; $i++){
+                    array_push($sum, $inHarga);
+                }
+                $avgPrice = collect($sum)->avg();
+                /* End Get Avg Price */
+
+                array_push($itemBahan, $beliBahan[$_id] + [
+                    'nama'          => $bahan->nama,
+                    'satuan_stok'   => $bahan->satuan,
+                    'old_stok'      => round($bahan->sisa_stok, 2),
+                    'old_harga'     => $bahan->harga,
+                    'avg_price'     => $avgPrice,
+                ]);
             }
         }
         // Produk
         $itemProduk = [];
         if( count($beliProduk) ){
-            $produks = \App\Produk::whereIn('id', array_keys($beliProduk))->get();
+            $produks = \App\Produk::stok()->whereIn('produks.id', array_keys($beliProduk))->get();
             foreach($produks as $produk){
-                $_id = $produk->id;
-                array_push($itemProduk, $beliProduk[$_id] + ['nama' => $produk->nama, 'satuan_stok' => $produk->satuan]);
+                $_id        = $produk->id;
+                $inStok     = $beliProduk[$_id]['stok'];
+                $inHarga    = $beliProduk[$_id]['harga'] / $inStok;
+
+                /* Get Avg price */
+                $sum = [];
+                for($i=0; $i<$produk->sisa_stok; $i++){
+                    array_push($sum, $produk->hpp);
+                }
+                for($i=0; $i<$inStok; $i++){
+                    array_push($sum, $inHarga);
+                }
+                $avgPrice = collect($sum)->avg(); // HPP
+                /* End Get Avg price */
+
+                array_push($itemProduk, $beliProduk[$_id] + [
+                    'nama'          => $produk->nama,
+                    'satuan_stok'   => $produk->satuan,
+                    'old_stok'      => round($produk->sisa_stok, 2),
+                    'old_harga'     => $produk->hpp,
+                    'avg_price'     => $avgPrice,
+                ]);
             }
         }
 

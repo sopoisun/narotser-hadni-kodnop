@@ -98,7 +98,7 @@ class AdjustmentController extends Controller
 
         $dBahans = [];
         if( count($bahanIds) ){
-            $dBahans = \App\Bahan::whereIn('id', $bahanIds)->get();
+            $dBahans = \App\Bahan::stok()->whereIn('bahans.id', $bahanIds)->get();
             $temp = [];
             foreach($dBahans as $bahan){
                 $_id = $bahan->id;
@@ -116,14 +116,35 @@ class AdjustmentController extends Controller
             # Increase
             $temp = [];
             foreach(array_keys($data_adjustment_increase_bahan) as $val){
-                $temp[$val] = $data_adjustment_increase_bahan[$val] + ['nama' => $dBahans[$val]['nama'], 'satuan' => $dBahans[$val]['satuan']];
+                $in_increase_bahan = $data_adjustment_increase_bahan[$val];
+                $inStok     = $data_adjustment_increase_bahan[$val]['qty'];
+                $inHarga    = $data_adjustment_increase_bahan[$val]['harga'] / $inStok;
+
+                /* Get Avg price */
+                $sum = [];
+                for($i=0; $i<$dBahans[$val]['sisa_stok']; $i++){
+                    array_push($sum, $dBahans[$val]['harga']);
+                }
+                for($i=0; $i<$inStok; $i++){
+                    array_push($sum, $inHarga);
+                }
+                $avgPrice = collect($sum)->avg();
+                /* End Get Avg price */
+
+                $temp[$val] = $in_increase_bahan + [
+                    'nama'      => $dBahans[$val]['nama'],
+                    'satuan'    => $dBahans[$val]['satuan'],
+                    'old_stok'  => round($dBahans[$val]['sisa_stok'], 2),
+                    'old_harga' => $dBahans[$val]['harga'],
+                    'avg_price' => $avgPrice,
+                ];
             }
             $data_adjustment_increase_bahan = $temp;
         }
 
         $dProduks = [];
         if( count($produkIds) ){
-            $dProduks = \App\Produk::whereIn('id', $produkIds)->get();
+            $dProduks = \App\Produk::stok()->whereIn('produks.id', $produkIds)->get();
             $temp = [];
             foreach($dProduks as $produk){
                 $_id = $produk->id;
@@ -141,7 +162,28 @@ class AdjustmentController extends Controller
             # Increase
             $temp = [];
             foreach(array_keys($data_adjustment_increase_produk) as $val){
-                $temp[$val] = $data_adjustment_increase_produk[$val] + ['nama' => $dProduks[$val]['nama'], 'satuan' => $dProduks[$val]['satuan']];
+                $in_increase_produk = $data_adjustment_increase_produk[$val];
+                $inStok     = $data_adjustment_increase_produk[$val]['qty'];
+                $inHarga    = $data_adjustment_increase_produk[$val]['harga'] / $inStok;
+
+                /* Get Avg price */
+                $sum = [];
+                for($i=0; $i<$dProduks[$val]['sisa_stok']; $i++){
+                    array_push($sum, $dProduks[$val]['hpp']);
+                }
+                for($i=0; $i<$inStok; $i++){
+                    array_push($sum, $inHarga);
+                }
+                $avgPrice = collect($sum)->avg();
+                /* End Get Avg price */
+
+                $temp[$val] = $in_increase_produk + [
+                    'nama'      => $dProduks[$val]['nama'],
+                    'satuan'    => $dProduks[$val]['satuan'],
+                    'old_stok'  => round($dProduks[$val]['sisa_stok'], 2),
+                    'old_harga' => $dProduks[$val]['hpp'],
+                    'avg_price' => $avgPrice,
+                ];
             }
             $data_adjustment_increase_produk = $temp;
         }

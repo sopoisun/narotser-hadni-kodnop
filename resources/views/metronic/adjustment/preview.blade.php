@@ -103,15 +103,20 @@
             <table class="table table-bordered table-hover">
                 <thead>
                     <tr>
-                        <th colspan="6">Adjustment Penambahan (+)</th>
+                        <th colspan="11">Adjustment Penambahan (+)</th>
                     </tr>
                     <tr>
                         <th>#</th>
                         <th>Type</th>
                         <th>Nama</th>
-                        <th>Harga</th>
-                        <th>Stok</th>
-                        <th>Subtotal</th>
+                        <th>In Price</th>
+                        <th>In Stok</th>
+                        <th class="warning">In Subtotal</th>
+                        <th>Old Price</th>
+                        <th>Old Stok</th>
+                        <th class="warning">Old Subtotal</th>
+                        <th class="danger">Avg Price</th>
+                        <th>Avg Subtotal</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -119,11 +124,15 @@
                     {{--*/
                         $no = 0;
                         $total = 0;
+                        $oldTotal = 0;
+                        $avgTotal = 0;
                     /*--}}
                     @foreach($items['increase'] as $item)
                     {{--*/
                         $no++;
                         $total += $item['harga'];
+                        $oldTotal += ( $item['old_harga'] * $item['old_stok'] );
+                        $avgTotal += ( $item['avg_price'] * ( $item['old_stok'] + $item['qty'] ) );
                     /*--}}
                     <tr>
                         <td>{{ $no }}</td>
@@ -131,16 +140,25 @@
                         <td>{{ $item['nama'] }}</td>
                         <td style="text-align:right;">{{ number_format(($item['harga']/$item['qty']), 0, ',', '.') }}</td>
                         <td>{{ $item['qty'].' '.$item['satuan'] }}</td>
-                        <td style="text-align:right;">{{ number_format($item['harga'], 0, ',', '.') }}</td>
+                        <td style="text-align:right;" class="warning">{{ number_format($item['harga'], 0, ',', '.') }}</td>
+                        <td style="text-align:right;">{{ number_format(($item['old_harga']), 0, ',', '.') }}</td>
+                        <td>{{ $item['old_stok'].' '.$item['satuan'] }}</td>
+                        <td style="text-align:right;" class="warning">{{ number_format(( $item['old_harga'] * $item['old_stok'] ), 0, ',', '.') }}</td>
+                        <td style="text-align:right;" class="danger">{{ number_format(($item['avg_price']), 0, ',', '.') }}</td>
+                        <td style="text-align:right;">{{ number_format(( $item['avg_price'] * ( $item['old_stok'] + $item['qty'] ) ), 0, ',', '.') }}</td>
                     </tr>
                     @endforeach
-                    <tr>
+                    <tr class="active">
                         <td></td>
                         <td colspan="4">Total</td>
                         <td style="text-align:right;">{{ number_format($total, 0, ',', '.') }}</td>
+                        <td colspan="2"></td>
+                        <td style="text-align:right;">{{ number_format($oldTotal, 0, ',', '.') }}</td>
+                        <td></td>
+                        <td style="text-align:right;">{{ number_format($avgTotal, 0, ',', '.') }}</td>
                     </tr>
                     @else
-                    <tr><td colspan="6">Tidak Ada Adjustment Pengurangan</td></tr>
+                    <tr class="active"><td colspan="11">Tidak Ada Adjustment Pengurangan</td></tr>
                     @endif
                 </tbody>
             </table>
