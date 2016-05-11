@@ -356,7 +356,7 @@
     }
 
     $(".number").inputmask("decimal", {
-        min: 1,
+        min: 0,
         onUnMask: function(maskedValue, unmaskedValue) {
             return unmaskedValue;
         },
