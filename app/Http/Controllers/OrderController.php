@@ -302,7 +302,8 @@ class OrderController extends Controller
             foreach($orderDetailOld as $odo){
                 $oldQty     = $odo->qty;
                 $updateQty  = $oldQty + $data_order_detail[$odo->produk_id]['qty'];
-                OrderDetail::find($odo->id)->update(['qty' => $updateQty]);
+                $updatePrice= $data_order_detail[$odo->produk_id]['harga'];
+                OrderDetail::find($odo->id)->update(['qty' => $updateQty, 'harga_jual' => $updatePrice]);
                 unset($data_order_detail[$odo->produk_id]);
             }
 

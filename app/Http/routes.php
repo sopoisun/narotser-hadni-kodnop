@@ -25,6 +25,7 @@
 */
 
 Route::group(['middleware' => ['web']], function () {
+
     Route::get('/', function () {
         if( auth()->check() ){
             return app('App\Http\Controllers\DashboardController')->index();

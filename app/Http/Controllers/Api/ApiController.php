@@ -353,9 +353,7 @@ class ApiController extends Controller
     public function changeTransaksi(Request $request)
     {
         \Debugbar::disable();
-
         $id = $request->get('id');
-
         $data_order_detail = $request->get('data_order') != "" ? json_decode($request->get('data_order'), true) : [];
         // Convert like data session
         $temp = [];
@@ -364,23 +362,20 @@ class ApiController extends Controller
             $temp[$key] = $d;
         }
         $data_order_detail = $temp;
-
         $order = \App\Order::with('place.place')->find($id);
-
         if( count($data_order_detail) ){
             // Order Detail
             $orderDetailOld = \App\OrderDetail::where('order_id', $id)
                                 ->whereIn('produk_id', array_keys($data_order_detail))
                                 ->get();
-
             # Update Order Detail
             foreach($orderDetailOld as $odo){
                 $oldQty     = $odo->qty;
                 $updateQty  = $oldQty + $data_order_detail[$odo->produk_id]['qty'];
-                \App\OrderDetail::find($odo->id)->update(['qty' => $updateQty]);
+                $updatePrice= $data_order_detail[$odo->produk_id]['harga'];
+                \App\OrderDetail::find($odo->id)->update(['qty' => $updateQty, 'harga_jual' => $updatePrice]);
                 unset($data_order_detail[$odo->produk_id]);
             }
-
             if( count($data_order_detail) ){
                 # New Order Detail
                 $produks = Produk::with(['detail' => function($query){
@@ -402,7 +397,6 @@ class ApiController extends Controller
                     ];
                     //echo "<pre>", print_r($orderDetail), "</pre>";
                     $orderDetail = \App\OrderDetail::create($orderDetail);
-
                     if( $produk->detail->count() ){
                         // Order Detail Bahan
                         foreach($produk->detail as $pd){
@@ -419,7 +413,6 @@ class ApiController extends Controller
                 \App\OrderDetailBahan::insert($orderDetailBahan);
             }
         }
-
         return 1;
     }
 
