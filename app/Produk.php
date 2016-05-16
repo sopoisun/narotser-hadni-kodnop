@@ -76,7 +76,7 @@ class Produk extends Model
                     LEFT JOIN order_details ON produks.`id` = order_details.`produk_id`
                     LEFT JOIN order_detail_returns ON order_details.`id` = order_detail_returns.`order_detail_id`
                     INNER JOIN orders ON order_details.`order_id` = orders.`id`
-                    WHERE produk_details.`id` IS NULL AND orders.`state` = 'Closed'
+                    WHERE produk_details.`id` IS NULL AND orders.`state` in ('Closed', 'On Going')
                     GROUP BY produks.`id`) penjualan"),
                 function($join){
                     $join->on('produks.id', '=', 'penjualan.produk_id');

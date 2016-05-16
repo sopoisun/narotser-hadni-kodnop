@@ -63,7 +63,7 @@ class Bahan extends Model
                     INNER JOIN order_details ON order_detail_bahans.`order_detail_id` = order_details.`id`
                     LEFT JOIN order_detail_returns ON order_details.`id` = order_detail_returns.`order_detail_id`
                     INNER JOIN orders ON order_details.`order_id` = orders.`id`
-                    WHERE orders.`state` = 'Closed'
+                    WHERE orders.`state` in ('Closed', 'On Going')
                     GROUP BY order_detail_bahans.`bahan_id`) penjualan"),
                 function($join){
                     $join->on('bahans.id', '=', 'penjualan.bahan_id');
