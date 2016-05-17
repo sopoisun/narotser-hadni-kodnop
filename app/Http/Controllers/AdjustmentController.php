@@ -168,7 +168,7 @@ class AdjustmentController extends Controller
                 $inTtl      = $inStok > 0 ? ( $inHarga * $inStok ) : 0;
                 $sumInOld   = $oldTtl + $inTtl;
                 $qtyTotal   = $dProduks[$val]['sisa_stok'] + $inStok;
-                $avgPrice   = $sumInOld > 0 && $qtyTotal > 0 ? ( $sumInOld / $qtyTotal ) : 0;
+                $avgPrice   = $sumInOld > 0 && $qtyTotal > 0 ? ( $sumInOld / $qtyTotal ) : 0; // HPP
                 /* End Get Avg price */
 
                 $temp[$val] = $in_increase_produk + [

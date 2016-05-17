@@ -97,14 +97,11 @@ class PembelianController extends Controller
                 $inHarga    = $beliBahan[$_id]['harga'] / $inStok;
 
                 /* Get Avg Price */
-                $sum = [];
-                for($i=0; $i<$bahan->sisa_stok; $i++){
-                    array_push($sum, $bahan->harga);
-                }
-                for($i=0; $i<$inStok; $i++){
-                    array_push($sum, $inHarga);
-                }
-                $avgPrice = collect($sum)->avg();
+                $oldTtl     = $bahan->sisa_stok > 0 ? ( $bahan->harga * $bahan->sisa_stok ) : 0;
+                $inTtl      = $inStok > 0 ? ( $inHarga * $inStok ) : 0;
+                $sumInOld   = $oldTtl + $inTtl;
+                $qtyTotal   = $bahan->sisa_stok + $inStok;
+                $avgPrice   = $sumInOld > 0 && $qtyTotal > 0 ? ( $sumInOld / $qtyTotal ) : 0;
                 /* End Get Avg Price */
 
                 array_push($itemBahan, $beliBahan[$_id] + [
@@ -134,6 +131,12 @@ class PembelianController extends Controller
                     array_push($sum, $inHarga);
                 }
                 $avgPrice = collect($sum)->avg(); // HPP
+
+                $oldTtl     = $produk->sisa_stok > 0 ? ( $produk->hpp * $produk->sisa_stok ) : 0;
+                $inTtl      = $inStok > 0 ? ( $inHarga * $inStok ) : 0;
+                $sumInOld   = $oldTtl + $inTtl;
+                $qtyTotal   = $produk->sisa_stok + $inStok;
+                $avgPrice   = $sumInOld > 0 && $qtyTotal > 0 ? ( $sumInOld / $qtyTotal ) : 0; // HPP
                 /* End Get Avg price */
 
                 array_push($itemProduk, $beliProduk[$_id] + [
@@ -204,14 +207,12 @@ class PembelianController extends Controller
                 $inHarga    = $beliBahan[$bId]['harga'] / $inStok;
 
                 if( $bahan->harga != $inHarga ){
-                    $sum = [];
-                    for($i=0; $i<$bahan->sisa_stok; $i++){
-                        array_push($sum, $bahan->harga);
-                    }
-                    for($i=0; $i<$beliBahan[$bId]['stok']; $i++){
-                        array_push($sum, $inHarga);
-                    }
-                    $harga = collect($sum)->avg();
+
+                    $oldTtl     = $bahan->sisa_stok > 0 ? ( $bahan->harga * $bahan->sisa_stok ) : 0;
+                    $inTtl      = $inStok > 0 ? ( $inHarga * $inStok ) : 0;
+                    $sumInOld   = $oldTtl + $inTtl;
+                    $qtyTotal   = $bahan->sisa_stok + $inStok;
+                    $harga      = $sumInOld > 0 && $qtyTotal > 0 ? ( $sumInOld / $qtyTotal ) : 0;
 
                     if( $harga != $bahan->harga ){
                         //echo "<pre>", print_r(['id' => $bId, 'nama' => $bahan->nama, 'harga' => $harga]), "</pre>";
@@ -243,14 +244,12 @@ class PembelianController extends Controller
                 $inHarga    = $beliProduk[$pId]['harga'] / $inStok;
 
                 if( $produk->hpp != $inHarga ){
-                    $sum = [];
-                    for($i=0; $i<$produk->sisa_stok; $i++){
-                        array_push($sum, $produk->hpp);
-                    }
-                    for($i=0; $i<$beliProduk[$pId]['stok']; $i++){
-                        array_push($sum, $inHarga);
-                    }
-                    $harga = collect($sum)->avg(); // HPP
+
+                    $oldTtl     = $produk->sisa_stok > 0 ? ( $produk->hpp * $produk->sisa_stok ) : 0;
+                    $inTtl      = $inStok > 0 ? ( $inHarga * $inStok ) : 0;
+                    $sumInOld   = $oldTtl + $inTtl;
+                    $qtyTotal   = $produk->sisa_stok + $inStok;
+                    $harga      = $sumInOld > 0 && $qtyTotal > 0 ? ( $sumInOld / $qtyTotal ) : 0; // HPP
 
                     if( $harga != $produk->hpp  ){
                         //echo "<pre>", print_r(['id' => $pId, 'nama' => $produk->nama, 'harga' => $harga]), "</pre>";
