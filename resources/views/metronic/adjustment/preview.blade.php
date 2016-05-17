@@ -77,15 +77,15 @@
                     @foreach($items['reduction'] as $item)
                     {{--*/
                         $no++;
-                        $total += $item['harga'];
+                        $total += $item['harga']*$item['qty'];
                     /*--}}
                     <tr>
                         <td>{{ $no }}</td>
                         <td>{{ ucfirst($item['type']) }}</td>
                         <td>{{ $item['nama'] }}</td>
-                        <td style="text-align:right;">{{ number_format(($item['harga']/$item['qty']), 0, ',', '.') }}</td>
+                        <td style="text-align:right;">{{ number_format(($item['harga']), 0, ',', '.') }}</td>
                         <td>{{ $item['qty'].' '.$item['satuan'] }}</td>
-                        <td style="text-align:right;">{{ number_format($item['harga'], 0, ',', '.') }}</td>
+                        <td style="text-align:right;">{{ number_format($item['harga']*$item['qty'], 0, ',', '.') }}</td>
                     </tr>
                     @endforeach
                     <tr>
@@ -130,17 +130,17 @@
                     @foreach($items['increase'] as $item)
                     {{--*/
                         $no++;
-                        $total += $item['harga'];
-                        $oldTotal += ( $item['old_harga'] * $item['old_stok'] );
-                        $avgTotal += ( $item['avg_price'] * ( $item['old_stok'] + $item['qty'] ) );
+                        $total      += ( $item['harga'] * $item['qty'] );
+                        $oldTotal   += ( $item['old_harga'] * $item['old_stok'] );
+                        $avgTotal   += ( $item['avg_price'] * ( $item['old_stok'] + $item['qty'] ) );
                     /*--}}
                     <tr>
                         <td>{{ $no }}</td>
                         <td>{{ ucfirst($item['type']) }}</td>
                         <td>{{ $item['nama'] }}</td>
-                        <td style="text-align:right;">{{ number_format(($item['harga']/$item['qty']), 0, ',', '.') }}</td>
+                        <td style="text-align:right;">{{ number_format($item['harga'], 0, ',', '.') }}</td>
                         <td>{{ $item['qty'].' '.$item['satuan'] }}</td>
-                        <td style="text-align:right;" class="warning">{{ number_format($item['harga'], 0, ',', '.') }}</td>
+                        <td style="text-align:right;" class="warning">{{ number_format(($item['harga']*$item['qty']), 0, ',', '.') }}</td>
                         <td style="text-align:right;">{{ number_format(($item['old_harga']), 0, ',', '.') }}</td>
                         <td>{{ $item['old_stok'].' '.$item['satuan'] }}</td>
                         <td style="text-align:right;" class="warning">{{ number_format(( $item['old_harga'] * $item['old_stok'] ), 0, ',', '.') }}</td>

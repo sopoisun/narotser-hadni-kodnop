@@ -118,17 +118,14 @@ class AdjustmentController extends Controller
             foreach(array_keys($data_adjustment_increase_bahan) as $val){
                 $in_increase_bahan = $data_adjustment_increase_bahan[$val];
                 $inStok     = $data_adjustment_increase_bahan[$val]['qty'];
-                $inHarga    = $data_adjustment_increase_bahan[$val]['harga'] / $inStok;
+                $inHarga    = $data_adjustment_increase_bahan[$val]['harga'];
 
                 /* Get Avg price */
-                $sum = [];
-                for($i=0; $i<$dBahans[$val]['sisa_stok']; $i++){
-                    array_push($sum, $dBahans[$val]['harga']);
-                }
-                for($i=0; $i<$inStok; $i++){
-                    array_push($sum, $inHarga);
-                }
-                $avgPrice = collect($sum)->avg();
+                $oldTtl     = $dBahans[$val]['sisa_stok'] > 0 ? ( $dBahans[$val]['harga'] * $dBahans[$val]['sisa_stok'] ) : 0;
+                $inTtl      = $inStok > 0 ? ( $inHarga * $inStok ) : 0;
+                $sumInOld   = $oldTtl + $inTtl;
+                $qtyTotal   = $dBahans[$val]['sisa_stok'] + $inStok;
+                $avgPrice   = $sumInOld > 0 && $qtyTotal > 0 ? ( $sumInOld / $qtyTotal ) : 0;
                 /* End Get Avg price */
 
                 $temp[$val] = $in_increase_bahan + [
@@ -164,17 +161,14 @@ class AdjustmentController extends Controller
             foreach(array_keys($data_adjustment_increase_produk) as $val){
                 $in_increase_produk = $data_adjustment_increase_produk[$val];
                 $inStok     = $data_adjustment_increase_produk[$val]['qty'];
-                $inHarga    = $data_adjustment_increase_produk[$val]['harga'] / $inStok;
+                $inHarga    = $data_adjustment_increase_produk[$val]['harga'];
 
                 /* Get Avg price */
-                $sum = [];
-                for($i=0; $i<$dProduks[$val]['sisa_stok']; $i++){
-                    array_push($sum, $dProduks[$val]['hpp']);
-                }
-                for($i=0; $i<$inStok; $i++){
-                    array_push($sum, $inHarga);
-                }
-                $avgPrice = collect($sum)->avg();
+                $oldTtl     = $dProduks[$val]['sisa_stok'] > 0 ? ( $dProduks[$val]['hpp'] * $dProduks[$val]['sisa_stok'] ) : 0;
+                $inTtl      = $inStok > 0 ? ( $inHarga * $inStok ) : 0;
+                $sumInOld   = $oldTtl + $inTtl;
+                $qtyTotal   = $dProduks[$val]['sisa_stok'] + $inStok;
+                $avgPrice   = $sumInOld > 0 && $qtyTotal > 0 ? ( $sumInOld / $qtyTotal ) : 0;
                 /* End Get Avg price */
 
                 $temp[$val] = $in_increase_produk + [
@@ -244,17 +238,15 @@ class AdjustmentController extends Controller
             foreach($bahans as $bahan){
                 $bId        = $bahan->id;
                 $inStok     = $data_adjustment_increase_bahan[$bId]['qty'];
-                $inHarga    = $data_adjustment_increase_bahan[$bId]['harga'] / $inStok;
+                $inHarga    = $data_adjustment_increase_bahan[$bId]['harga'];
 
                 if( $bahan->harga != $inHarga ){
-                    $sum = [];
-                    for($i=0; $i<$bahan->sisa_stok; $i++){
-                        array_push($sum, $bahan->harga);
-                    }
-                    for($i=0; $i<$inStok; $i++){
-                        array_push($sum, $inHarga);
-                    }
-                    $harga = collect($sum)->avg();
+
+                    $oldTtl     = $bahan->sisa_stok > 0 ? ( $bahan->harga * $bahan->sisa_stok ) : 0;
+                    $inTtl      = $inStok > 0 ? ( $inHarga * $inStok ) : 0;
+                    $sumInOld   = $oldTtl + $inTtl;
+                    $qtyTotal   = $bahan->sisa_stok + $inStok;
+                    $harga      = $sumInOld > 0 && $qtyTotal > 0 ? ( $sumInOld / $qtyTotal ) : 0;
 
                     if( $harga != $bahan->harga ){
                         \App\Bahan::find($bId)->update(['harga' => $harga]);
@@ -282,17 +274,15 @@ class AdjustmentController extends Controller
             foreach($produks as $produk){
                 $pId        = $produk->id;
                 $inStok     = $data_adjustment_increase_produk[$pId]['qty'];
-                $inHarga    = $data_adjustment_increase_produk[$pId]['harga'] / $inStok;
+                $inHarga    = $data_adjustment_increase_produk[$pId]['harga'];
 
                 if( $produk->hpp != $inHarga ){
-                    $sum = [];
-                    for($i=0; $i<$produk->sisa_stok; $i++){
-                        array_push($sum, $produk->hpp);
-                    }
-                    for($i=0; $i<$inStok; $i++){
-                        array_push($sum, $inHarga);
-                    }
-                    $harga = collect($sum)->avg(); // HPP
+
+                    $oldTtl     = $produk->sisa_stok > 0 ? ( $produk->hpp * $produk->sisa_stok ) : 0;
+                    $inTtl      = $inStok > 0 ? ( $inHarga * $inStok ) : 0;
+                    $sumInOld   = $oldTtl + $inTtl;
+                    $qtyTotal   = $produk->sisa_stok + $inStok;
+                    $harga      = $sumInOld > 0 && $qtyTotal > 0 ? ( $sumInOld / $qtyTotal ) : 0; // HPP
 
                     if( $harga != $produk->hpp  ){
                         \App\Produk::find($pId)->update(['hpp' => $harga]);
@@ -320,7 +310,6 @@ class AdjustmentController extends Controller
         foreach($data_adjustment as $da){
             $temp = $da;
             $temp['adjustment_id'] = $adjustment->id;
-            $temp['harga'] = ( $temp['harga'] / $temp['qty'] );
             array_push($details, $temp);
         }
         AdjustmentDetail::insert($details);
@@ -365,9 +354,8 @@ class AdjustmentController extends Controller
                 $data   = $request->only(['type', 'state', 'relation_id', 'harga', 'qty']) + ['keterangan' => $request->get('item_keterangan')];
                 $dataAdjustment[$id] = $data;
                 $request->session()->put('data_adjustment.'.$request->get('state').'.'.$request->get('type'), $dataAdjustment);
-                // push @harga and subtotal with currency format
-                $data['subtotal']   = number_format($data['harga'], 0, ',', '.'); // get subtotal from $harga
-                $data['harga']      = number_format(($data['harga'] / $data['qty']), 0, ',', '.'); // get @harga from devision $harga by $qty
+                // push subtotal with currency format
+                $data['subtotal']   = number_format(($data['harga'] * $data['qty']), 0, ',', '.'); // get subtotal from $harga * $qty
                 return $data;
             }
         }else{
