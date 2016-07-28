@@ -94,7 +94,9 @@ class Order extends Model
             (IFNULL(order_taxes.`procentage`, 0)/100))) *
             (IFNULL(order_bayar_banks.`tax_procentage`, 0)/100)
             )) - IFNULL(order_bayars.`diskon`, 0))jumlah,
-            IFNULL(SUM(temp_order_details.hpp * temp_order_details.qty), 0)total_hpp
+            IFNULL(SUM(temp_order_details.hpp * temp_order_details.qty), 0)total_hpp,
+            IFNULL(order_bayars.`type_bayar`, '--')_type_bayar,
+            IFNULL(order_bayar_banks.`bank_id`, '--')_bank_id
             FROM orders
             LEFT JOIN order_taxes ON orders.`id` = order_taxes.`order_id`
             LEFT JOIN taxes ON order_taxes.`tax_id` = taxes.`id`
@@ -183,6 +185,7 @@ class Order extends Model
             	SELECT orders.`id` AS order_id, SUM(order_places.`harga`)reservasi
             	FROM orders
             	INNER JOIN order_places ON orders.`id` = order_places.`order_id`
+                LEFT JOIN order_bayars ON orders.`id` = order_bayars.`order_id`
             	WHERE $condition
             	AND orders.`state` = 'Closed'
             	GROUP BY orders.`id`
@@ -196,6 +199,7 @@ class Order extends Model
             	FROM order_details
                 LEFT JOIN order_detail_returns ON order_details.`id` = order_detail_returns.`order_detail_id`
             	INNER JOIN orders ON order_details.`order_id` = orders.`id`
+                LEFT JOIN order_bayars ON orders.`id` = order_bayars.`order_id`
             	WHERE $condition
             	AND orders.`state` = 'Closed'
             	GROUP BY order_details.`id`
