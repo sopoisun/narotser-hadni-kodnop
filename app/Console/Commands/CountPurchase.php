@@ -3,26 +3,26 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Jobs\CountSaleAccount;
+use App\Jobs\CountPurchaseAccount;
 use Carbon\Carbon;
 use Log;
 use Validator;
 
-class CountSale extends Command
+class CountPurchase extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'sale:count {tanggal?} {to_tanggal?}';
+    protected $signature = 'purchase:count {tanggal?} {to_tanggal?}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Count Sale ( Auto Account Data )';
+    protected $description = 'Count Purchasing ( Auto Account Data )';
 
     /**
      * Create a new command instance.
@@ -70,15 +70,15 @@ class CountSale extends Command
     public function actionNow()
     {
         $tanggal = Carbon::now('Asia/Jakarta');
-        $this->info("Hitung penjualan tanggal ".$tanggal->format('d M Y'));
-        dispatch(new CountSaleAccount($tanggal->format('Y-m-d')));
+        $this->info("Hitung bayar pembelian tanggal ".$tanggal->format('d M Y'));
+        dispatch(new CountPurchaseAccount($tanggal->format('Y-m-d')));
     }
 
     public function actionSpecific($tanggal)
     {
         $tanggal = Carbon::createFromFormat('Y-m-d', $tanggal);
-        $this->info("Hitung penjualan tanggal ".$tanggal->format('d M Y'));
-        dispatch(new CountSaleAccount($tanggal->format('Y-m-d')));
+        $this->info("Hitung bayar pembelian tanggal ".$tanggal->format('d M Y'));
+        dispatch(new CountPurchaseAccount($tanggal->format('Y-m-d')));
     }
 
     public function actionRange($tanggal, $to_tanggal)
@@ -86,7 +86,7 @@ class CountSale extends Command
         $tanggal    = Carbon::createFromFormat('Y-m-d', $tanggal);
         $to_tanggal = Carbon::createFromFormat('Y-m-d', $to_tanggal);
 
-        $this->info("Hitung penjualan dari tanggal ".$tanggal->format('d M Y').' s/d '.$to_tanggal->format('d M Y'));
+        $this->info("Hitung bayar pembelian dari tanggal ".$tanggal->format('d M Y').' s/d '.$to_tanggal->format('d M Y'));
 
         $start  = $tanggal->copy();
         $end    = $to_tanggal->copy();
@@ -98,7 +98,7 @@ class CountSale extends Command
         }
 
         foreach( $dates as $date ) {
-            dispatch(new CountSaleAccount($date->format('Y-m-d')));
+            dispatch(new CountPurchaseAccount($date->format('Y-m-d')));
         }
     }
 }
