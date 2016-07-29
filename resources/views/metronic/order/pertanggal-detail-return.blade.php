@@ -43,6 +43,7 @@
             type: "POST",
             data: {
                 id: "{{ $orderDetail->id }}",
+                order_id: "{{ $orderDetail->order->id }}",
                 qty: $("#qty").val(),
                 _token: "{{ csrf_token() }}",
             },

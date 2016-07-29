@@ -27,6 +27,7 @@ use Auth;
 use Validator;
 use Carbon\Carbon;
 use Gate;
+use Artisan;
 
 class OrderController extends Controller
 {
@@ -203,7 +204,12 @@ class OrderController extends Controller
         OrderTax::where('order_id', $id)->delete();
         OrderBayar::where('order_id', $id)->delete();
         OrderBayarBank::where('order_id', $id)->delete();
-        Order::find($id)->update(['state' => 'On Going']);
+        $order = Order::find($id);
+        if( $order->update(['state' => 'On Going']) ){
+            // Update Sale Account
+            Artisan::call('sale:count', [ 'tanggal' => $order->tanggal->format('Y-m-d') ]);
+        }
+
         return redirect("/order/$id/change");
     }
 
@@ -516,12 +522,17 @@ class OrderController extends Controller
                     OrderBayarBank::create($orderBayarBank);
                 }
 
-                $order = ['state' => 'Closed'];
+                $inputs = ['state' => 'Closed'];
                 if( $request->get('customer_id') != "" ){
-                    $order['customer_id'] = $request->get('customer_id');
+                    $inputs['customer_id'] = $request->get('customer_id');
                 }
 
-                if( Order::find($id)->update($order) ){
+                $order = Order::find($id);
+
+                if( $order->update($inputs) ){
+                    // Update Sale Account
+                    Artisan::call('sale:count', [ 'tanggal' => $order->tanggal->format('Y-m-d') ]);
+                    // Redirect
                     return redirect('/order/pertanggal/detail?id='.$id)
                         ->with('succcess', 'Sukses Tutup Order');
                 }
@@ -653,27 +664,37 @@ class OrderController extends Controller
 
     public function savePertanggalDetailReturn(Request $request)
     {
-        $id = $request->get('id');
-        $qty = $request->get('qty');
+        $id         = $request->get('id');
+        $order_id   = $request->get('order_id');
+        $qty        = $request->get('qty');
+
+        $returnValue = 0;
 
         $odr = OrderDetailReturn::where('order_detail_id', $id);
         if($odr->count()){
             if( $qty > 0 ){
                 if( $odr->update(['qty' => $qty]) ){
-                    return 1;
+                    $returnValue = 1;
                 }
             }else{
                 if( $odr->delete() ){
-                    return 1;
+                    $returnValue = 1;
                 }
             }
         }else{
             if( OrderDetailReturn::create(['order_detail_id' => $id, 'qty' => $qty]) ){
-                return 1;
+                $returnValue = 1;
             }
         }
 
-        return 0;
+        $order = Order::find($order_id);
+
+        if( $order ){
+            // Update Sale Account
+            Artisan::call('sale:count', [ 'tanggal' => $order->tanggal->format('Y-m-d') ]);
+        }
+
+        return $returnValue;
     }
 
     /* Session and Ajax Actions */
