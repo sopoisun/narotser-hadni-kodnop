@@ -65,7 +65,7 @@ class CountSaleAccount extends Job implements ShouldQueue
             $totals['cash'] = $totalCash;
         }
         foreach ($bayarBank as $key => $val) {
-            $totals[$key] = $val->sum('jumlah');
+            $totals[$key] = $val->sum('jumlah') - $val->sum('pajak_pembayaran');
         }
 
         $actions = [];
@@ -76,12 +76,18 @@ class CountSaleAccount extends Job implements ShouldQueue
                 $inputs = [
                     'tanggal'       => $tanggal,
                     'account_id'    => 2,
-                    'type'          => 'debet',
                     'nominal'       => $nominal,
                 ];
 
                 if( $bank_id != 'cash' ){
-                    $inputs += ['relation_id' => $bank_id];
+                    $inputs += [
+                        'type'          => 'kredit',
+                        'relation_id'   => $bank_id
+                    ];
+                }else{
+                    $inputs += [
+                        'type'          => 'debet'
+                    ];
                 }
 
                 AccountSaldo::create($inputs);
