@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Auth;
 use DB;
 use Gate;
+use Artisan;
 
 class PembelianController extends Controller
 {
@@ -307,7 +308,12 @@ class PembelianController extends Controller
             'karyawan_id' => '1',
         ];
 
+        $pembelian = Pembelian::find($id);
+
         if( PembelianBayar::create($input) ){
+            // Update Purchase Account
+            Artisan::call('purchase:count', [ 'tanggal' => $pembelian->tanggal->format('Y-m-d') ]);
+
             return redirect()->back()->with('succcess', 'Sukses simpan pembayaran.');
         }
 
