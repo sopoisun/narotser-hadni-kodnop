@@ -41,6 +41,10 @@ Route::group(['middleware' => ['web']], function () {
         // Dashboard
         Route::get('/dashboard', 'DashboardController@index');
 
+        // Auto Data Reader
+        Route::match(['get', 'post'], '/auto-data-reader', 'AutoDataController@index');
+        Route::match(['get', 'post'], '/auto-data-reader/range', 'AutoDataController@range');
+
         // Karyawan
         Route::get('/karyawan', 'KaryawanController@index');
         Route::get('/karyawan/add', 'KaryawanController@create');

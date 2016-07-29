@@ -689,6 +689,27 @@
                     </ul>
                 </li>
                 @endcan
+                @can('autodata.date')
+                <li class="{{ set_active('auto-data-reader*') }}">
+                    <a href="javascript:;">
+                        <i class="icon-bolt"></i>
+                        <span class="title">Auto Data Reader</span>
+                        <span class="arrow "></span>
+                    </a>
+                    <ul class="sub-menu">
+                        @can('autodata.date')
+                        <li class="{{ set_active('auto-data-reader') }}">
+                            <a href="{{ url('/auto-data-reader') }}">Pertanggal</a>
+                        </li>
+                        @endcan
+                        @can('autodata.date-range')
+                        <li class="{{ set_active('auto-data-reader/range') }}">
+                            <a href="{{ url('/auto-data-reader/range') }}">Periode</a>
+                        </li>
+                        @endcan
+                    </ul>
+                </li>
+                @endcan
                 @can('user.read')
                 <li class="{{ set_active('user*') }}">
                     <a class="active" href="javascript:;">
