@@ -1,0 +1,8 @@
+@ECHO OFF
+echo =================================================
+echo Jendela ini jangan ditutup		
+echo Ini Proses Daemon Aplikasi Restoran
+echo =================================================
+
+php artisan queue:listen
+EXIT
