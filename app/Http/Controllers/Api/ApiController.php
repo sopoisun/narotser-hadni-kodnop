@@ -12,9 +12,11 @@ use App\Setting;
 use App\User;
 use App\Produk;
 use App\Karyawan;
+use Carbon\Carbon;
 use DB;
 use Hash;
 use Auth;
+use Artisan;
 
 class ApiController extends Controller
 {
@@ -449,12 +451,17 @@ class ApiController extends Controller
                     \App\OrderBayarBank::create($orderBayarBank);
                 }
 
-                $order = ['state' => 'Closed'];
+                $inputs = ['state' => 'Closed'];
                 if( $request->get('customer_id') != "" ){
-                    $order['customer_id'] = $request->get('customer_id');
+                    $inputs['customer_id'] = $request->get('customer_id');
                 }
 
-                if( \App\Order::find($id)->update($order) ){
+                $order = \App\Order::find($id);
+
+                if( $order->update($inputs) ){
+                    // Update Sale Account
+                    Artisan::call('sale:count', [ 'tanggal' => $order->tanggal->format('Y-m-d') ]);
+
                     return 1;
                 }
             }
