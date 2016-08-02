@@ -367,7 +367,8 @@ class AccountController extends Controller
                     $firstDate  = $firstAccountSaldo->tanggal->format('Y-m-d');
                     $where      = "(account_saldos.`tanggal` BETWEEN '$firstDate' AND '$yesterday')
                                     AND account_saldos.account_id != '2' OR ( account_saldos.account_id = '2'
-                                    AND account_saldos.`type` = 'debet' ) AND";
+                                    AND account_saldos.`type` = 'debet' AND (account_saldos.`tanggal`
+                                    BETWEEN '$firstDate' AND '$yesterday') ) AND";
                     $column     = "IF(account_saldos.`type` = 'debet', account_saldos.`nominal`, -ABS(account_saldos.`nominal`))";
                     $totalAccountSaldo = ConvertRawQueryToArray(Account::TotalAccountSaldo($column, $where, 'jurnal'))[0]['total'];
                 }
@@ -401,9 +402,10 @@ class AccountController extends Controller
                 ->whereBetween('tanggal', [$tanggal, $to_tanggal])
                 ->whereNotNull('temp_report.account_id')
                 ->where('account_saldos.account_id', '!=', 2)
-                ->orWhere(function($query){
+                ->orWhere(function($query) use ($tanggal, $to_tanggal) {
                     $query->where('account_saldos.account_id', 2)
-                        ->where('account_saldos.type', 'debet');
+                        ->where('account_saldos.type', 'debet')
+                        ->whereBetween('tanggal', [$tanggal, $to_tanggal]);
                 })
                 ->select(['account_saldos.*',
                     DB::raw('accounts.nama_akun as nama_akun'),
