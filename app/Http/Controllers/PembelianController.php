@@ -235,7 +235,7 @@ class PembelianController extends Controller
         // Produk, Harga => HPP
         if( !empty($beliProduk) ){
             $keys    = array_keys($beliProduk);
-            $produks = \App\Produk::with(['produk'])
+            $produks = \App\StokProduk::with(['produk'])
                 ->whereIn('produk_id', $keys)
                 ->orderBy('produk_id')
                 ->get();

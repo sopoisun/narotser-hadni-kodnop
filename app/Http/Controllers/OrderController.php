@@ -722,7 +722,7 @@ class OrderController extends Controller
 
             $bahans = \App\StokBahan::whereIn('bahan_id', array_keys($tempBahan))->get();
             foreach($bahans as $bahan){
-                $bId = $bahan->id;
+                $bId = $bahan->bahan_id;
                 if( $bahan->stok < $tempBahan[$bId] ){
                     $denied = true;
                 }

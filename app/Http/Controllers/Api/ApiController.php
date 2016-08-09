@@ -199,7 +199,7 @@ class ApiController extends Controller
             $i = 0;
             foreach($bahans as $bahan){
                 $i++;
-                $bId = $bahan->id;
+                $bId = $bahan->bahan_id;
                 $txt = "Cukup";
                 if( $bahan->stok < $tempBahan[$bId]["total"] ){
                     $txt = "Tidak Cukup";
@@ -251,7 +251,7 @@ class ApiController extends Controller
 
             $bahans = \App\StokBahan::whereIn('bahan_id', array_keys($tempBahan))->get();
             foreach($bahans as $bahan){
-                $bId = $bahan->id;
+                $bId = $bahan->bahan_id;
                 if( $bahan->stok < $tempBahan[$bId] ){
                     $denied = true;
                 }
