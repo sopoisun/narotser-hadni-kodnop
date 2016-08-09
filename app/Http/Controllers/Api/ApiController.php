@@ -346,6 +346,9 @@ class ApiController extends Controller
             }
             \App\OrderDetailBahan::insert($orderDetailBahan);
 
+            Artisan::call('bahan:count');
+            Artisan::call('produk:count');
+
             return 1;
         }
 
@@ -415,6 +418,10 @@ class ApiController extends Controller
                 \App\OrderDetailBahan::insert($orderDetailBahan);
             }
         }
+
+        Artisan::call('bahan:count');
+        Artisan::call('produk:count');
+
         return 1;
     }
 
@@ -461,9 +468,11 @@ class ApiController extends Controller
                 if( $order->update($inputs) ){
                     // Update Sale Account
                     Artisan::call('sale:count', [ 'tanggal' => $order->tanggal->format('Y-m-d') ]);
+                    Artisan::call('bahan:count');
+                    Artisan::call('produk:count');
 
                     return 1;
-                }
+                }            
             }
         }
 

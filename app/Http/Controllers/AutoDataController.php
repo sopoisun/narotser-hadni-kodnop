@@ -83,4 +83,22 @@ class AutoDataController extends Controller
             'to_tanggal'    => $tanggal->copy(),
         ]);
     }
+
+    public function stok(Request $request)
+    {
+        if( Gate::denies('autodata.stok') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        if( $request->isMethod('POST') ){
+            $type = $request->get('type');
+
+            Artisan::call($type.':count');
+
+            return redirect()->back()->with('message', "Perintah sudah dieksekusi. Mungkin butuh beberapa menit untuk
+                menyelesaikannya. Mohon ditunggu, kemudian cek di halaman stok $type. :)");
+        }
+
+        return view(config('app.template').'.auto-data.stok');
+    }
 }

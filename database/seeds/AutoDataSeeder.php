@@ -14,5 +14,6 @@ class AutoDataSeeder extends Seeder
     {
         Permission::create(['name' => 'autodata.date', 'display' => 'Manipulasi A.D. Pertanggal']);
         Permission::create(['name' => 'autodata.date-range', 'display' => 'Manipulasi A.D. Perperiode']);
+        Permission::create(['name' => 'autodata.stok', 'display' => 'Manipulasi Stok']);
     }
 }

@@ -169,6 +169,9 @@ class OrderController extends Controller
 
         $request->session()->forget('data_order');
 
+        Artisan::call('bahan:count');
+        Artisan::call('produk:count');
+
         return redirect('/order?tgl='.$tanggal.'&type='.$placeType)->with('succcess', 'Sukses simpan data order.');
     }
 
@@ -191,6 +194,8 @@ class OrderController extends Controller
         if( Order::find($id)->update(['state' => 'Canceled']) ){
             $input = $request->all() + ['order_id' => $id];
             if( OrderCancel::create($input) ){
+                Artisan::call('bahan:count');
+                Artisan::call('produk:count');
                 $request->session()->flash('succcess', 'Sukses cancel order.');
                 return 1;
             }
@@ -208,6 +213,8 @@ class OrderController extends Controller
         if( $order->update(['state' => 'On Going']) ){
             // Update Sale Account
             Artisan::call('sale:count', [ 'tanggal' => $order->tanggal->format('Y-m-d') ]);
+            Artisan::call('bahan:count');
+            Artisan::call('produk:count');
         }
 
         return redirect("/order/$id/change");
@@ -350,6 +357,9 @@ class OrderController extends Controller
                 }
                 OrderDetailBahan::insert($orderDetailBahan);
             }
+
+            Artisan::call('bahan:count');
+            Artisan::call('produk:count');
 
             $request->session()->forget('data_order');
         }
@@ -532,6 +542,8 @@ class OrderController extends Controller
                 if( $order->update($inputs) ){
                     // Update Sale Account
                     Artisan::call('sale:count', [ 'tanggal' => $order->tanggal->format('Y-m-d') ]);
+                    Artisan::call('bahan:count');
+                    Artisan::call('produk:count');
                     // Redirect
                     return redirect('/order/pertanggal/detail?id='.$id)
                         ->with('succcess', 'Sukses Tutup Order');
@@ -692,6 +704,8 @@ class OrderController extends Controller
         if( $order ){
             // Update Sale Account
             Artisan::call('sale:count', [ 'tanggal' => $order->tanggal->format('Y-m-d') ]);
+            Artisan::call('bahan:count');
+            Artisan::call('produk:count');
         }
 
         return $returnValue;

@@ -278,6 +278,9 @@ class PembelianController extends Controller
         }
         PembelianDetail::insert($temp);
 
+        Artisan::call('bahan:count');
+        Artisan::call('produk:count');
+
         $request->session()->forget('data_pembelian');
         $request->session()->forget('info_pembelian');
 

@@ -706,6 +706,11 @@
                         <li class="{{ set_active('auto-data-reader/range') }}">
                             <a href="{{ url('/auto-data-reader/range') }}">Periode</a>
                         </li>
+                        @can('autodata.stok')
+                        <li class="{{ set_active('auto-data-reader/stok') }}">
+                            <a href="{{ url('/auto-data-reader/stok') }}">Stok</a>
+                        </li>
+                        @endcan
                         @endcan
                     </ul>
                 </li>

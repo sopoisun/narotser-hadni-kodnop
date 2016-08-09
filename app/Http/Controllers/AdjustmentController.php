@@ -12,6 +12,7 @@ use App\AdjustmentDetail;
 use Auth;
 use DB;
 use Gate;
+use Artisan;
 
 class AdjustmentController extends Controller
 {
@@ -319,6 +320,9 @@ class AdjustmentController extends Controller
             array_push($details, $temp);
         }
         AdjustmentDetail::insert($details);
+
+        Artisan::call('bahan:count');
+        Artisan::call('produk:count');
 
         $request->session()->forget('data_adjustment');
         $request->session()->forget('info_adjustment');
