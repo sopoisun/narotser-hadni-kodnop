@@ -238,7 +238,7 @@ class AdjustmentController extends Controller
             $keys   = array_keys($data_adjustment_increase_bahan);
             $bahans = \App\StokBahan::with(['bahan'])
                 ->whereIn('bahan_id', $keys)
-                ->orderBy('bahans_id')
+                ->orderBy('bahan_id')
                 ->get();
 
             foreach($bahans as $bahan){
