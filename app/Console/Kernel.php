@@ -16,6 +16,8 @@ class Kernel extends ConsoleKernel
         Commands\Inspire::class,
         Commands\CountSale::class,
         Commands\CountPurchase::class,
+        Commands\CountStokBahan::class,
+        Commands\CountStokProduk::class,
     ];
 
     /**

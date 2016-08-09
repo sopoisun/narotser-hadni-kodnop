@@ -91,25 +91,25 @@ class PembelianController extends Controller
         // Bahan
         $itemBahan = [];
         if( count($beliBahan) ){
-            $bahans = \App\Bahan::stok()->whereIn('bahans.id', array_keys($beliBahan))->get();
+            $bahans = \App\StokBahan::with(['bahan'])->whereIn('bahan_id', array_keys($beliBahan))->get();
             foreach($bahans as $bahan){
-                $_id        = $bahan->id;
+                $_id        = $bahan->bahan_id;
                 $inStok     = $beliBahan[$_id]['stok'];
                 $inHarga    = $beliBahan[$_id]['harga'] / $inStok;
 
                 /* Get Avg Price */
-                $oldTtl     = $bahan->sisa_stok > 0 ? ( $bahan->harga * $bahan->sisa_stok ) : 0;
+                $oldTtl     = $bahan->stok > 0 ? ( $bahan->bahan->harga * $bahan->stok ) : 0;
                 $inTtl      = $inStok > 0 ? ( $inHarga * $inStok ) : 0;
                 $sumInOld   = $oldTtl + $inTtl;
-                $qtyTotal   = $bahan->sisa_stok + $inStok;
+                $qtyTotal   = $bahan->stok + $inStok;
                 $avgPrice   = $sumInOld > 0 && $qtyTotal > 0 ? ( $sumInOld / $qtyTotal ) : 0;
                 /* End Get Avg Price */
 
                 array_push($itemBahan, $beliBahan[$_id] + [
-                    'nama'          => $bahan->nama,
-                    'satuan_stok'   => $bahan->satuan,
-                    'old_stok'      => round($bahan->sisa_stok, 2),
-                    'old_harga'     => $bahan->harga,
+                    'nama'          => $bahan->bahan->nama,
+                    'satuan_stok'   => $bahan->bahan->satuan,
+                    'old_stok'      => round($bahan->stok, 2),
+                    'old_harga'     => $bahan->bahan->harga,
                     'avg_price'     => $avgPrice,
                 ]);
             }
@@ -117,34 +117,34 @@ class PembelianController extends Controller
         // Produk
         $itemProduk = [];
         if( count($beliProduk) ){
-            $produks = \App\Produk::stok()->whereIn('produks.id', array_keys($beliProduk))->get();
+            $produks = \App\StokProduk::with(['produk'])->whereIn('produk_id', array_keys($beliProduk))->get();
             foreach($produks as $produk){
-                $_id        = $produk->id;
+                $_id        = $produk->produk_id;
                 $inStok     = $beliProduk[$_id]['stok'];
                 $inHarga    = $beliProduk[$_id]['harga'] / $inStok;
 
                 /* Get Avg price */
                 $sum = [];
-                for($i=0; $i<$produk->sisa_stok; $i++){
-                    array_push($sum, $produk->hpp);
+                for($i=0; $i<$produk->stok; $i++){
+                    array_push($sum, $produk->produk->hpp);
                 }
                 for($i=0; $i<$inStok; $i++){
                     array_push($sum, $inHarga);
                 }
                 $avgPrice = collect($sum)->avg(); // HPP
 
-                $oldTtl     = $produk->sisa_stok > 0 ? ( $produk->hpp * $produk->sisa_stok ) : 0;
+                $oldTtl     = $produk->stok > 0 ? ( $produk->produk->hpp * $produk->stok ) : 0;
                 $inTtl      = $inStok > 0 ? ( $inHarga * $inStok ) : 0;
                 $sumInOld   = $oldTtl + $inTtl;
-                $qtyTotal   = $produk->sisa_stok + $inStok;
+                $qtyTotal   = $produk->stok + $inStok;
                 $avgPrice   = $sumInOld > 0 && $qtyTotal > 0 ? ( $sumInOld / $qtyTotal ) : 0; // HPP
                 /* End Get Avg price */
 
                 array_push($itemProduk, $beliProduk[$_id] + [
-                    'nama'          => $produk->nama,
-                    'satuan_stok'   => $produk->satuan,
-                    'old_stok'      => round($produk->sisa_stok, 2),
-                    'old_harga'     => $produk->hpp,
+                    'nama'          => $produk->produk->nama,
+                    'satuan_stok'   => $produk->produk->satuan,
+                    'old_stok'      => round($produk->stok, 2),
+                    'old_harga'     => $produk->produk->hpp,
                     'avg_price'     => $avgPrice,
                 ]);
             }
@@ -197,32 +197,32 @@ class PembelianController extends Controller
         // Bahan
         if( !empty($beliBahan) ){
             $keys   = array_keys($beliBahan);
-            $bahans = \App\Bahan::stok()
-                ->whereIn('bahans.id', $keys)
-                ->orderBy('bahans.id')
+            $bahans = \App\StokBahan::with(['bahan'])
+                ->whereIn('bahan_id', $keys)
+                ->orderBy('bahan_id')
                 ->get();
 
             foreach($bahans as $bahan){
-                $bId        = $bahan->id;
+                $bId        = $bahan->bahan_id;
                 $inStok     = $beliBahan[$bId]['stok'];
                 $inHarga    = $beliBahan[$bId]['harga'] / $inStok;
 
-                if( $bahan->harga != $inHarga ){
+                if( $bahan->bahan->harga != $inHarga ){
 
-                    $oldTtl     = $bahan->sisa_stok > 0 ? ( $bahan->harga * $bahan->sisa_stok ) : 0;
+                    $oldTtl     = $bahan->stok > 0 ? ( $bahan->bahan->harga * $bahan->stok ) : 0;
                     $inTtl      = $inStok > 0 ? ( $inHarga * $inStok ) : 0;
                     $sumInOld   = $oldTtl + $inTtl;
-                    $qtyTotal   = $bahan->sisa_stok + $inStok;
+                    $qtyTotal   = $bahan->stok + $inStok;
                     $harga      = $sumInOld > 0 && $qtyTotal > 0 ? ( $sumInOld / $qtyTotal ) : 0;
 
-                    if( $harga != $bahan->harga ){
+                    if( $harga != $bahan->bahan->harga ){
                         //echo "<pre>", print_r(['id' => $bId, 'nama' => $bahan->nama, 'harga' => $harga]), "</pre>";
                         \App\Bahan::find($bId)->update(['harga' => $harga]);
                         \App\AveragePriceAction::create([
                             'type'              => 'bahan',
                             'relation_id'       => $bId,
-                            'old_price'         => $bahan->harga,
-                            'old_stok'          => $bahan->sisa_stok,
+                            'old_price'         => $bahan->bahan->harga,
+                            'old_stok'          => $bahan->stok,
                             'input_price'       => $inHarga,
                             'input_stok'        => $inStok,
                             'average_with_round'=> $harga,
@@ -235,31 +235,31 @@ class PembelianController extends Controller
         // Produk, Harga => HPP
         if( !empty($beliProduk) ){
             $keys    = array_keys($beliProduk);
-            $produks = \App\Produk::stok()
-                ->whereIn('produks.id', $keys)
-                ->orderBy('produks.id')
+            $produks = \App\Produk::with(['produk'])
+                ->whereIn('produk_id', $keys)
+                ->orderBy('produk_id')
                 ->get();
             foreach($produks as $produk){
-                $pId        = $produk->id;
+                $pId        = $produk->produk_id;
                 $inStok     = $beliProduk[$pId]['stok'];
                 $inHarga    = $beliProduk[$pId]['harga'] / $inStok;
 
-                if( $produk->hpp != $inHarga ){
+                if( $produk->produk->hpp != $inHarga ){
 
-                    $oldTtl     = $produk->sisa_stok > 0 ? ( $produk->hpp * $produk->sisa_stok ) : 0;
+                    $oldTtl     = $produk->stok > 0 ? ( $produk->produk->hpp * $produk->stok ) : 0;
                     $inTtl      = $inStok > 0 ? ( $inHarga * $inStok ) : 0;
                     $sumInOld   = $oldTtl + $inTtl;
-                    $qtyTotal   = $produk->sisa_stok + $inStok;
+                    $qtyTotal   = $produk->stok + $inStok;
                     $harga      = $sumInOld > 0 && $qtyTotal > 0 ? ( $sumInOld / $qtyTotal ) : 0; // HPP
 
-                    if( $harga != $produk->hpp  ){
+                    if( $harga != $produk->produk->hpp  ){
                         //echo "<pre>", print_r(['id' => $pId, 'nama' => $produk->nama, 'harga' => $harga]), "</pre>";
                         \App\Produk::find($pId)->update(['hpp' => $harga]);
                         \App\AveragePriceAction::create([
                             'type'              => 'produk',
                             'relation_id'       => $pId,
-                            'old_price'         => $produk->hpp,
-                            'old_stok'          => $produk->sisa_stok,
+                            'old_price'         => $produk->produk->hpp,
+                            'old_stok'          => $produk->stok,
                             'input_price'       => $inHarga,
                             'input_stok'        => $inStok,
                             'average_with_round'=> $harga,

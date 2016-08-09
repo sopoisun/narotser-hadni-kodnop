@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BahanRequest;
 use App\Bahan;
+use App\StokBahan;
 use Carbon\Carbon;
 use DB;
 use Gate;
@@ -61,7 +62,7 @@ class BahanController extends Controller
 
     protected function _stok()
     {
-        $bahans = Bahan::stok()->orderBy('bahans.id')->get();
+        $bahans = StokBahan::with(["bahan"])->get();
         return ['bahans' => $bahans];
     }
 

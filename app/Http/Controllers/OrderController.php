@@ -720,16 +720,16 @@ class OrderController extends Controller
                 $tempBahan[$bId] =( $pd['qty'] * $qty );
             }
 
-            $bahans = \App\Bahan::stok()->whereIn('bahans.id', array_keys($tempBahan))->get();
+            $bahans = \App\StokBahan::whereIn('bahan_id', array_keys($tempBahan))->get();
             foreach($bahans as $bahan){
                 $bId = $bahan->id;
-                if( $bahan->sisa_stok < $tempBahan[$bId] ){
+                if( $bahan->stok < $tempBahan[$bId] ){
                     $denied = true;
                 }
             }
         }else{
-            $produk = Produk::stok()->find($produkId);
-            if( $produk->sisa_stok < $qty ){
+            $produk = \App\StokProduk::where('produk_id', $produkId)->first();
+            if( $produk->stok < $qty ){
                 $denied = true;
             }
         }

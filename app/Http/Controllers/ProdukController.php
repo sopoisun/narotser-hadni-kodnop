@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProdukRequest;
 use App\Produk;
+use App\StokProduk;
 use App\ProdukKategori;
 use App\ProdukDetail;
 use Carbon\Carbon;
@@ -63,7 +64,7 @@ class ProdukController extends Controller
 
     protected function _stok()
     {
-        $produks = Produk::stok()->orderBy('produks.id')->get();;
+        $produks = StokProduk::with('produk')->get();;
         return ['produks' => $produks];
     }
 

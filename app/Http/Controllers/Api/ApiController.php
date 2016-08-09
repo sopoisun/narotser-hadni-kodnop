@@ -195,17 +195,17 @@ class ApiController extends Controller
                 ];
             }
 
-            $bahans = \App\Bahan::stok()->whereIn('bahans.id', array_keys($tempBahan))->get();
+            $bahans = \App\StokBahan::whereIn('bahan_id', array_keys($tempBahan))->get();
             $i = 0;
             foreach($bahans as $bahan){
                 $i++;
                 $bId = $bahan->id;
                 $txt = "Cukup";
-                if( $bahan->sisa_stok < $tempBahan[$bId]["total"] ){
+                if( $bahan->stok < $tempBahan[$bId]["total"] ){
                     $txt = "Tidak Cukup";
                 }
 
-                $data[] = ["no" => $i] + $tempBahan[$bId] + ["stok" => round($bahan->sisa_stok, 2), "state" => $txt];
+                $data[] = ["no" => $i] + $tempBahan[$bId] + ["stok" => round($bahan->stok, 2), "state" => $txt];
             }
         }else{
             $temp = [
@@ -216,13 +216,13 @@ class ApiController extends Controller
                 'total' => $qty,
             ];
 
-            $produk = Produk::stok()->find($produkId);
+            $produk = \App\StokProduk::where('produk_id', $produkId)->first();
             $txt = "Cukup";
-            if( $produk->sisa_stok < $qty ){
+            if( $produk->stok < $qty ){
                 $txt = "Tidak Cukup";
             }
 
-            $temp += ["stok" => round($produk->sisa_stok, 2), "state" => $txt];
+            $temp += ["stok" => round($produk->stok, 2), "state" => $txt];
             $data[] = $temp;
         }
 
@@ -249,16 +249,16 @@ class ApiController extends Controller
                 $tempBahan[$bId] =( $pd['qty'] * $qty );
             }
 
-            $bahans = \App\Bahan::stok()->whereIn('bahans.id', array_keys($tempBahan))->get();
+            $bahans = \App\StokBahan::whereIn('bahan_id', array_keys($tempBahan))->get();
             foreach($bahans as $bahan){
                 $bId = $bahan->id;
-                if( $bahan->sisa_stok < $tempBahan[$bId] ){
+                if( $bahan->stok < $tempBahan[$bId] ){
                     $denied = true;
                 }
             }
         }else{
-            $produk = Produk::stok()->find($produkId);
-            if( $produk->sisa_stok < $qty ){
+            $produk = \App\StokProduk::where('produk_id', $produkId)->first();
+            if( $produk->stok < $qty ){
                 $denied = true;
             }
         }

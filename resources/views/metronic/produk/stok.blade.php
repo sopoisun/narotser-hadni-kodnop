@@ -67,18 +67,18 @@
                             @foreach($produks as $produk)
                             {{--*/
                                 $no++;
-                                $total += $produk->hpp*$produk->sisa_stok;
+                                $total += $produk->produk->hpp*$produk->stok;
                                 $txt = '';
-                                if( $produk->qty_warning > $produk->sisa_stok ){
+                                if( $produk->produk->qty_warning > $produk->stok ){
                                     $txt = 'class="danger"';
                                 }
                             /*--}}
                             <tr {!! $txt !!}>
                                 <td>{{ $no }}</td>
-                                <td>{{ $produk->nama }}</td>
-                                <td>{{ round($produk->sisa_stok, 2).' '.$produk->satuan }}</td>
-                                <td style="text-align:right;">{{ number_format($produk->hpp, 0, ",", ".") }}</td>
-                                <td style="text-align:right;">{{ number_format($produk->hpp*round($produk->sisa_stok, 2), 0, ",", ".") }}</td>
+                                <td>{{ $produk->produk->nama }}</td>
+                                <td>{{ round($produk->stok, 2).' '.$produk->produk->satuan }}</td>
+                                <td style="text-align:right;">{{ number_format($produk->produk->hpp, 0, ",", ".") }}</td>
+                                <td style="text-align:right;">{{ number_format($produk->produk->hpp*round($produk->stok, 2), 0, ",", ".") }}</td>
                             </tr>
                             @endforeach
                             <tr style="font-weight:bold;">
