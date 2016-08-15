@@ -87,7 +87,13 @@ class BahanController extends Controller
      */
     public function store(BahanRequest $request)
     {
-        if( Bahan::create($request->all()) ){
+        $bahan = Bahan::create($request->all());
+        if( $bahan ){
+            StokBahan::create([
+                'bahan_id'  => $bahan->id,
+                'stok'      => 0,
+            ]);
+
             return redirect('/bahan-produksi')->with('succcess', 'Sukses simpan data bahan produksi.');
         }
 

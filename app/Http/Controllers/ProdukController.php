@@ -113,6 +113,13 @@ class ProdukController extends Controller
             ]);
         }
 
+        if( !count($produkDetailData) ){
+            StokProduk::create([
+                'produk_id' => $produk->id,
+                'stok'      => 0,
+            ]);
+        }
+
         if( ProdukDetail::insert($produkDetailData) ){
             return redirect('/produk')->with('succcess', 'Sukses simpan data produk.');
         }
