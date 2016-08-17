@@ -191,6 +191,8 @@ class PembelianController extends Controller
                 'tanggal'       => $request->get('tanggal'),
             ];
             PembelianBayar::create($input);
+            // Update Purchase Account
+            Artisan::call('purchase:count', [ 'tanggal' => $pembelian->tanggal->format('Y-m-d') ]);
         }
 
         # Update [Bahan => Harga, Produk => HPP]
@@ -231,6 +233,8 @@ class PembelianController extends Controller
                     }
                 }
             }
+
+            Artisan::call('bahan:count');
         }
         // Produk, Harga => HPP
         if( !empty($beliProduk) ){
@@ -268,6 +272,8 @@ class PembelianController extends Controller
                     }
                 }
             }
+
+            Artisan::call('produk:count');
         }
 
         // Pembelian Detail
@@ -277,9 +283,6 @@ class PembelianController extends Controller
             array_push($temp, ($detail + ['pembelian_id' => $pembelian->id]));
         }
         PembelianDetail::insert($temp);
-
-        Artisan::call('bahan:count');
-        Artisan::call('produk:count');
 
         $request->session()->forget('data_pembelian');
         $request->session()->forget('info_pembelian');
