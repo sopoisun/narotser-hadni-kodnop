@@ -106,6 +106,9 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/bahan-produksi/edit/{id}', 'BahanController@edit');
         Route::post('/bahan-produksi/edit/{id}', 'BahanController@update');
         Route::get('/bahan-produksi/delete/{id}', 'BahanController@destroy');
+        Route::get('/bahan-produksi/qty-warning', 'BahanController@qtyWarning');
+        Route::post('/bahan-produksi/qty-warning-session', 'BahanController@qtyWarningSession');
+        Route::get('/bahan-produksi/qty-warning-print', 'BahanController@qtyWarningPrint');
 
         // Produk Kategori
         Route::get('/produk/kategori', 'ProdukKategoriController@index');
@@ -124,6 +127,9 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/produk/edit/{id}', 'ProdukController@edit');
         Route::post('/produk/edit/{id}', 'ProdukController@update');
         Route::get('/produk/delete/{id}', 'ProdukController@destroy');
+        Route::get('/produk/qty-warning', 'ProdukController@qtyWarning');
+        Route::post('/produk/qty-warning-session', 'ProdukController@qtyWarningSession');
+        Route::get('/produk/qty-warning-print', 'ProdukController@qtyWarningPrint');
 
         // Pembelian
         Route::get('/pembelian', 'PembelianController@index');

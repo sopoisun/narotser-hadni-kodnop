@@ -5,7 +5,7 @@
 .dashboard-spinner{
     width: 100%;
     height: 50px;
-    background-image: url('assets/metronic/img/dashboard-spinner.gif');
+    background-image: url('{{ url("/") }}/assets/metronic/img/dashboard-spinner.gif');
     background-repeat: no-repeat;
     background-position: center;
 }
@@ -13,7 +13,7 @@
 .dashboard-spinner-big{
     width: 100%;
     height: 150px;
-    background-image: url('assets/metronic/img/dashboard-spinner-big.gif');
+    background-image: url('{{ url("/") }}/assets/metronic/img/dashboard-spinner-big.gif');
     background-repeat: no-repeat;
     background-position: center;
 }

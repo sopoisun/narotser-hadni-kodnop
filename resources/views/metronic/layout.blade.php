@@ -493,6 +493,11 @@
                             <a href="{{ url('/produk/stok') }}">Stok Produk</a>
                         </li>
                         @endcan
+                        @can('produk.qty_warning')
+                        <li class="{{ set_active('produk/qty-warning') }}">
+                            <a href="{{ url('/produk/qty-warning') }}">Qty Warning</a>
+                        </li>
+                        @endcan
                     </ul>
                 </li>
                 @endcan
@@ -517,6 +522,11 @@
                         @can('bahan.stok')
                         <li class="{{ set_active('bahan-produksi/stok') }}">
                             <a href="{{ url('/bahan-produksi/stok') }}">Stok Bahan Produksi</a>
+                        </li>
+                        @endcan
+                        @can('bahan.qty_warning')
+                        <li class="{{ set_active('bahan-produksi/qty-warning') }}">
+                            <a href="{{ url('/bahan-produksi/qty-warning') }}">Qty Warning</a>
                         </li>
                         @endcan
                     </ul>

@@ -303,4 +303,34 @@ class ProdukController extends Controller
             return $produk;
         }
     }
+
+    public function qtyWarning()
+    {
+        if( Gate::denies('produk.qty_warning') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        request()->session()->forget('qty_warning');
+        return view(config('app.template').'.produk.qty-warning');
+    }
+
+    public function qtyWarningSession()
+    {
+        return request()->session()->put('qty_warning', json_decode(request()->get('data'), true));
+    }
+
+    public function qtyWarningPrint()
+    {
+        if( Gate::denies('produk.qty_warning') ){
+            return view(config('app.template').'.error.403');
+        }
+        
+        $print = new \App\Libraries\QtyWarning([
+            'header' => 'Laporan Qty Warning Produk '.Carbon::now()->format('d M Y'),
+            'text'  => 'Produk',
+            'data' => request()->session()->get('qty_warning'),
+        ]);
+
+        $print->WritePage();
+    }
 }

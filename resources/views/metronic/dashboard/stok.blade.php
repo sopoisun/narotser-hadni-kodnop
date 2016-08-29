@@ -1,7 +1,7 @@
 @if( $data->count() )
 <div class="note note-warning">
     <h4 class="block">Warning! Segera isi stok.</h4>
-    <p>Daftar produk yang stoknya sudah dibawah ambang batas stok.</p>
+    <p>Daftar {{ strtolower($header) }} yang stoknya sudah dibawah ambang batas stok.</p>
 </div>
 @endif
 <div class="table-responsive">

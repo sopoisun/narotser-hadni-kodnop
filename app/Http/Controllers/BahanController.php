@@ -182,4 +182,34 @@ class BahanController extends Controller
                 ->limit($request->get('page'))->get();
         }
     }
+
+    public function qtyWarning()
+    {
+        if( Gate::denies('bahan.qty_warning') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        request()->session()->forget('qty_warning');
+        return view(config('app.template').'.bahan.qty-warning');
+    }
+
+    public function qtyWarningSession()
+    {
+        return request()->session()->put('qty_warning', json_decode(request()->get('data'), true));
+    }
+
+    public function qtyWarningPrint()
+    {        
+        if( Gate::denies('bahan.qty_warning') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $print = new \App\Libraries\QtyWarning([
+            'header' => 'Laporan Qty Warning Bahan '.Carbon::now()->format('d M Y'),
+            'text'  => 'Bahan',
+            'data' => request()->session()->get('qty_warning'),
+        ]);
+
+        $print->WritePage();
+    }
 }
