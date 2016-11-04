@@ -81,37 +81,24 @@ class CustomerController extends Controller
             'jumlah.required' => 'Jumlah tidak boleh kosong.',
             'jumlah.numeric' => 'Input harus angka.',
         ]);
-
-        $digit = 15;
-
+        
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
         }
 
-        $customerCodes = [];
-        for( $i = 0; $i<$request->get('jumlah'); $i++ ){
-            array_push($customerCodes, strtoupper(str_random($digit)));
-        }
+        $lastId     = 1;
+        $lastIdDB   = Customer::lastCustomerID();
 
-        $c = Customer::whereIn('kode', $customerCodes);
-        $exist = $c->count();
-
-        while( $exist ){
-            foreach ($c->get() as $val) {
-                $idx = array_search($val->kode, $customerCodes);
-                unset($customerCodes[$idx]);
-                array_push($customerCodes, strtoupper(str_random($digit)));
-            }
-
-            $c = Customer::whereIn('kode', $customerCodes);
-            $exist = $c->count();
+        if( $lastIdDB ){
+            $lastId = $lastIdDB->kode + 1;
         }
 
         $insertData = [];
-        foreach( $customerCodes as $cc ){
-            array_push($insertData, ['kode' => $cc]);
+        for( $i = 0; $i<$request->get('jumlah'); $i++ ){
+            $code = ($i + $lastId);
+            array_push($insertData, ['kode' => str_pad($code, 10, '0', STR_PAD_LEFT)]);
         }
 
         if( Customer::insert($insertData) ){

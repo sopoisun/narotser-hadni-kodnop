@@ -15,6 +15,15 @@ class Customer extends Model
         return $this->hasMany('App\Order', 'customer_id', 'id');
     }
 
+    public static function lastCustomerID()
+    {
+        return self::where('active', 1)
+            ->select([
+                DB::raw("CAST(kode AS UNSIGNED)kode")
+            ])
+            ->orderBy(DB::raw("CAST(kode AS UNSIGNED)"), "DESC")->first();
+    }
+
     public static function Report($tanggal1, $tanggal2="")
     {
         if( $tanggal2 == "" ){
