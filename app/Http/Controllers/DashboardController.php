@@ -8,6 +8,8 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Produk;
 use App\Bahan;
+use App\StokBahan;
+use App\StokProduk;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -76,9 +78,11 @@ class DashboardController extends Controller
     public function ProdukStok()
     {
         // Produk stok dibawah ambang batas stok
-        $produkStokWarning = Produk::stok()->get()->filter(function($item){
-            return $item->sisa_stok < $item->qty_warning;
-        });
+        $produkStokWarning = Produk::join('stok_produks', 'produks.id', '=', 'stok_produks.produk_id')
+            ->where('produks.active', 1)->select(['produks.*', 'stok_produks.stok'])->get()
+            ->filter(function($item){
+                return $item->stok < $item->qty_warning;
+            });
 
         $data = [
             'data' => $produkStokWarning,
@@ -91,9 +95,11 @@ class DashboardController extends Controller
     public function BahanStok()
     {
         // Bahan stok dibawah ambang batas stok
-        $bahanStokWarning = Bahan::stok()->get()->filter(function($item){
-            return $item->sisa_stok < $item->qty_warning;
-        });
+        $bahanStokWarning = Bahan::join('stok_bahans', 'bahans.id', '=', 'stok_bahans.bahan_id')
+            ->where('bahans.active', 1)->select(['bahans.*', 'stok_bahans.stok'])->get()
+            ->filter(function($item){
+                return $item->stok < $item->qty_warning;
+            });
 
         $data = [
             'data' => $bahanStokWarning,

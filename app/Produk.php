@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\StokProduk;
 use Carbon\Carbon;
 use DB;
 
@@ -41,6 +42,11 @@ class Produk extends Model
     public function orderDetail()
     {
         return $this->hasOne('App\OrderDetail', 'produk_id', 'id');
+    }
+
+    public function stokProduk()
+    {
+        return $this->hasOne(StokProduk::class, 'produk_id', 'id');
     }
 
     public static function stok()

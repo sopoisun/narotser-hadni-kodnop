@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\StokBahan;
 use Carbon\Carbon;
 use DB;
 
@@ -29,6 +30,11 @@ class Bahan extends Model
     public function orderDetailBahan()
     {
         return $this->hasOne('App\OrderDetailBahan', 'bahan_id', 'id');
+    }
+
+    public function stokBahan()
+    {
+        return $this->hasOne(StokBahan::class, 'bahan_id', 'id');
     }
 
     public static function stok()
