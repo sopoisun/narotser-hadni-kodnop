@@ -472,7 +472,7 @@ class ApiController extends Controller
                     Artisan::call('produk:count');
 
                     return 1;
-                }            
+                }
             }
         }
 
@@ -596,7 +596,7 @@ class ApiController extends Controller
             $id = $request->get('id');
 
             $order = Order::with(['karyawan', 'bayar.karyawan', 'tax.tax',
-                'bayarBank.bank', 'place.place'])->find($id);
+                'bayarBank.bank', 'place.place', 'customer'])->find($id);
 
             $total = $orderDetails = OrderDetail::with('order')->leftJoin('order_detail_returns', 'order_details.id', '=', 'order_detail_returns.order_detail_id')
                 ->join('produks', 'order_details.produk_id', '=', 'produks.id')
@@ -626,6 +626,7 @@ class ApiController extends Controller
             return [
                 'kasir'         => $order->bayar->karyawan->nama,
                 'waiters'       => $order->karyawan->nama,
+                'customer'      => ($order->customer != null ) ?  $order->customer->nama : null,
                 'total'         => number_format($total, 0, ",", "."),
                 'tax_pro'       => $order->tax->procentage,
                 'tax'           => number_format($tax, 0, ",", "."),

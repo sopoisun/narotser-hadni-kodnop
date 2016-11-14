@@ -210,7 +210,7 @@ class OrderController extends Controller
         OrderBayar::where('order_id', $id)->delete();
         OrderBayarBank::where('order_id', $id)->delete();
         $order = Order::find($id);
-        if( $order->update(['state' => 'On Going']) ){
+        if( $order->update(['state' => 'On Going', 'customer_id' => NULL]) ){
             // Update Sale Account
             Artisan::call('sale:count', [ 'tanggal' => $order->tanggal->format('Y-m-d') ]);
             Artisan::call('bahan:count');
