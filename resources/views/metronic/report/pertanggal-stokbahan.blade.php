@@ -120,7 +120,7 @@
                             {{--*/ $no++; /*--}}
                             <tr>
                                 <td>{{ $no }}</td>
-                                <td>{{ $bahan['nama'].' ('.$bahan['satuan'].')' }}</td>
+                                <td>{{ $bahan['bahan']['nama'].' ('.$bahan['bahan']['satuan'].')' }}</td>
                                 <td style="text-align:center;">{{ round($bahan['before'], 2) }}</td>
                                 <td style="text-align:center;">{{ round($bahan['pembelian'], 2) }}</td>
                                 <td style="text-align:center;">{{ round($bahan['penjualan'], 2) }}</td>

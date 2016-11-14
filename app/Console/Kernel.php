@@ -18,6 +18,8 @@ class Kernel extends ConsoleKernel
         Commands\CountPurchase::class,
         Commands\CountStokBahan::class,
         Commands\CountStokProduk::class,
+        Commands\MutasiBahan::class,
+        Commands\MutasiProduk::class,
     ];
 
     /**

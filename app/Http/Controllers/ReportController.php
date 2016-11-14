@@ -442,7 +442,7 @@ class ReportController extends Controller
     {
         $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
 
-        $produks = \App\Produk::MutasiStok($tanggal);
+        $produks = \App\MutasiStokProduk::where('tanggal', $tanggal)->with(['produk'])->get();
 
         return [
             'tanggal' => Carbon::parse($tanggal),
@@ -482,7 +482,7 @@ class ReportController extends Controller
     {
         $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
 
-        $bahans = \App\Bahan::MutasiStok($tanggal);
+        $bahans = \App\MutasiStokBahan::where('tanggal', $tanggal)->with(['bahan'])->get();
 
         return [
             'tanggal' => Carbon::parse($tanggal),
@@ -1041,7 +1041,15 @@ class ReportController extends Controller
         $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
         $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : $tanggal;
 
-        $produks = \App\Produk::MutasiStok($tanggal, $to_tanggal);
+        $produks = \App\MutasiStokProduk::with('produk')
+            ->select([
+                'id', 'produk_id', 'before',
+                DB::raw("SUM(pembelian)pembelian"), DB::raw("SUM(pembelian)pembelian"),
+                DB::raw("SUM(adjustment_increase)adjustment_increase"), DB::raw("SUM(adjustment_reduction)adjustment_reduction"),
+                DB::raw("(((((`before`)+SUM(pembelian))-SUM(penjualan))+SUM(adjustment_increase))-SUM(adjustment_reduction))sisa"),
+            ])
+            ->whereBetween('tanggal', [$tanggal, $to_tanggal])
+            ->groupBy('produk_id')->get();
 
         return [
             'tanggal'   => Carbon::createFromFormat('Y-m-d', $tanggal),
@@ -1083,7 +1091,15 @@ class ReportController extends Controller
         $tanggal = $request->get('tanggal') ? $request->get('tanggal') : date('Y-m-d');
         $to_tanggal = $request->get('to_tanggal') ? $request->get('to_tanggal') : $tanggal;
 
-        $bahans = \App\Bahan::MutasiStok($tanggal, $to_tanggal);
+        $bahans = \App\MutasiStokBahan::with('bahan')
+            ->select([
+                'id', 'bahan_id', 'before',
+                DB::raw("SUM(pembelian)pembelian"), DB::raw("SUM(pembelian)pembelian"),
+                DB::raw("SUM(adjustment_increase)adjustment_increase"), DB::raw("SUM(adjustment_reduction)adjustment_reduction"),
+                DB::raw("(((((`before`)+SUM(pembelian))-SUM(penjualan))+SUM(adjustment_increase))-SUM(adjustment_reduction))sisa"),
+            ])
+            ->whereBetween('tanggal', [$tanggal, $to_tanggal])
+            ->groupBy('bahan_id')->get();
 
         return [
             'tanggal'   => Carbon::createFromFormat('Y-m-d', $tanggal),
