@@ -34,7 +34,7 @@ class AutoDataController extends Controller
             $tanggal    = $request->get('tanggal');
             $type       = $request->get('type');
 
-            Artisan::call($type.':count', [ 'tanggal' => $tanggal ]);
+            Artisan::call($type, [ 'tanggal' => $tanggal ]);
 
             return redirect()->back()->with('message', 'Perintah sudah dieksekusi. Mungkin butuh beberapa menit untuk
                 menyelesaikannya. Mohon ditunggu, kemudian cek di jurnal akun. :)');
@@ -70,7 +70,7 @@ class AutoDataController extends Controller
             $to_tanggal = $request->get('to_tanggal');
             $type       = $request->get('type');
 
-            Artisan::call($type.':count', [ 'tanggal' => $tanggal, 'to_tanggal' => $to_tanggal ]);
+            Artisan::call($type, [ 'tanggal' => $tanggal, 'to_tanggal' => $to_tanggal ]);
 
             return redirect()->back()->with('message', 'Perintah sudah dieksekusi. Mungkin butuh beberapa menit untuk
                 menyelesaikannya. Mohon ditunggu, kemudian cek di jurnal akun. :)');
@@ -93,7 +93,7 @@ class AutoDataController extends Controller
         if( $request->isMethod('POST') ){
             $type = $request->get('type');
 
-            Artisan::call($type.':count');
+            Artisan::call($type);
 
             return redirect()->back()->with('message', "Perintah sudah dieksekusi. Mungkin butuh beberapa menit untuk
                 menyelesaikannya. Mohon ditunggu, kemudian cek di halaman stok $type. :)");

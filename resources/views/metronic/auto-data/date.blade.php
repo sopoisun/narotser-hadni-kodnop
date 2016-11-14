@@ -60,7 +60,10 @@
                                     <div class="col-md-8">
                                         {{
                                             Form::select('type',
-                                                ['sale' => 'Penjualan', 'purchase' => 'Pembelian'],
+                                                [
+                                                    'sale:count' => 'Penjualan', 'purchase:count' => 'Pembelian',
+                                                    'mutasi:bahan' => 'Mutasi Bahan', 'mutasi:produk' => 'Mutasi Produk',
+                                                ],
                                                 null, ['class' => 'form-control', 'id' => 'type']
                                             )
                                         }}
