@@ -1094,7 +1094,7 @@ class ReportController extends Controller
         $bahans = \App\MutasiStokBahan::with('bahan')
             ->select([
                 'id', 'bahan_id', 'before',
-                DB::raw("SUM(pembelian)pembelian"), DB::raw("SUM(pembelian)pembelian"),
+                DB::raw("SUM(pembelian)pembelian"), DB::raw("SUM(penjualan)penjualan"),
                 DB::raw("SUM(adjustment_increase)adjustment_increase"), DB::raw("SUM(adjustment_reduction)adjustment_reduction"),
                 DB::raw("(((((`before`)+SUM(pembelian))-SUM(penjualan))+SUM(adjustment_increase))-SUM(adjustment_reduction))sisa"),
             ])
