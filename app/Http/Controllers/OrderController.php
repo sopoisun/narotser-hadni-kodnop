@@ -519,6 +519,7 @@ class OrderController extends Controller
                 'diskon'        => ( $request->get('diskon') != '' ? $request->get('diskon') : 0 ),
                 'bayar'         => $request->get('bayar'),
                 'type_bayar'    => $request->get('type_bayar'),
+                'jam'           => Carbon::now('Asia/Jakarta')->format('h:i:s'),
             ];
 
             if( OrderBayar::create($orderBayar) ){
