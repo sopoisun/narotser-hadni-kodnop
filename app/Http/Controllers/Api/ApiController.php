@@ -626,6 +626,7 @@ class ApiController extends Controller
 
             return [
                 'kasir'         => $order->bayar->karyawan->nama,
+                'jam'           => $order->bayar->jam,
                 'waiters'       => $order->karyawan->nama,
                 'customer'      => ($order->customer != null ) ?  $order->customer->nama : null,
                 'total'         => number_format($total, 0, ",", "."),
