@@ -445,7 +445,7 @@ class ApiController extends Controller
                 'diskon'        => ( $request->get('diskon') != '' ? $request->get('diskon') : 0 ),
                 'bayar'         => $request->get('bayar'),
                 'type_bayar'    => $request->get('type_bayar'),
-                'jam'           => Carbon::now('Asia/Jakarta')->format('h:i:s'),
+                'jam'           => Carbon::now('Asia/Jakarta')->format('H:i:s'),
             ];
 
             if( \App\OrderBayar::create($orderBayar) ){
@@ -626,7 +626,7 @@ class ApiController extends Controller
 
             return [
                 'kasir'         => $order->bayar->karyawan->nama,
-                'jam'           => $order->bayar->jam,
+                'tanggal_jam'   => Carbon::parse($order->tanggal->format('d-m-Y').' '.$order->bayar->jam)->format('d/m/Y H:i'),
                 'waiters'       => $order->karyawan->nama,
                 'customer'      => ($order->customer != null ) ?  $order->customer->nama : null,
                 'total'         => number_format($total, 0, ",", "."),
