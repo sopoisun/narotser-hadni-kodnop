@@ -346,8 +346,10 @@ class ApiController extends Controller
             }
             \App\OrderDetailBahan::insert($orderDetailBahan);
 
-            Artisan::call('bahan:count');
-            Artisan::call('produk:count');
+            if ( $request->get('readstok') ) {
+                Artisan::call('bahan:count');
+                Artisan::call('produk:count');
+            }
 
             return 1;
         }
@@ -419,8 +421,10 @@ class ApiController extends Controller
             }
         }
 
-        Artisan::call('bahan:count');
-        Artisan::call('produk:count');
+        if ( $request->get('readstok') ) {
+            Artisan::call('bahan:count');
+            Artisan::call('produk:count');
+        }
 
         return 1;
     }
