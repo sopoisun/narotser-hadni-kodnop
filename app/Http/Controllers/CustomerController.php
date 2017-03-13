@@ -29,19 +29,13 @@ class CustomerController extends Controller
         $type = $request->get('type') ? $request->get('type') : 'registered';
 
         if( $type == 'registered' ){
-            $customers  = Customer::leftJoin(DB::raw("
-                            (SELECT orders.`id`, orders.`customer_id`, SUM(order_details.`harga_jual` * (order_details.`qty` - ifnull(order_detail_returns.qty, 0)))
-                            AS total_penjualan FROM orders INNER JOIN order_details ON orders.`id` = order_details.`order_id`
-                            LEFT JOIN order_detail_returns on order_details.id = order_detail_returns.order_detail_id
-                            WHERE orders.`state` = 'Closed' GROUP BY orders.`id`)AS temp_orders
-                        "), 'customers.id', '=', 'temp_orders.customer_id')
-                        ->whereNotNull('customers.nama')
-                        ->select([
-                            'customers.*', DB::raw('count(temp_orders.id) as jumlah_kunjungan'),
-                            DB::raw('sum(temp_orders.total_penjualan)as total')
-                        ])
-                        ->groupBy('customers.id')
-                        ->paginate(2);
+            $customers  = Customer::join('customer_purchases', 'customers.id', '=', 'customer_purchases.customer_id')
+                            ->select([
+                                'customers.*',
+                                DB::raw('customer_purchases.visit as jumlah_kunjungan'),
+                                DB::raw('customer_purchases.purchase as total'),
+                            ])
+                            ->paginate(20);
             $data       = ['customers' => $customers];
             return view(config('app.template').'.customer.table', $data);
         }elseif( $type == 'unregistered' ){
@@ -81,7 +75,7 @@ class CustomerController extends Controller
             'jumlah.required' => 'Jumlah tidak boleh kosong.',
             'jumlah.numeric' => 'Input harus angka.',
         ]);
-        
+
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)

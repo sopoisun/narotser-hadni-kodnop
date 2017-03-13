@@ -15,6 +15,11 @@ class Customer extends Model
         return $this->hasMany('App\Order', 'customer_id', 'id');
     }
 
+    public function purchase()
+    {
+        return $this->hasOne(App\CustomerPurchase::class, 'customer_id', 'id');
+    }
+
     public static function lastCustomerID()
     {
         return self::where('active', 1)

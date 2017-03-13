@@ -23,7 +23,7 @@
                 <a href="{{ url('/report') }}">Auto Reader Data</a>
                 <i class="icon-angle-right"></i>
             </li>
-            <li><a href="javascript:void(0)">Stok</a></li>
+            <li><a href="javascript:void(0)">Command</a></li>
         </ul>
         <!-- END PAGE TITLE & BREADCRUMB-->
     </div>
@@ -60,7 +60,11 @@
                                     <div class="col-md-8">
                                         {{
                                             Form::select('type',
-                                                ['bahan:count' => 'Bahan', 'produk:count' => 'Produk'],
+                                                [
+                                                    'bahan:count'   => 'Baca Stok Bahan',
+                                                    'produk:count'  => 'Baca Stok Produk',
+                                                    'memberpurchase:count' => 'Baca Pembelian Customer',
+                                                ],
                                                 null, ['class' => 'form-control', 'id' => 'type']
                                             )
                                         }}
@@ -73,7 +77,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="col-md-offset-3 col-md-9">
-                                    <button type="submit" class="btn red">Baca Stok</button>
+                                    <button type="submit" class="btn red">Jalankan Command</button>
                                 </div>
                             </div>
                             <div class="col-md-6"></div>
