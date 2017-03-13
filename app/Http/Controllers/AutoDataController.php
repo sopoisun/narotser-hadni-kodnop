@@ -96,7 +96,7 @@ class AutoDataController extends Controller
             Artisan::call($type);
 
             return redirect()->back()->with('message', "Perintah sudah dieksekusi. Mungkin butuh beberapa menit untuk
-                menyelesaikannya. Mohon ditunggu, kemudian cek di halaman stok $type. :)");
+                menyelesaikannya.");
         }
 
         return view(config('app.template').'.auto-data.stok');
