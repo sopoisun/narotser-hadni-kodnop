@@ -84,7 +84,7 @@ class AutoDataController extends Controller
         ]);
     }
 
-    public function stok(Request $request)
+    public function cmd(Request $request)
     {
         if( Gate::denies('autodata.stok') ){
             return view(config('app.template').'.error.403');
@@ -99,6 +99,6 @@ class AutoDataController extends Controller
                 menyelesaikannya.");
         }
 
-        return view(config('app.template').'.auto-data.stok');
+        return view(config('app.template').'.auto-data.cmd');
     }
 }

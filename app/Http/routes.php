@@ -44,7 +44,7 @@ Route::group(['middleware' => ['web']], function () {
         // Auto Data Reader
         Route::match(['get', 'post'], '/auto-data-reader', 'AutoDataController@index');
         Route::match(['get', 'post'], '/auto-data-reader/range', 'AutoDataController@range');
-        Route::match(['get', 'post'], '/auto-data-reader/stok', 'AutoDataController@stok');
+        Route::match(['get', 'post'], '/auto-data-reader/cmd', 'AutoDataController@cmd');
 
         // Karyawan
         Route::get('/karyawan', 'KaryawanController@index');
