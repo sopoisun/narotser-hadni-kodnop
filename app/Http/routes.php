@@ -141,6 +141,12 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('/pembelian/bayar/{id}', 'PembelianController@bayarStore');
         Route::get('/pembelian/show', 'PembelianController@showItem');
 
+        // Sale Plan
+        Route::get('/pembelian/saleplan', 'SalePlanController@index');
+        Route::get('/pembelian/saleplan/{id}/detail', 'SalePlanController@detail');
+        Route::get('/pembelian/saleplan/add', 'SalePlanController@create');
+        Route::post('/pembelian/saleplan/add', 'SalePlanController@store');
+
         // Adjustment
         Route::get('/adjustment', 'AdjustmentController@index');
         Route::get('/adjustment/add', 'AdjustmentController@create');
@@ -336,6 +342,10 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('/dashboard-price', 'DashboardController@PriceTreshold');
             Route::get('/dashboard-produk', 'DashboardController@ProdukStok');
             Route::get('/dashboard-bahan', 'DashboardController@BahanStok');
+            // Sale Plan
+            Route::get('/saleplan/item/session', 'SalePlanController@itemSession');
+            Route::post('/saleplan/item/save', 'SalePlanController@saveItem');
+            Route::get('/saleplan/item/remove', 'SalePlanController@removeItem');
             // Karyawan
             Route::get('/karyawan', 'KaryawanController@ajaxLoad');
             // Supplier

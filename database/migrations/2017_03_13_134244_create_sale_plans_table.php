@@ -15,6 +15,7 @@ class CreateSalePlansTable extends Migration
         Schema::create('sale_plans', function (Blueprint $table) {
             $table->increments('id');
             $table->string('kode_plan');
+            $table->date('tanggal');
             $table->timestamps();
         });
     }

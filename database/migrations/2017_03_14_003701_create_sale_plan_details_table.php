@@ -17,6 +17,8 @@ class CreateSalePlanDetailsTable extends Migration
             $table->string('sale_plan_id');
             $table->string('produk_id');
             $table->integer('qty');
+            $table->integer('harga');
+            $table->integer('sold')->default(0);
             $table->timestamps();
         });
     }

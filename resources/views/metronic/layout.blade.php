@@ -675,6 +675,21 @@
                             <a href="{{ url('/pembelian') }}">Daftar Pembelian</a>
                         </li>
                         @endcan
+
+                        <li class="{{ set_active('pembelian/saleplan*') }}">
+                            <a href="{{ url('/pembelian/saleplan') }}">
+                                <span class="title">Sale Plan</span>
+                                <span class="arrow "></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li class="{{ set_active('pembelian/saleplan/add') }}">
+                                    <a href="{{ url('/pembelian/saleplan/add') }}">Tambah Sale Plan</a>
+                                </li>
+                                <li class="{{ set_active('pembelian/saleplan') }}">
+                                    <a href="{{ url('/pembelian/saleplan') }}">Daftar Sale Plan</a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 </li>
                 @endcan
