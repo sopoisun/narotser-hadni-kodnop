@@ -49,6 +49,11 @@ class Produk extends Model
         return $this->hasOne(StokProduk::class, 'produk_id', 'id');
     }
 
+    public function salePlanDetail()
+    {
+        return $this->hasMany(App\SalePlanDetail::class, 'produk_id', 'id');
+    }
+
     public static function stok()
     {
         return self::leftJoin('produk_details', 'produks.id', '=', 'produk_details.produk_id')
