@@ -7,9 +7,17 @@
     <div class="col-md-12">
         <!-- BEGIN PAGE TITLE & BREADCRUMB-->
         <h3 class="page-title">
-            Sale Plan Detail <small>Detail Rencana Penjualan Produk</small>
+            Produk / Bahan Yang Dipakai dari Sale Plan #{{ $salePlan->kode_plan }}
         </h3>
         <ul class="page-breadcrumb breadcrumb">
+            <li class="btn-group">
+                <button type="button" class="btn blue dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
+                    <span>Actions</span> <i class="icon-angle-down"></i>
+                </button>
+                <ul class="dropdown-menu pull-right" role="menu">
+                    <li><a href="{{ url('/pembelian/saleplan/'.$salePlan->id.'/detail/bahan/print') }}" target="_blank">Print</a></li>
+                </ul>
+            </li>
             <li>
                 <i class="icon-home"></i>
                 <a href="javascript:void(0)">Home</a>
@@ -23,7 +31,13 @@
                 <a href="{{ url('/pembelian/saleplan') }}">Sale Plan</a>
                 <i class="icon-angle-right"></i>
             </li>
-            <li><a href="javascript:void(0)">Detail Sale Plan #{{ $salePlan->kode_plan }}</a></li>
+            <li>
+                <a href="{{ url('/pembelian/saleplan/'.$salePlan->id.'/detail') }}">Detail Sale Plan #{{ $salePlan->kode_plan }}</a>
+                <i class="icon-angle-right"></i>
+            </li>
+            <li>
+                <a href="javascript:void(0)">Bahan / Produk Yang Dipakai</a>
+            </li>
         </ul>
         <!-- END PAGE TITLE & BREADCRUMB-->
     </div>
@@ -35,7 +49,7 @@
         <!-- BEGIN SAMPLE TABLE PORTLET-->
         <div class="portlet box green">
             <div class="portlet-title">
-                <div class="caption"><i class="icon-comments"></i>Daftar Detail Sale Plan #{{ $salePlan->kode_plan }}</div>
+                <div class="caption"><i class="icon-comments"></i>Daftar Produk / Bahan Yang Dipakai</div>
                 <div class="tools">
                     <a href="javascript:;" class="collapse"></a>
                     <a href="#portlet-config" data-toggle="modal" class="config"></a>
@@ -49,54 +63,47 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Nama Produk</th>
+                                <th>Nama</th>
+                                <th>Type</th>
+                                <th>Qty Diperlukan</th>
+                                <th>Stok yg Ada</th>
+                                <th>Qty Harus Dibeli</th>
                                 <th>Harga</th>
-                                <th>Qty</th>
                                 <th>Subtotal</th>
-                                <th>Sold</th>
-                                <th>Income</th>
                             </tr>
                         </thead>
                         <tbody>
                             {{--*/
                                 $no = 0;
                                 $total = 0;
-                                $totalIncome = 0;
                             /*--}}
-                            @foreach($details as $detail)
+                            @foreach($display as $d)
                             {{--*/
                                 $no++;
-                                $total += $detail->harga*$detail->qty;
-                                $totalIncome += $detail->harga*$detail->sold;
+                                $total += $d['harga']*$d['stok_yg_dibeli'];
+                                $txt = '';
+                                if( $d['stok_yg_dibeli'] <= 0 ){
+                                    $txt = 'class="danger"';
+                                }
                             /*--}}
-                            <tr>
+                            <tr {!! $txt !!}>
                                 <td>{{ $no }}</td>
-                                <td>{{ $detail->produk->nama }}</td>
-                                <td>{{ number_format($detail->harga, 0, ',', '.') }}</td>
-                                <td>{{ $detail->qty }}</td>
-                                <td style="text-align:right;">{{ number_format($detail->harga*$detail->qty, 0, ',', '.') }}</td>
-                                <td>{{ $detail->sold }}</td>
-                                <td style="text-align:right;">{{ number_format($detail->harga*$detail->sold, 0, ',', '.') }}</td>
+                                <td>{{ $d['nama'] }}</td>
+                                <td>{{ $d['type'] }}</td>
+                                <td>{{ $d['qty_diperlukan'].' '.$d['satuan_pakai'] }}</td>
+                                <td>{{ $d['stok'].' '.$d['satuan_pakai'] }}</td>
+                                <td>{{ $d['stok_yg_dibeli'].' '.$d['satuan_pakai'] }}</td>
+                                <td style="text-align:right;">{{ number_format($d['harga'], 0, ',', '.') }}</td>
+                                <td style="text-align:right;">{{ number_format($d['harga']*$d['stok_yg_dibeli'], 0, ',', '.') }}</td>
                             </tr>
                             @endforeach
                             <tr style="background-color:#CCC;">
                                 <td></td>
-                                <td colspan="3">Total</td>
+                                <td colspan="6">Total</td>
                                 <td style="text-align:right;">{{ number_format($total, 0, ',', '.') }}</td>
-                                <td></td>
-                                <td style="text-align:right;">{{ number_format($totalIncome, 0, ',', '.') }}</td>
                             </tr>
                         </tbody>
                     </table>
-                </div>
-                <div class="row">
-                    <div class="col-xs-4 invoice-block" style="float:right;">
-                        <a class="btn btn-lg yellow hidden-print"
-                            style="float:right;" href="{{ url('/pembelian/saleplan/'.$salePlan->id.'/detail/bahan') }}">
-                                Lihat bahan <i class="icon-search"></i>
-                        </a>
-                    </div>
-                    <div style="clear:both;"></div>
                 </div>
             </div>
         </div>

@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\SalePlan;
 use App\SalePlanDetail;
+use App\Produk;
+use App\ProdukDetail;
+use App\StokProduk;
+use App\StokBahan;
 use DB;
 use Gate;
 use Validator;
@@ -47,8 +51,125 @@ class SalePlanController extends Controller
         return view(config('app.template').'.saleplan.table-detail', $data);
     }
 
+    public function detailBahan($id)
+    {
+        if( Gate::denies('saleplan.detail.bahan') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $data = $this->_detailBahan($id);
+
+        return view(config('app.template').'.saleplan.bahans', $data);
+    }
+
+    public function detailBahanPrint($id)
+    {
+        if( Gate::denies('saleplan.detail.bahan') ){
+            return view(config('app.template').'.error.403');
+        }
+
+        $data = $this->_detailBahan($id);
+
+        $print = new \App\Libraries\SalePlan([
+            'header' => 'Bahan / Produk yang dibutuhkan Sale Plan '.$data['salePlan']['kode_plan'],
+            'data' => $data['display'],
+        ]);
+
+        $print->WritePage();
+    }
+
+    public function _detailBahan($id)
+    {
+        $salePlanDetail = SalePlanDetail::where('sale_plan_id', $id)->get();
+        $produkIds = array_column($salePlanDetail->toArray(), 'produk_id');
+        $display = [];
+
+        # Produk no Bahan (Trading sale)
+        // get data produk where no bahan, where id in $produkIds
+        $produkNoBahan = Produk::leftJoin('produk_details', 'produks.id', '=', 'produk_details.produk_id')
+            ->whereIn('produks.id', $produkIds)
+            ->whereNull('produk_details.produk_id')->where('active', 1)
+            ->select('produks.*')->get();
+
+        if( $produkNoBahan->count() ){
+            $produkNoBahanIds = array_column($produkNoBahan->toArray(), 'id');
+            $stokProduk = StokProduk::whereIn('produk_id', $produkNoBahanIds)->get();
+
+            foreach ($produkNoBahan as $p) {
+                $_salePlanDetail = $salePlanDetail->where('produk_id', (string)$p->id)->first();
+                $_stokProduk = $stokProduk->where('produk_id', (string)$p->id)->first();
+                $stok_yg_dibeli = $_stokProduk->stok - ($_salePlanDetail->qty);
+                array_push($display, [
+                    'type'  => 'Produk',
+                    'nama'  => $p->nama,
+                    'harga' => $p->hpp,
+                    'satuan_pakai'      => $p->satuan,
+                    'qty_diperlukan'    => $_salePlanDetail->qty,
+                    'stok'              => $_stokProduk->stok,
+                    'stok_yg_dibeli'    => ($stok_yg_dibeli) > 0 ? 0 : abs($stok_yg_dibeli),
+                ]);
+            }
+        }
+        #end produk no bahan (Trading sale)
+
+        $bahans = ProdukDetail::with(['bahan'])->whereIn('produk_id', $produkIds)
+            ->select([
+                    'produk_details.id', 'produk_details.produk_id',
+                    'produk_details.bahan_id', DB::raw('produk_details.qty as qty'),
+                ])->get();
+        // push qty saleplan to bahan produk
+        foreach ($bahans as $b) {
+            $_salePlanDetail = $salePlanDetail->where('produk_id', $b->produk_id)->first();
+            $b['saleplancount'] = $_salePlanDetail->qty;
+        }
+        // group bahan by id
+        $bahansGroup    = $bahans->groupBy('bahan_id');
+        // sum bahan
+        $sumFromGroup   = [];
+        foreach ($bahansGroup as $key => $val) {
+            $sumFromGroup[$key] = collect($val)->sum(function($i){
+                return $i['qty'] * $i['saleplancount'];
+            });
+        }
+
+        /*return [
+            $bahans,
+            $bahansGroup,
+            $sumFromGroup,
+            array_keys($sumFromGroup)
+        ];*/
+
+        $bahanIds = array_keys($sumFromGroup);
+
+        $bahanStok  = StokBahan::whereIn('bahan_id', $bahanIds)->get();
+
+        foreach ($bahansGroup as $b) {
+            $i = $b[0]['bahan'];
+            $_stokBahan = $bahanStok->where('bahan_id', (string)$i->id)->first();
+            $stok_yg_dibeli = $_stokBahan->stok - ($sumFromGroup[$i->id]);
+            array_push($display, [
+                'type'  => 'Bahan',
+                'nama'  => $i->nama,
+                'harga' => $i->harga,
+                'satuan_pakai'      => $i->satuan,
+                'qty_diperlukan'    => $sumFromGroup[$i->id],
+                'stok'              => $_stokBahan->stok,
+                'stok_yg_dibeli'    => ($stok_yg_dibeli) > 0 ? 0 : abs($stok_yg_dibeli),
+            ]);
+        }
+
+        return [
+            'salePlan'  => SalePlan::find($id),
+            'display'   => $display,
+        ];
+    }
+
     public function create(Request $request)
     {
+        if( Gate::denies('saleplan.create') ){
+            return view(config('app.template').'.error.403');
+        }
+
         if( !$request->old() ){
             $request->session()->forget('data_saleplan');
         }

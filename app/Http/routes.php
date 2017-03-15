@@ -144,6 +144,8 @@ Route::group(['middleware' => ['web']], function () {
         // Sale Plan
         Route::get('/pembelian/saleplan', 'SalePlanController@index');
         Route::get('/pembelian/saleplan/{id}/detail', 'SalePlanController@detail');
+        Route::get('/pembelian/saleplan/{id}/detail/bahan', 'SalePlanController@detailBahan');
+        Route::get('/pembelian/saleplan/{id}/detail/bahan/print', 'SalePlanController@detailBahanPrint');
         Route::get('/pembelian/saleplan/add', 'SalePlanController@create');
         Route::post('/pembelian/saleplan/add', 'SalePlanController@store');
 
