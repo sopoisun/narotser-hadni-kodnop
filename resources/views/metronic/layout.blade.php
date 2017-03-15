@@ -732,8 +732,8 @@
                             <a href="{{ url('/auto-data-reader/range') }}">Periode</a>
                         </li>
                         @can('autodata.stok')
-                        <li class="{{ set_active('auto-data-reader/stok') }}">
-                            <a href="{{ url('/auto-data-reader/stok') }}">Stok</a>
+                        <li class="{{ set_active('auto-data-reader/cmd') }}">
+                            <a href="{{ url('/auto-data-reader/cmd') }}">Command</a>
                         </li>
                         @endcan
                         @endcan
