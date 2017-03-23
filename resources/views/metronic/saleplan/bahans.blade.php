@@ -59,6 +59,10 @@
             </div>
             <div class="portlet-body">
                 <div class="table-responsive">
+                    <div class="note note-info">
+                        <h4 class="block">Informasi</h4>
+                        <p>Kolom "<b>Stok yg ada</b>" adalah pembanding dari stok bahan yang ada pada saat ini. Database tidak menyimpan stok bahan mengikuti saleplan.</p>
+                    </div>
                     <table class="table table-bordered table-hover">
                         <thead>
                             <tr>
