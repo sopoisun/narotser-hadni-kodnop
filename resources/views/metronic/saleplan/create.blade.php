@@ -74,6 +74,7 @@
                                 <div class="col-md-offset-4 col-md-9">
                                     <button type="submit" class="btn red btnSubmit" id="btnSaveOrder">Simpan Sale Plan</button>
                                     {{ Form::hidden('saleplan_details', null, ['id' => 'saleplan_details']) }}
+                                    {{ Form::hidden('saleplan_detail_ids', null, ['id' => 'saleplan_detail_ids']) }}
                                 </div>
                             </div>
                             <div class="col-md-6"></div>
@@ -169,6 +170,7 @@
                                 <th>Qty</th>
                                 <th>Subtotal</th>
                                 <th>Action</th>
+                                <th style="display:none;">ID Produk</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -248,18 +250,19 @@
         var submit = false;
         if( $("#qty_saleplan").val() != "" && $("#qty_saleplan").val() != 0 && $("#produk_id_saleplan").val() != "" ){
             var num = $("#tblProduk tbody tr").length == 0 ? 1 : $("#tblProduk tbody tr").length;
-            var success = false;
-            var _data   = {
+            //var success = false;
+            var success = {
                 num:    num,
                 id:     $("#produk_id_saleplan").val(),
                 nama:   $("#nama_produk_saleplan").val(),
                 harga:  $("#harga_saleplan").val(),
                 qty:    $("#qty_saleplan").val(),
+                subtotal: (parseInt($("#harga_saleplan").val()) * parseInt($("#qty_saleplan").val())),
                 action: "<a class='btn btn-sm red btn-del-produk' href='javascript:void(0);' data-id='"+$("#produk_id_saleplan").val()+"'><i class='icon-trash'></i></a>",
-                _token: "{{ csrf_token() }}",
+                //_token: "{{ csrf_token() }}",
             };
 
-            $.ajax({
+            /*$.ajax({
                 url:    "{{ url('/ajax/saleplan/item/save') }}",
                 type:   "POST",
                 async:  false,
@@ -270,7 +273,7 @@
                         success = res;
                     }
                 }
-            })
+            })*/
 
             if( success !== false ){
                 var html = "<tr id='row_"+num+"'>";
@@ -280,6 +283,7 @@
                     html += "<td>"+success.qty+"</td>";
                     html += "<td style='text-align:right;'>"+success.subtotal+"</td>";
                     html += "<td>"+success.action+"</td>";
+                    html += "<td style='display:none;'>"+success.id+"</td>";
                 html += "</tr>";
 
                 if( num == 1){
@@ -288,9 +292,9 @@
                         html += "<td colspan='3'>Total</td>";
                         html += "<td id='totalOrder' style='text-align:right;'></td>";
                         html += "<td></td>";
+                        html += "<td style='display:none;'></td>";
                     html += "</tr>";
                 }
-
 
                 if( num == 1 ){
                     $("#tblProduk tbody").html(html);
@@ -320,9 +324,9 @@
 
     $(document).on('click', '.btn-del-produk', function(){
         if( confirm('Yakin Hapus ?? ')){
-            var params = "id="+$(this).data('id');
-            var success = false;
-            $.ajax({
+            //var params = "id="+$(this).data('id');
+            var success = true;
+            /*$.ajax({
                 url: "{{ url('/ajax/saleplan/item/remove') }}",
                 data: params,
                 type: "GET",
@@ -330,7 +334,7 @@
                 success: function(data){
                     success = true;
                 }
-            });
+            });*/
 
             if( success === true ){
                 if( $("#tblProduk tbody tr").length <= 2 ){
@@ -365,18 +369,45 @@
     }
 
     $("#formSalePlan").submit(function(e){
-        var rowTbl = $.trim($("#tblProduk tbody").html());
-        $("#saleplan_details").val(rowTbl);
+        var numRows = $("#tblProduk tbody tr").length;
+
+        if( numRows ){
+
+            var rowTbl = $.trim($("#tblProduk tbody").html());
+            $("#saleplan_details").val(rowTbl);
+
+            var _data = "[";
+
+            $("#tblProduk tbody tr").not(':last').each(function(i, v){
+                _data += "{";
+                    _data += '"id" : "'+$(this).find('td').eq(6).text()+'",';
+                    _data += '"nama" : "'+$(this).find('td').eq(1).text()+'",';
+                    _data += '"harga" : "'+$(this).find('td').eq(2).text().replace(/\./g,'')+'",';
+                    _data += '"qty" : "'+$(this).find('td').eq(3).text()+'",';
+                    _data += '"subtotal" : "'+$(this).find('td').eq(4).text().replace(/\./g,'')+'"';
+                _data += "},";
+                //console.log($(v).find('td').eq(1).text());
+            });
+
+            _data = _data.substring(0, _data.length-1);
+        	_data += "]";
+
+            $("#saleplan_detail_ids").val(_data);
+        }else{
+            toastr.warning('Tidak ada data yang dibeli!!');
+            $(".btnSubmit").removeClass('disabled');
+            e.preventDefault();
+        }
     });
 
     @if( old('saleplan_details') )
         $("#tblProduk tbody").html('{!! old("saleplan_details") !!}');
     @endif
 
-    @if($errors->has('no_details'))
+    @if($errors->has('saleplan_detail_ids'))
         toastr.options.closeButton = true;
         toastr.options.positionClass = "toast-bottom-right";
-        toastr.warning("{{ $errors->first('no_details') }}");
+        toastr.warning("{{ $errors->first('saleplan_detail_ids') }}");
     @endif
 </script>
 @stop

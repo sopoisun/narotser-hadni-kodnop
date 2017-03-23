@@ -170,20 +170,18 @@ class SalePlanController extends Controller
             return view(config('app.template').'.error.403');
         }
 
-        if( !$request->old() ){
-            $request->session()->forget('data_saleplan');
-        }
-
         return view(config('app.template').'.saleplan.create');
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'tanggal'   => 'required|date',
+            'tanggal' => 'required|date',
+            'saleplan_detail_ids' => 'required',
         ], [
             'tanggal.required'  => 'Tanggal tidak boleh kosong',
             'tanggal.date'      => 'Input harus tanggal',
+            'saleplan_detail_ids.required' => 'Tidak ada produk yang dijual',
         ]);
 
         if( $validator->fails() ){
@@ -191,12 +189,7 @@ class SalePlanController extends Controller
                 ->withErrors($validator);
         }
 
-        $dataSalePlan = $request->session()->has('data_saleplan') ? $request->session()->get('data_saleplan') : [];
-
-        if( empty($dataSalePlan) ){
-            return redirect()->back()->withInput()
-                ->withErrors(['no_details' => 'Tidak ada barang yang dibeli.']);
-        }
+        $dataSalePlan = json_decode($request->get('saleplan_detail_ids'), true);
 
         $salePlan = SalePlan::create([
             'kode_plan' => "SP-".date('dmY-his'),
@@ -211,8 +204,6 @@ class SalePlanController extends Controller
                 'harga'         => $d['harga'],
             ]);
         }
-
-        $request->session()->forget('data_saleplan');
 
         return redirect('/pembelian/saleplan');
     }
