@@ -196,7 +196,7 @@
 <script>
     $(".tanggalan").datepicker();
     $(".number").inputmask("integer", {
-        min: 1,
+        //min: 1,
         onUnMask: function(maskedValue, unmaskedValue) {
             return unmaskedValue;
         },

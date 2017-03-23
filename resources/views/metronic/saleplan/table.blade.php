@@ -75,9 +75,6 @@
                                 <td>{{ $sale_plan->tanggal->format('d M Y') }}</td>
                                 <td>{{ $sale_plan->kode_plan }}</td>
                                 <td>
-                                    @can('saleplan.update')
-                                    <a href="{{ url('/pembelian/saleplan/'.$sale_plan->id.'/edit') }}" class="btn btn-sm yellow"><i class="icon-edit"></i></a>
-                                    @endcan
                                     @can('saleplan.detail')
                                     <a href="{{ url('/pembelian/saleplan/'.$sale_plan->id.'/detail') }}" class="btn btn-sm green" title="detail"><i class="icon-search"></i></a>
                                     @endcan

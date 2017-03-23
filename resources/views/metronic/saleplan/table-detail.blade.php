@@ -66,7 +66,9 @@
                             @foreach($details as $detail)
                             {{--*/
                                 $no++;
-                                $total += $detail->harga*$detail->qty;
+                                $subtotal = $detail->harga*$detail->qty;
+                                $subtotal = ($subtotal >= 0) ? $subtotal : 0;
+                                $total += $subtotal;
                                 $totalIncome += $detail->harga*$detail->sold;
                             /*--}}
                             <tr>
@@ -74,7 +76,7 @@
                                 <td>{{ $detail->produk->nama }}</td>
                                 <td>{{ number_format($detail->harga, 0, ',', '.') }}</td>
                                 <td>{{ $detail->qty }}</td>
-                                <td style="text-align:right;">{{ number_format($detail->harga*$detail->qty, 0, ',', '.') }}</td>
+                                <td style="text-align:right;">{{ number_format($subtotal, 0, ',', '.') }}</td>
                                 <td>{{ $detail->sold }}</td>
                                 <td style="text-align:right;">{{ number_format($detail->harga*$detail->sold, 0, ',', '.') }}</td>
                             </tr>

@@ -189,20 +189,46 @@ class SalePlanController extends Controller
                 ->withErrors($validator);
         }
 
+        $tanggal = $request->get('tanggal');
+
+        $salePlan = SalePlan::where('tanggal',$tanggal)->first();
+
         $dataSalePlan = json_decode($request->get('saleplan_detail_ids'), true);
 
-        $salePlan = SalePlan::create([
-            'kode_plan' => "SP-".date('dmY-his'),
-            'tanggal'   => $request->get('tanggal'),
-        ]);
-
-        foreach ($dataSalePlan as $d) {
-            SalePlanDetail::create([
-                'sale_plan_id'  => $salePlan->id,
-                'produk_id'     => $d['id'], // produk_id
-                'qty'           => $d['qty'],
-                'harga'         => $d['harga'],
+        if( !$salePlan ){
+            $salePlan = SalePlan::create([
+                'kode_plan' => "SP-".date('dmY-his'),
+                'tanggal'   => $tanggal,
             ]);
+
+            foreach ($dataSalePlan as $d) {
+                SalePlanDetail::create([
+                    'sale_plan_id'  => $salePlan->id,
+                    'produk_id'     => $d['id'], // produk_id
+                    'qty'           => $d['qty'],
+                    'harga'         => $d['harga'],
+                ]);
+            }
+        }else{
+            $salePlanDetailOld = SalePlanDetail::where('sale_plan_id', $salePlan->id)->get();
+
+            foreach ($dataSalePlan as $d) {
+                $check = $salePlanDetailOld->where('produk_id', $d['id'])->first();
+
+                if( !$check ){
+                    SalePlanDetail::create([
+                        'sale_plan_id'  => $salePlan->id,
+                        'produk_id'     => $d['id'], // produk_id
+                        'qty'           => $d['qty'],
+                        'harga'         => $d['harga'],
+                    ]);
+                }else{
+                    SalePlanDetail::find($check->id)
+                        ->update([
+                            'qty'   => ($check->qty + $d['qty']),
+                        ]);
+                }
+            }
         }
 
         return redirect('/pembelian/saleplan');
