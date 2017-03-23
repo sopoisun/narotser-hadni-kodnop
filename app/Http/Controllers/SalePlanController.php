@@ -223,9 +223,11 @@ class SalePlanController extends Controller
                         'harga'         => $d['harga'],
                     ]);
                 }else{
+                    $qty = ($check->qty + $d['qty']);
+                    $qty = ( $qty > 0 ) ? $qty : 0;
                     SalePlanDetail::find($check->id)
                         ->update([
-                            'qty'   => ($check->qty + $d['qty']),
+                            'qty'   => $qty,
                         ]);
                 }
             }
