@@ -420,3 +420,7 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function(){
         Route::post('/user/change-password', 'ApiController@changePassword');
     });
 });
+
+Route::group(['prefix' => 'mobile', 'namespace' => 'Mobile', 'middleware' => ['api']], function(){
+
+});
