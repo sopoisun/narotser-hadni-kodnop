@@ -52,5 +52,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'ajax' => \App\Http\Middleware\AjaxAccess::class,
         'auth.api' => \App\Http\Middleware\ApiAccess::class,
+        'jwt-auth' => \App\Http\Middleware\authJWT::class,
     ];
 }
