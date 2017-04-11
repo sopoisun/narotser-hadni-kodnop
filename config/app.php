@@ -164,6 +164,8 @@ return [
 
         rizalafani\fpdflaravel\FpdfServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
+        Barryvdh\Cors\ServiceProvider::class,
     ],
 
     /*
@@ -217,6 +219,8 @@ return [
 
         'FPDF'      => rizalafani\fpdflaravel\FpdfFacade::class,
         'Excel'     => Maatwebsite\Excel\Facades\Excel::class,
+        'JWTAuth'   => Tymon\JWTAuth\Facades\JWTAuth::class,
+        'JWTFactory'=> Tymon\JWTAuth\Facades\JWTFactory::class,
     ],
 
 ];
