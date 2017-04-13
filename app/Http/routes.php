@@ -422,5 +422,17 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function(){
 });
 
 Route::group(['prefix' => 'mobile', 'namespace' => 'Mobile', 'middleware' => ['api']], function(){
+    Route::post('/login', 'MobileController@index');
 
+    Route::group(['middleware' => 'jwt-auth'], function(){
+        Route::get('/me', 'MobileController@me');
+        Route::get('/produk', 'MobileController@produk');
+        Route::get('/produk/stok', 'MobileController@checkStok');
+        Route::get('/place', 'MobileController@place');
+        Route::post('/transaksi/save', 'MobileController@OpenTransaksi');
+        Route::post('/transaksi/change', 'MobileController@changeTransaksi');
+        Route::get('/transaksi', 'MobileController@transaksi');
+        Route::get('/transaksi/detail', 'MobileController@detail');
+        Route::post('/me/change-password', 'MobileController@changePassword');
+    });
 });

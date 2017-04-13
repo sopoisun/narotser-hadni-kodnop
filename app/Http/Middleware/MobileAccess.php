@@ -18,7 +18,7 @@ class MobileAccess
     public function handle($request, Closure $next)
     {
         try {
-            $user = JWTAuth::toUser($request->input('token'));
+            $user = JWTAuth::toUser($request->get('token'));
         } catch (Exception $e) {
             if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException){
                 return response()->json(['error'=>'Token is Invalid']);
@@ -28,7 +28,7 @@ class MobileAccess
                 return response()->json(['error'=>'Something is wrong']);
             }
         }
-        
+
         return $next($request);
     }
 }
