@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-class ApiAccess
+class DesktopAccess
 {
     /**
      * Handle an incoming request.
@@ -15,7 +15,7 @@ class ApiAccess
      */
     public function handle($request, Closure $next)
     {
-        $auth = auth()->guard('api');
+        $auth = auth()->guard('desktop');
 
         if ($auth->check()) {
             return $next($request);

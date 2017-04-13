@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Desktop;
 
 use Illuminate\Http\Request;
 
@@ -18,7 +18,7 @@ use Hash;
 use Auth;
 use Artisan;
 
-class ApiController extends Controller
+class DesktopController extends Controller
 {
     public function index(Request $request) // as Login
     {
@@ -38,9 +38,9 @@ class ApiController extends Controller
         return 0;
     }
 
-    public function user(Request $request)
+    public function me(Request $request)
     {
-        $user = auth()->guard('api')->user();
+        $user = auth()->guard('desktop')->user();
 
         return [
             'user_id'       => $user->id,
@@ -444,7 +444,7 @@ class ApiController extends Controller
         if( \App\OrderTax::create($orderTax) ){
             $orderBayar = [
                 'order_id'      => $id,
-                'karyawan_id'   => ( Auth::guard('api')->check() ? Auth::guard('api')->user()->karyawan->id : '1' ),
+                'karyawan_id'   => ( Auth::guard('desktop')->check() ? Auth::guard('desktop')->user()->karyawan->id : '1' ),
                 'service_cost'  => $request->get('service_cost'), //setting()->service_cost,
                 'diskon'        => ( $request->get('diskon') != '' ? $request->get('diskon') : 0 ),
                 'bayar'         => $request->get('bayar'),
@@ -659,7 +659,7 @@ class ApiController extends Controller
     {
         \Debugbar::disable();
 
-        $user = auth()->guard('api')->user();
+        $user = auth()->guard('desktop')->user();
 
         if( !Hash::check($request->get('old_password'), $user->password) ){
             return 1;

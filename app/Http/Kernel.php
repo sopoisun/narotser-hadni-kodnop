@@ -51,7 +51,7 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'ajax' => \App\Http\Middleware\AjaxAccess::class,
-        'auth.api' => \App\Http\Middleware\ApiAccess::class,
+        'auth.desktop' => \App\Http\Middleware\DesktopAccess::class,
         'jwt-auth' => \App\Http\Middleware\MobileAccess::class,
     ];
 }

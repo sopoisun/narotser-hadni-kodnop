@@ -397,27 +397,27 @@ Route::group(['middleware' => ['web']], function () {
     });
 });
 
-Route::group(['prefix' => 'api', 'namespace' => 'Api'], function(){
-    Route::post('/login', 'ApiController@index');
+Route::group(['prefix' => 'desktop', 'namespace' => 'Desktop'], function(){
+    Route::post('/login', 'DesktopController@index');
 
-    Route::group(['middleware' => ['auth.api']], function(){
-        Route::get('/user', 'ApiController@user');
-        Route::get('/karyawan', 'ApiController@karyawan');
-        Route::get('/bank', 'ApiController@bank');
-        Route::get('/tax', 'ApiController@tax');
-        Route::get('/customer', 'ApiController@customer');
-        Route::get('/produk', 'ApiController@produk');
-        Route::get('/produk/stok', 'ApiController@checkStok');
-        Route::get('/produk/composite', 'ApiController@composite');
-        Route::get('/place', 'ApiController@place');
-        Route::get('/setting', 'ApiController@setting');
-        Route::get('/transaksi', 'ApiController@transaksi');
-        Route::post('/transaksi/save', 'ApiController@OpenTransaksi');
-        Route::post('/transaksi/change', 'ApiController@changeTransaksi');
-        Route::post('/transaksi/close', 'ApiController@closeTransaksi');
-        Route::get('/transaksi/detail', 'ApiController@detail');
-        Route::get('/transaksi/bayar', 'ApiController@bayar');
-        Route::post('/user/change-password', 'ApiController@changePassword');
+    Route::group(['middleware' => ['auth.desktop']], function(){
+        Route::get('/me', 'DesktopController@me');
+        Route::get('/karyawan', 'DesktopController@karyawan');
+        Route::get('/bank', 'DesktopController@bank');
+        Route::get('/tax', 'DesktopController@tax');
+        Route::get('/customer', 'DesktopController@customer');
+        Route::get('/produk', 'DesktopController@produk');
+        Route::get('/produk/stok', 'DesktopController@checkStok');
+        Route::get('/produk/composite', 'DesktopController@composite');
+        Route::get('/place', 'DesktopController@place');
+        Route::get('/setting', 'DesktopController@setting');
+        Route::get('/transaksi', 'DesktopController@transaksi');
+        Route::post('/transaksi/save', 'DesktopController@OpenTransaksi');
+        Route::post('/transaksi/change', 'DesktopController@changeTransaksi');
+        Route::post('/transaksi/close', 'DesktopController@closeTransaksi');
+        Route::get('/transaksi/detail', 'DesktopController@detail');
+        Route::get('/transaksi/bayar', 'DesktopController@bayar');
+        Route::post('/user/change-password', 'DesktopController@changePassword');
     });
 });
 
